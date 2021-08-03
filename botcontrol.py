@@ -77,4 +77,9 @@ def savememories():
 
 def loadstate():
     loadop();
+    loadmemories();
+
+def savestate():
+    saveop();
+    savememories();
     
