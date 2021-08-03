@@ -1,10 +1,8 @@
 
-import sys;
-import os;
 import json;
-import fnmatch;
 import logging;
-import sentencegenerator;
+import contextsensor as cs;
+import sentencegenerator as sg;
 
 VERSION = 'v20210803';
 PATH_CONFIG = './config/';
@@ -21,7 +19,7 @@ logger.info('Sentence Manager Loaded');
 
 BotState = {
     'op': [],
-    'memories':[]
+    'contextsensors': dict()
 }
 
 def loadop():
@@ -64,22 +62,14 @@ def saveop():
     json.dump(BotState['op'], _fp);
     _fp.close();
 
-def loadmemories():
-    _fp = open(PATH_CONFIG + 'memories.json', encoding='utf-8');
-    _config = json.load(_fp);
-    _fp.close();
-    BotState['memories'] = _config;
-
-def savememories():
-    _fp = open(PATH_CONFIG + 'op.json', mode = 'w', encoding='utf-8');
-    json.dump(BotState['memories'], _fp);
-    _fp.close();
 
 def loadstate():
     loadop();
-    loadmemories();
+    #cs.load();
+    return;
 
 def savestate():
     saveop();
-    savememories();
+    #cs.save();
+    return;
     
