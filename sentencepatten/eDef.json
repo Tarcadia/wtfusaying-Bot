@@ -1,0 +1,3 @@
+[
+    [{"patten":"sExt"}, {"patten":"sDoSelf", "sub":"#sub", "obj":"#obj", "act":{"patten":"vDef"}}]
+]

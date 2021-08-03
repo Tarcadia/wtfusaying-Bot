@@ -1,0 +1,4 @@
+[
+    ["我们", {"patten":"pDo"}, "#sub", "#act", "#obj"],
+    ["#sub", {"patten":"pPDo"}, "#act", "#obj"]
+]
