@@ -4,6 +4,7 @@ import jieba.analyse;
 import jieba.posseg;
 import time;
 
+#   contextwin          : int,          // 话题时间窗，维护context的队列
 def new(topicdim: int = 32, contextwin: int = 60000):
     _contextsensor = {
         'topicdim': topicdim,
