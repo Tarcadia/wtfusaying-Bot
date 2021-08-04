@@ -59,7 +59,7 @@ def push(cs: dict, msg: str = '', t: int = None):
     while _i < len(_contexts) and t - cs['context'][_contexts[_i]] > cs['contextwin']:
         cs['context'].pop(_contexts[_i]);
         _i += 1;
-    return;
+    return cs;
 
 def gettopics(cs: dict, t: int = None):
     if t == None:
