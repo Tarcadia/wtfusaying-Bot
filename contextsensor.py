@@ -78,12 +78,14 @@ def addtopic(cs: dict, vec: dict):
             'sum'       : sum([vec[_k] for _k in vec]),
             'vec'       : vec
         };
+        cs['topicdim'] += 1;
         cs['topics'].append(_topic);
     elif type(vec) == list:
         _topic = {
             'sum'       : len(vec),
             'vec'       : {_k : 1 for _k in vec}
         };
+        cs['topicdim'] += 1;
         cs['topics'].append(_topic);
     return cs;
 
