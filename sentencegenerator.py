@@ -18,6 +18,24 @@ logger.addHandler(logger_ch);
 logger.info('Sentence Generator Loaded');
 
 
+# patten                : dict
+# {
+#   'patten'            : str,          // patten名
+#   '<key1>'            : subsent       // patten内转义
+#   '<key2>'            : subsent       // patten内的转义
+#                                       // 在解析的时候会根据这里的key对patten展开的内容中的"#key"进行替换
+#                                       // 转义的作用域是本patten内的subsent及嵌套元素，不对patten内subsent转义后的内容进行转义
+#                                       // 逻辑上允许对展开的patten的patten名进行转义，但不建议
+# },
+
+# sentence              : list          // 一段语句的表达形式
+# [
+#   subsent             : subsent       // 语句由subsent连缀而成
+# ]
+
+# subsent               : sentence, patten, str     // 语句的元素可以是一个patten，一个语句或者一个字符串
+
+
 def getpatten(patten: str = ''):
     try:
         _fp = open(PATH_PATTEN + patten + '.json', encoding='utf-8');
