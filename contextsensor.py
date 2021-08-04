@@ -116,5 +116,17 @@ def updatetopic(cs: dict, tid: int = None, t: int = None):
     if t == None:
         t = time.time();
     if tid == None:
-        tid = gettopic(cs, t);
+        tid = topic(cs, t);
+    elif tid == -1:
+        return;
+    _s = 0;
+    for _k in cs['context']:
+        if _k in cs['topics'][tid]['vec']:
+            cs['topics'][tid]['vec'][_k] += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
+            _s += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
+        else:
+            cs['topics'][tid]['vec'][_k] = cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
+            _s += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
+    cs['topics'][tid]['sum'] += _s;
+    return;
 
