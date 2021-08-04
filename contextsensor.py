@@ -19,13 +19,13 @@ logger.info('Sentence Generator Loaded');
 # contextsensor         : dict
 # {
 #   topicdim            : int,          // 话题维度，话题应当由context做向量运算得到
-#   contextwin          : int,          // 话题时间窗，维护context的队列，单位s
+#   contextwin          : float,        // 话题时间窗，维护context的队列，单位s
 #   context[<key>]      : dict          // context的队列，需要用键值访问，维护按照加入时间的队列顺序
 #   [
 #       <key>:          : str           // context键值，为一个关键词
 #       {
 #           'v'         : float,        // 关键词的时间浓度，冲激响应模型为 v(t) = u(t) * exp(-alpha * t / tau)
-#           't'         : int           // 上次最新加入队列的时间
+#           't'         : float         // 上次最新加入队列的时间，time.time()的时间戳
 #       }
 #   ]
 # }
