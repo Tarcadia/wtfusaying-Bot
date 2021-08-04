@@ -91,6 +91,8 @@ def topics(cs: dict, t: int = None):
             if _k in _topic['vec']:
                 _v += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']) * _topic['vec'][_k];
                 _s += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
+            else:
+                _s += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
         if _s == 0:
             _result.append(0);
         elif _topic['sum'] == 0:
