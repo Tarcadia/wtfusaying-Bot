@@ -32,15 +32,12 @@ logger.info('Sentence Generator Loaded');
 #           't'         : float         // 上次最新加入队列的时间，time.time()的时间戳
 #       }
 #   ],
-#   topics[]            : list          // topic的向量表
+#   topics[]            : list{dict}    // topic的向量表
 #   [
-#       vector[<key>]   : dict          // 单个topic的特征向量
-#       [
-#           {
-#               'sum'                   : float,                // vector的sum
-#               'vec'[<key>]            : dict{float}           // vector，用dict来实现稀疏输入的向量乘法
-#           }
-#       ]
+#       {
+#           'sum'                       : float,                // 特征向量的和
+#           'vec'[<key>]                : dict{float}           // 单个topic的特征向量，用dict来实现稀疏输入的向量乘法
+#       }
 #   ]
 # }
 
