@@ -52,14 +52,14 @@ def new(
     alpha: float = 1
     ):
     _contextsensor = {
-        'topicdim': topicdim,
-        'contextwin': contextwin,
-        'contextcount': contextcout,
-        'contextfilter': contextfilter,
-        'contextmethod': contextmethod,
-        'alpha': alpha,
-        'context':dict(),
-        'topics': [{'sum' : 0, 'vec' : dict()} for _ in range(topicdim)]
+        'topicdim'      : topicdim,
+        'contextwin'    : contextwin,
+        'contextcount'  : contextcout,
+        'contextfilter' : contextfilter,
+        'contextmethod' : contextmethod,
+        'alpha'         : alpha,
+        'context'       : dict(),
+        'topics'        : [{'sum' : 0, 'vec' : dict()} for _ in range(topicdim)]
     };
     return _contextsensor;
 
