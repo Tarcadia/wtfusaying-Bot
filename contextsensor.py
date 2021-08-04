@@ -186,34 +186,6 @@ def updatetopic_ver2(cs: dict, tid: int = None, t: int = None):
 # 在time时刻监督学习contextsensor的topic符合tid所指的topic
 # 在time时刻将contextsensor的context向量加入tid所指的topic的特征向量中
 # 维护topic的特征向量的sum
-def updatetopic_ver3(cs: dict, tid: int = None, t: int = None):
-    if t == None:
-        t = time.time();
-    if tid == None:
-        tid = topic(cs, t);
-    elif tid == -1:
-        return cs;
-    _topics = topics(cs, t);
-    for _tid in range(cs['topicdim']):
-        if _tid == tid:
-            _p = 1;
-        else:
-            _p = - 1 / (cs['topicdim'] - 1);
-        _s = 0;
-        for _k in cs['context']:
-            if _k in cs['topics'][_tid]['vec']:
-                cs['topics'][_tid]['vec'][_k] += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
-                _s += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
-            else:
-                cs['topics'][_tid]['vec'][_k] = _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
-                _s += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
-        cs['topics'][_tid]['sum'] += _s;
-    return cs;
-
-# contextsensor = updatetopic(contextsensor, tid, time)
-# 在time时刻监督学习contextsensor的topic符合tid所指的topic
-# 在time时刻将contextsensor的context向量加入tid所指的topic的特征向量中
-# 维护topic的特征向量的sum
 def updatetopic(cs: dict, tid: int = None, t: int = None):
     if t == None:
         t = time.time();
