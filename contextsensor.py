@@ -54,9 +54,9 @@ def push(cs: dict, msg: str = '', t: int = None):
             _q['v'] = _w;
             _q['t'] = t;
             cs['context'][_k] = _q;
-    _contexts = cs['context'].keys();
+    _contexts = list(cs['context'].keys());
     _i = 0;
-    while _i < len(_contexts) and t - cs['context'][_contexts[_i]] > cs['contextwin']:
+    while _i < len(_contexts) and t - cs['context'][_contexts[_i]]['t'] > cs['contextwin']:
         cs['context'].pop(_contexts[_i]);
         _i += 1;
     return cs;
