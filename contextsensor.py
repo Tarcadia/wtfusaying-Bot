@@ -21,6 +21,8 @@ logger.info('Sentence Generator Loaded');
 #   topicdim            : int,          // 话题维度，话题应当由context做向量运算得到
 #   contextwin          : float,        // 语境时间窗，维护context的队列，单位s
 #   contextcout         : int,          // 单条语句的预期提取关键词个数
+#   contextfilter       : tuple,        // 单条语句的关键词词性过滤
+#   contextmethod       : str,          // 单条语句的关键词提取方式，tfidf | tr | all
 #   alpha               : float,        // 语境衰减系数
 #   context[<key>]      : dict          // context的队列，需要用键值访问，维护按照加入时间的队列顺序
 #   [
@@ -44,11 +46,20 @@ logger.info('Sentence Generator Loaded');
 
 # contextsensor = new()
 # 初始化一个contextsensor
-def new(topicdim: int = 32, contextwin: float = 60, contextcout: int = 5, alpha: float = 1):
+def new(
+    topicdim: int = 32,
+    contextwin: float = 60,
+    contextcout: int = 20,
+    contextfilter = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v', 'eng'),
+    contextmethod = 'tfidf',
+    alpha: float = 1
+    ):
     _contextsensor = {
         'topicdim': topicdim,
         'contextwin': contextwin,
         'contextcount': contextcout,
+        'contextfilter': contextfilter,
+        'contextmethod': contextmethod,
         'alpha': alpha,
         'context':dict(),
         'topics': [{'sum' : 0, 'vec' : dict()} for _ in range(topicdim)]
@@ -61,8 +72,15 @@ def new(topicdim: int = 32, contextwin: float = 60, contextcout: int = 5, alpha:
 def push(cs: dict, msg: str = '', t: int = None):
     if t == None:
         t = time.time();
-    #_keys = jieba.analyse.textrank(msg, topK = cs['contextcount'], withWeight = True, allowPOS = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v'));
-    _keys = jieba.analyse.extract_tags(msg, topK = cs['contextcount'], withWeight = True, allowPOS = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v'));
+    if cs['contextmethod'] == 'all':
+        _keys_k = jieba.cut(msg);
+        _keys = [(_k, 1) for _k in _keys_k];
+    elif cs['contextmethod'] == 'tr':
+        _keys = jieba.analyse.textrank(msg, topK = cs['contextcount'], withWeight = True, allowPOS = cs['contextfilter']);
+    elif cs['contextmethod'] == 'tfidf':
+        _keys = jieba.analyse.extract_tags(msg, topK = cs['contextcount'], withWeight = True, allowPOS = cs['contextfilter']);
+    else:
+        _keys = [];
     for _k, _w in _keys:
         if _k in cs['context']:
             _q = cs['context'].pop(_k);
@@ -118,7 +136,7 @@ def topic(cs: dict, t: int = None):
 # 在time时刻监督学习contextsensor的topic符合tid所指的topic
 # 在time时刻将contextsensor的context向量加入tid所指的topic的特征向量中
 # 维护topic的特征向量的sum
-def updatetopic(cs: dict, tid: int = None, t: int = None):
+def updatetopic_ver1(cs: dict, tid: int = None, t: int = None):
     if t == None:
         t = time.time();
     if tid == None:
@@ -134,5 +152,89 @@ def updatetopic(cs: dict, tid: int = None, t: int = None):
             cs['topics'][tid]['vec'][_k] = cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
             _s += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
     cs['topics'][tid]['sum'] += _s;
+    return cs;
+
+# contextsensor = updatetopic(contextsensor, tid, time)
+# 在time时刻监督学习contextsensor的topic符合tid所指的topic
+# 在time时刻将contextsensor的context向量加入tid所指的topic的特征向量中
+# 维护topic的特征向量的sum
+def updatetopic_ver2(cs: dict, tid: int = None, t: int = None):
+    if t == None:
+        t = time.time();
+    if tid == None:
+        tid = topic(cs, t);
+    elif tid == -1:
+        return cs;
+    _topics = topics(cs, t);
+    for _tid in range(cs['topicdim']):
+        if _tid == tid:
+            _p = _topics[_tid] + 1;
+        else:
+            _p = - _topics[_tid];
+        _s = 0;
+        for _k in cs['context']:
+            if _k in cs['topics'][_tid]['vec']:
+                cs['topics'][_tid]['vec'][_k] += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+                _s += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+            else:
+                cs['topics'][_tid]['vec'][_k] = _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+                _s += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+        cs['topics'][_tid]['sum'] += _s;
+    return cs;
+
+# contextsensor = updatetopic(contextsensor, tid, time)
+# 在time时刻监督学习contextsensor的topic符合tid所指的topic
+# 在time时刻将contextsensor的context向量加入tid所指的topic的特征向量中
+# 维护topic的特征向量的sum
+def updatetopic_ver3(cs: dict, tid: int = None, t: int = None):
+    if t == None:
+        t = time.time();
+    if tid == None:
+        tid = topic(cs, t);
+    elif tid == -1:
+        return cs;
+    _topics = topics(cs, t);
+    for _tid in range(cs['topicdim']):
+        if _tid == tid:
+            _p = 1;
+        else:
+            _p = - 1 / (cs['topicdim'] - 1);
+        _s = 0;
+        for _k in cs['context']:
+            if _k in cs['topics'][_tid]['vec']:
+                cs['topics'][_tid]['vec'][_k] += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+                _s += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+            else:
+                cs['topics'][_tid]['vec'][_k] = _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+                _s += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+        cs['topics'][_tid]['sum'] += _s;
+    return cs;
+
+# contextsensor = updatetopic(contextsensor, tid, time)
+# 在time时刻监督学习contextsensor的topic符合tid所指的topic
+# 在time时刻将contextsensor的context向量加入tid所指的topic的特征向量中
+# 维护topic的特征向量的sum
+def updatetopic(cs: dict, tid: int = None, t: int = None):
+    if t == None:
+        t = time.time();
+    if tid == None:
+        tid = topic(cs, t);
+    elif tid == -1:
+        return cs;
+    _topics = topics(cs, t);
+    for _tid in range(cs['topicdim']):
+        if _tid == tid:
+            _p = _topics[_tid] + 3;
+        else:
+            _p = - _topics[_tid];
+        _s = 0;
+        for _k in cs['context']:
+            if _k in cs['topics'][_tid]['vec']:
+                cs['topics'][_tid]['vec'][_k] += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+                _s += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+            else:
+                cs['topics'][_tid]['vec'][_k] = _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+                _s += _p * cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+        cs['topics'][_tid]['sum'] += _s;
     return cs;
 
