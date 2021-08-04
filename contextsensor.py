@@ -83,7 +83,21 @@ def push(cs: dict, msg: str = '', t: int = None):
 def topics(cs: dict, t: int = None):
     if t == None:
         t = time.time();
-    return [0] * cs['topicdim'];
+    _result = [];
+    for _topic in cs['topics']:
+        _v = 0;
+        _s = 0;
+        for _k in cs['context']:
+            if _k in _topic['vec']:
+                _v += cs['context']['k']['v'] * pow(2, (cs['context']['k']['t'] - t) / cs['contextwin']) * _topic['vec'][_k];
+                _s += cs['context']['k']['v'] * pow(2, (cs['context']['k']['t'] - t) / cs['contextwin']);
+        if _s == 0:
+            _result.append(0);
+        elif _topic['sum'] == 0:
+            _result.append(1);
+        else:
+            _result.append(_v / _s / _topic['sum']);
+    return _result;
 
 # tid = topic(contextsensor, time)
 # 在time时刻计算得到当前的topic的估计
@@ -91,7 +105,8 @@ def topics(cs: dict, t: int = None):
 def topic(cs: dict, t: int = None):
     if t == None:
         t = time.time();
-    return -1;
+    _topics = topics(cs, t);
+    return topics.index(max(_topics));
 
 # contextsensor = updatetopic(contextsensor, tid, time)
 # 在time时刻监督学习contextsensor的topic符合tid所指的topic
