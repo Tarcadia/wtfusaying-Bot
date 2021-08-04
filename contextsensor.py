@@ -106,7 +106,7 @@ def topic(cs: dict, t: int = None):
     if t == None:
         t = time.time();
     _topics = topics(cs, t);
-    return topics.index(max(_topics));
+    return _topics.index(max(_topics));
 
 # contextsensor = updatetopic(contextsensor, tid, time)
 # 在time时刻监督学习contextsensor的topic符合tid所指的topic
