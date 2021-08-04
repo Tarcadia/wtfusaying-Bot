@@ -20,6 +20,7 @@ logger.info('Sentence Generator Loaded');
 # {
 #   topicdim            : int,          // 话题维度，话题应当由context做向量运算得到
 #   contextwin          : float,        // 语境时间窗，维护context的队列，单位s
+#   contextcout         : int,          // 单条语句的预期提取关键词个数
 #   alpha               : float,        // 语境衰减系数
 #   context[<key>]      : dict          // context的队列，需要用键值访问，维护按照加入时间的队列顺序
 #   [
@@ -43,10 +44,11 @@ logger.info('Sentence Generator Loaded');
 
 # contextsensor = new()
 # 初始化一个contextsensor
-def new(topicdim: int = 32, contextwin: float = 60, alpha: float = 1):
+def new(topicdim: int = 32, contextwin: float = 60, contextcout: int = 5, alpha: float = 1):
     _contextsensor = {
         'topicdim': topicdim,
         'contextwin': contextwin,
+        'contextcount': contextcout,
         'alpha': alpha,
         'context':dict(),
         'topics': [{'sum' : 0, 'vec' : dict()} for _ in range(topicdim)]
