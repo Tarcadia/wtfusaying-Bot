@@ -37,7 +37,7 @@ def new(topicdim: int = 32, contextwin: int = 60000):
         'context':dict(),
         'topic': [dict() for _ in range(topicdim)]
     };
-    return _contextsensor();
+    return _contextsensor;
 
 def push(cs: dict, msg: str = '', t: int = None):
     if t == None:
