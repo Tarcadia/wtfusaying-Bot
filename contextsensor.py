@@ -61,8 +61,8 @@ def new(topicdim: int = 32, contextwin: float = 60, contextcout: int = 5, alpha:
 def push(cs: dict, msg: str = '', t: int = None):
     if t == None:
         t = time.time();
-    #_keys = jieba.analyse.textrank(msg, withWeight = True, allowPOS = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v'));
-    _keys = jieba.analyse.extract_tags(msg, withWeight = True, allowPOS = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v'));
+    #_keys = jieba.analyse.textrank(msg, topK = cs['contextcount'], withWeight = True, allowPOS = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v'));
+    _keys = jieba.analyse.extract_tags(msg, topK = cs['contextcount'], withWeight = True, allowPOS = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v'));
     for _k, _w in _keys:
         if _k in cs['context']:
             _q = cs['context'].pop(_k);
