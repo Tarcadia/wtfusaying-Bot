@@ -63,6 +63,30 @@ def new(
     };
     return _contextsensor;
 
+# contextsensor = clearcontext(contextsensor)
+# 清除context，可以在原topic基础上继续操作
+def clearcontext(cs: dict):
+    cs['context'] = dict();
+    return cs;
+
+# contextsensor = addtopic(contextsensor, topicvec)
+# 写入一条特定的topic
+# 该topic也会参与后续的update
+def addtopic(cs: dict, vec: dict):
+    if type(vec) == dict:
+        _topic = {
+            'sum'       : sum([vec[_k] for _k in vec]),
+            'vec'       : vec
+        };
+        cs['topics'].append(_topic);
+    elif type(vec) == list:
+        _topic = {
+            'sum'       : len(vec),
+            'vec'       : {_k : 1 for _k in vec}
+        };
+        cs['topics'].append(_topic);
+    return cs;
+
 # contextsensor = push(contextsensor, message, time)
 # 在time时刻向contextsensor中加入一条message
 # 将会将message提取出tag加入context队列
