@@ -19,7 +19,7 @@ logger.info('Sentence Generator Loaded');
 # contextsensor         : dict
 # {
 #   topicdim            : int,          // 话题维度，话题应当由context做向量运算得到
-#   contextwin          : int,          // 话题时间窗，维护context的队列
+#   contextwin          : int,          // 话题时间窗，维护context的队列，单位s
 #   context[<key>]      : dict          // context的队列，需要用键值访问，每次访问对某个键值进行更新计算
 #   [
 #       <key>:          : str           // context键值，为一个关键词
@@ -30,7 +30,7 @@ logger.info('Sentence Generator Loaded');
 #   ]
 # }
 
-def new(topicdim: int = 32, contextwin: int = 60000):
+def new(topicdim: int = 32, contextwin: int = 60):
     _contextsensor = {
         'topicdim': topicdim,
         'contextwin': contextwin,
