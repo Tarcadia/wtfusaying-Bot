@@ -28,7 +28,7 @@ logger.info('Sentence Generator Loaded');
 #           't'         : float         // 上次最新加入队列的时间，time.time()的时间戳
 #       }
 #   ],
-#   topic[]             : list          // topic的向量表
+#   topics[]            : list          // topic的向量表
 #   [
 #       vector[<key>]   : dict          // 单个topic的特征向量
 #       [
@@ -45,7 +45,7 @@ def new(topicdim: int = 32, contextwin: int = 60):
         'topicdim': topicdim,
         'contextwin': contextwin,
         'context':dict(),
-        'topic': [{'sum' : 0, 'vec' : dict()} for _ in range(topicdim)]
+        'topics': [{'sum' : 0, 'vec' : dict()} for _ in range(topicdim)]
     };
     return _contextsensor;
 
