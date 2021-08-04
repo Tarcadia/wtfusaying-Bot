@@ -6,10 +6,16 @@
     "configurations": [
     
         {
-            "name": "Python: 模块",
+            "name": "test.py",
             "type": "python",
             "request": "launch",
             "module": "test"
+        },
+        {
+            "name": "testlearn.py",
+            "type": "python",
+            "request": "launch",
+            "module": "testlearn"
         }
     ]
 }
