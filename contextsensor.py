@@ -40,6 +40,8 @@ logger.info('Sentence Generator Loaded');
 #   ]
 # }
 
+# contextsensor = new()
+# 初始化一个contextsensor
 def new(topicdim: int = 32, contextwin: int = 60):
     _contextsensor = {
         'topicdim': topicdim,
@@ -49,6 +51,9 @@ def new(topicdim: int = 32, contextwin: int = 60):
     };
     return _contextsensor;
 
+# contextsensor = push(contextsensor, message, time)
+# 在time时刻向contextsensor中加入一条message
+# 将会将message提取出tag加入context队列
 def push(cs: dict, msg: str = '', t: int = None):
     if t == None:
         t = time.time();
@@ -72,16 +77,24 @@ def push(cs: dict, msg: str = '', t: int = None):
         _i += 1;
     return cs;
 
-def gettopics(cs: dict, t: int = None):
+# topicvector = topic(contextsensor, time)
+# 在time时刻对context向量求与topic特征向量相关性
+# 计算得到topic空间上的向量组
     if t == None:
         t = time.time();
     return [0] * cs['topicdim'];
 
-def gettopic(cs: dict, t: int = None):
+# tid = topic(contextsensor, time)
+# 在time时刻计算得到当前的topic的估计
+# 多个并列则返回第一个
     if t == None:
         t = time.time();
     return -1;
 
+# contextsensor = updatetopic(contextsensor, tid, time)
+# 在time时刻监督学习contextsensor的topic符合tid所指的topic
+# 在time时刻将contextsensor的context向量加入tid所指的topic的特征向量中
+# 维护topic的特征向量的sum
 def updatetopic(cs: dict, tid: int = None, t: int = None):
     if t == None:
         t = time.time();
