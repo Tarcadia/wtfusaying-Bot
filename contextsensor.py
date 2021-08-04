@@ -19,7 +19,8 @@ logger.info('Sentence Generator Loaded');
 # contextsensor         : dict
 # {
 #   topicdim            : int,          // 话题维度，话题应当由context做向量运算得到
-#   contextwin          : float,        // 话题时间窗，维护context的队列，单位s
+#   contextwin          : float,        // 语境时间窗，维护context的队列，单位s
+#   alpha               : float,        // 语境衰减系数
 #   context[<key>]      : dict          // context的队列，需要用键值访问，维护按照加入时间的队列顺序
 #   [
 #       <key>:          : str           // context键值，为一个关键词
@@ -42,10 +43,11 @@ logger.info('Sentence Generator Loaded');
 
 # contextsensor = new()
 # 初始化一个contextsensor
-def new(topicdim: int = 32, contextwin: int = 60):
+def new(topicdim: int = 32, contextwin: float = 60, alpha: float = 1):
     _contextsensor = {
         'topicdim': topicdim,
         'contextwin': contextwin,
+        'alpha': alpha,
         'context':dict(),
         'topics': [{'sum' : 0, 'vec' : dict()} for _ in range(topicdim)]
     };
@@ -62,7 +64,7 @@ def push(cs: dict, msg: str = '', t: int = None):
     for _k, _w in _keys:
         if _k in cs['context']:
             _q = cs['context'].pop(_k);
-            _q['v'] = _q['v'] * pow(2, (_q['t'] - t) / cs['contextwin']) + _w;
+            _q['v'] = _q['v'] * pow(2, cs['alpha'] * (_q['t'] - t) / cs['contextwin']) + _w;
             _q['t'] = t;
             cs['context'][_k] = _q;
         else:
@@ -89,10 +91,10 @@ def topics(cs: dict, t: int = None):
         _s = 0;
         for _k in cs['context']:
             if _k in _topic['vec']:
-                _v += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']) * _topic['vec'][_k];
-                _s += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
+                _v += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']) * _topic['vec'][_k];
+                _s += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
             else:
-                _s += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
+                _s += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
         if _s == 0:
             _result.append(0);
         elif _topic['sum'] == 0:
@@ -124,11 +126,11 @@ def updatetopic(cs: dict, tid: int = None, t: int = None):
     _s = 0;
     for _k in cs['context']:
         if _k in cs['topics'][tid]['vec']:
-            cs['topics'][tid]['vec'][_k] += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
-            _s += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
+            cs['topics'][tid]['vec'][_k] += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+            _s += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
         else:
-            cs['topics'][tid]['vec'][_k] = cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
-            _s += cs['context'][_k]['v'] * pow(2, (cs['context'][_k]['t'] - t) / cs['contextwin']);
+            cs['topics'][tid]['vec'][_k] = cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
+            _s += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
     cs['topics'][tid]['sum'] += _s;
     return cs;
 
