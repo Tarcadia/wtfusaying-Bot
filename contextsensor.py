@@ -27,6 +27,16 @@ logger.info('Sentence Generator Loaded');
 #           'v'         : float,        // 关键词的时间浓度，冲激响应模型为 v(t) = u(t) * exp(-alpha * t / tau)
 #           't'         : float         // 上次最新加入队列的时间，time.time()的时间戳
 #       }
+#   ],
+#   topic[]             : list          // topic的向量表
+#   [
+#       vector[<key>]   : dict          // 单个topic的特征向量
+#       [
+#           {
+#               'sum'                   : float,                // vector的sum
+#               'vec'[<key>]            : dict{float}           // vector，用dict来实现稀疏输入的向量乘法
+#           }
+#       ]
 #   ]
 # }
 
@@ -35,7 +45,7 @@ def new(topicdim: int = 32, contextwin: int = 60):
         'topicdim': topicdim,
         'contextwin': contextwin,
         'context':dict(),
-        'topic': [dict() for _ in range(topicdim)]
+        'topic': [{'sum' : 0, 'vec' : dict()} for _ in range(topicdim)]
     };
     return _contextsensor;
 
