@@ -37,9 +37,16 @@ def push(cs: dict, msg: str = '', t: int = None):
             _q['v'] = _q['v'] * pow(2, (_q['t'] - t) / cs['contextwin']) + _w;
             _q['t'] = t;
             cs['context'][_k] = _q;
-    while t - cs['context'][next(iter(cs['context']))] > cs['contextwin']:
-        cs['context'].pop(next(iter(cs['context'])));
-    # 好丑
+        else:
+            _q = dict();
+            _q['v'] = _w;
+            _q['t'] = t;
+            cs['context'][_k] = _q;
+    _contexts = cs['context'].keys();
+    _i = 0;
+    while _i < len(_contexts) and t - cs['context'][_contexts[_i]] > cs['contextwin']:
+        cs['context'].pop(_contexts[_i]);
+        _i += 1;
     return;
 
 def gettopics(cs: dict, t: int = None):
