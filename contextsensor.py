@@ -70,9 +70,9 @@ def clearcontext(cs: dict):
     return cs;
 
 # contextsensor = addtopic(contextsensor, topicvec)
-# 写入一条特定的topic
+# 写入一条特定的topic，或多条空topic
 # 该topic也会参与后续的update
-def addtopic(cs: dict, vec: dict):
+def addtopic(cs: dict, vec: dict, count: int = 1):
     if type(vec) == dict:
         _topic = {
             'sum'       : sum([vec[_k] for _k in vec]),
@@ -80,13 +80,20 @@ def addtopic(cs: dict, vec: dict):
         };
         cs['topicdim'] += 1;
         cs['topics'].append(_topic);
-    elif type(vec) == list:
+    elif type(vec) == list or type(vec) == set:
         _topic = {
             'sum'       : len(vec),
             'vec'       : {_k : 1 for _k in vec}
         };
         cs['topicdim'] += 1;
         cs['topics'].append(_topic);
+    elif vec == dict() or vec == list() or vec == set():
+        for _i in range(count):
+            _topic = {
+                'sum'   : 0,
+                'vec'   : dict()
+            };
+            cs['topics'].append(_topic);
     return cs;
 
 # contextsensor = push(contextsensor, message, time)
