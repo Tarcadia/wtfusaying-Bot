@@ -80,6 +80,7 @@ def push(cs: dict, msg: str = '', t: int = None):
 # topicvector = topic(contextsensor, time)
 # 在time时刻对context向量求与topic特征向量相关性
 # 计算得到topic空间上的向量组
+def topics(cs: dict, t: int = None):
     if t == None:
         t = time.time();
     return [0] * cs['topicdim'];
@@ -87,6 +88,7 @@ def push(cs: dict, msg: str = '', t: int = None):
 # tid = topic(contextsensor, time)
 # 在time时刻计算得到当前的topic的估计
 # 多个并列则返回第一个
+def topic(cs: dict, t: int = None):
     if t == None:
         t = time.time();
     return -1;
