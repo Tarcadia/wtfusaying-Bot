@@ -120,7 +120,7 @@ def topics(cs: dict, t: int = None):
         elif _topic['sum'] == 0:
             _result.append(1);
         else:
-            _result.append(_v / _s / _topic['sum']);
+            _result.append(_v / _topic['sum']);
     return _result;
 
 # tid = topic(contextsensor, time)
