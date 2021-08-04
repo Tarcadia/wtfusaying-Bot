@@ -1,4 +1,4 @@
-from botcontrol import PATH_CONFIG
+
 import jieba;
 import jieba.analyse;
 import jieba.posseg;
