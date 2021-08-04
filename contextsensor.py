@@ -138,6 +138,11 @@ def updatetopic_ver1(cs: dict, tid: int = None, t: int = None):
         tid = topic(cs, t);
     elif tid == -1:
         return cs;
+    _contexts = list(cs['context'].keys());
+    _i = 0;
+    while _i < len(_contexts) and t - cs['context'][_contexts[_i]]['t'] > cs['contextwin']:
+        cs['context'].pop(_contexts[_i]);
+        _i += 1;
     _s = 0;
     for _k in cs['context']:
         if _k in cs['topics'][tid]['vec']:
@@ -160,6 +165,11 @@ def updatetopic_ver2(cs: dict, tid: int = None, t: int = None):
         tid = topic(cs, t);
     elif tid == -1:
         return cs;
+    _contexts = list(cs['context'].keys());
+    _i = 0;
+    while _i < len(_contexts) and t - cs['context'][_contexts[_i]]['t'] > cs['contextwin']:
+        cs['context'].pop(_contexts[_i]);
+        _i += 1;
     _topics = topics(cs, t);
     for _tid in range(cs['topicdim']):
         if _tid == tid:
@@ -188,6 +198,11 @@ def updatetopic(cs: dict, tid: int = None, t: int = None):
         tid = topic(cs, t);
     elif tid == -1:
         return cs;
+    _contexts = list(cs['context'].keys());
+    _i = 0;
+    while _i < len(_contexts) and t - cs['context'][_contexts[_i]]['t'] > cs['contextwin']:
+        cs['context'].pop(_contexts[_i]);
+        _i += 1;
     _topics = topics(cs, t);
     for _tid in range(cs['topicdim']):
         if _tid == tid:
