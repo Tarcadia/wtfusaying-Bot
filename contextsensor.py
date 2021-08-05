@@ -73,14 +73,14 @@ def clearcontext(cs: dict):
 # 写入一条特定的topic，或多条空topic
 # 该topic也会参与后续的update
 def addtopic(cs: dict, vec: dict, count: int = 1):
-    if type(vec) == dict:
+    if type(vec) == dict and not vec == dict():
         _topic = {
             'sum'       : sum([vec[_k] for _k in vec]),
             'vec'       : vec
         };
         cs['topicdim'] += 1;
         cs['topics'].append(_topic);
-    elif type(vec) == list or type(vec) == set:
+    elif (type(vec) == list or type(vec) == set) and not (vec == [] or vec == {}):
         _topic = {
             'sum'       : len(vec),
             'vec'       : {_k : 1 for _k in vec}
