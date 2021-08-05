@@ -94,6 +94,7 @@ def addtopic(cs: dict, vec: dict, count: int = 1):
                 'vec'   : dict()
             };
             cs['topics'].append(_topic);
+        cs['topicdim'] += count;
     return cs;
 
 # contextsensor = push(contextsensor, message, time)
