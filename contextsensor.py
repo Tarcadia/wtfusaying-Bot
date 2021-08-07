@@ -34,9 +34,9 @@ logger.info('Context Sensor Loaded');
 #   ]
 # }
 
-# contextvec[<key>:str]{float} : dict   // context向量，为稀疏的float类型向量，键值为一个关键词
-# contextvec{<key>:str} : set           // context向量的化简，为稀疏的元素值为1的向量，为有元素的关键词的集合
-# contextvec[<key>:str] : list          // context向量的化简，为稀疏的元素值为1的向量，为有元素的关键词的列表
+# contextvec[<key>:str]{float}  : dict      // context向量，为稀疏的float类型向量，键值为一个关键词
+# contextvec{<key>:str}         : set       // context向量的化简，为稀疏的元素值为1的向量，为有元素的关键词的集合
+# contextvec[<key>:str]         : list      // context向量的化简，为稀疏的元素值为1的向量，为有元素的关键词的列表
 
 
 # contextsensor = new()
