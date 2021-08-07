@@ -173,7 +173,7 @@ def topics(cs: dict, context: dict = None, t: int = None):
                     _result.append(1);
                 else:
                     _result.append(_v / _topic['sum']);
-            return _result;
+        return _result;
 
 # tid = topic(contextsensor, time)
 # 在time时刻计算得到当前的topic的估计
