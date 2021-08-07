@@ -155,3 +155,4 @@ def update(cs: dict, msg: str = '', t: float = None):
     
     cs = push(cs, _vec, t);
     cs = pop(cs, t);
+    return cs;
