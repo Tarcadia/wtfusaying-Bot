@@ -1,6 +1,4 @@
 
-from math import pi
-import re
 import jieba;
 import jieba.analyse;
 import jieba.posseg;
