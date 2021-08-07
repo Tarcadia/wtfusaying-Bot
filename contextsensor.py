@@ -42,7 +42,7 @@ logger.info('Context Sensor Loaded');
 # contextsensor = new()
 # 初始化一个contextsensor
 def new(
-    contextcout         : int   = 20,
+    contextcount        : int   = 20,
     contextfilter               = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v', 'eng'),
     contextmethod               = 'tfidf',
     contextwei          : bool  = False,
@@ -50,7 +50,7 @@ def new(
     alpha               : float = 1
     ):
     _contextsensor = {
-        'contextcount'  : contextcout,
+        'contextcount'  : contextcount,
         'contextfilter' : contextfilter,
         'contextmethod' : contextmethod,
         'contextwei'    : contextwei,
