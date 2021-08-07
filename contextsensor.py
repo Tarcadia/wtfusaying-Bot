@@ -133,30 +133,61 @@ def push(cs: dict, msg: str = '', t: int = None):
 # topicvector = topic(contextsensor, time)
 # 在time时刻对context向量求与topic特征向量相关性
 # 计算得到topic空间上的向量组
-def topics(cs: dict, t: int = None):
-    if t == None:
+def topics(cs: dict, context: dict = None, t: int = None):
+    if context == None and t == None:
         t = time.time();
-    _result = [];
-    for _topic in cs['topics']:
-        _v = 0;
-        _s = 0;
-        for _k in cs['context']:
-            if _k in _topic['vec']:
-                _v += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']) * _topic['vec'][_k];
-        if _topic['sum'] == 0:
-            _result.append(1);
-        else:
-            _result.append(_v / _topic['sum']);
-    return _result;
+        _result = [];
+        for _topic in cs['topics']:
+            _v = 0;
+            _s = 0;
+            for _k in cs['context']:
+                if _k in _topic['vec']:
+                    _v += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']) * _topic['vec'][_k];
+            if _topic['sum'] == 0:
+                _result.append(1);
+            else:
+                _result.append(_v / _topic['sum']);
+        return _result;
+    elif context == None and t != None:
+        _result = [];
+        for _topic in cs['topics']:
+            _v = 0;
+            _s = 0;
+            for _k in cs['context']:
+                if _k in _topic['vec']:
+                    _v += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']) * _topic['vec'][_k];
+            if _topic['sum'] == 0:
+                _result.append(1);
+            else:
+                _result.append(_v / _topic['sum']);
+        return _result;
+    elif context != None and t == None:
+        _result = [];
+        for _topic in cs['topics']:
+            _v = 0;
+            _s = 0;
+            for _k in context:
+                if _k in _topic['vec']:
+                    _v += context[_k]['v'] * _topic['vec'][_k];
+                if _topic['sum'] == 0:
+                    _result.append(1);
+                else:
+                    _result.append(_v / _topic['sum']);
+            return _result;
 
 # tid = topic(contextsensor, time)
 # 在time时刻计算得到当前的topic的估计
 # 多个并列则返回第一个
-def topic(cs: dict, t: int = None):
-    if t == None:
-        t = time.time();
-    _topics = topics(cs, t);
-    return _topics.index(max(_topics));
+def topic(cs: dict, context: dict = None, t: int = None):
+    if context == None and t == None:
+        _topics = topics(cs);
+        return _topics.index(max(_topics));
+    elif context == None and t != None:
+        _topics = topics(cs, t = t);
+        return _topics.index(max(_topics));
+    elif context != None and t == None:
+        _topics = topics(cs, context = context, t = t);
+        return _topics.index(max(_topics));
 
 # contextsensor = updatetopic(contextsensor, tid, time)
 # 在time时刻监督学习contextsensor的topic符合tid所指的topic
@@ -166,7 +197,7 @@ def updatetopic_ver1(cs: dict, tid: int = None, t: int = None):
     if t == None:
         t = time.time();
     if tid == None:
-        tid = topic(cs, t);
+        tid = topic(cs, t = t);
     elif tid == -1:
         return cs;
     _contexts = list(cs['context'].keys());
@@ -193,7 +224,7 @@ def updatetopic_ver2(cs: dict, tid: int = None, t: int = None):
     if t == None:
         t = time.time();
     if tid == None:
-        tid = topic(cs, t);
+        tid = topic(cs, t = t);
     elif tid == -1:
         return cs;
     _contexts = list(cs['context'].keys());
@@ -226,7 +257,7 @@ def updatetopic(cs: dict, tid: int = None, t: int = None):
     if t == None:
         t = time.time();
     if tid == None:
-        tid = topic(cs, t);
+        tid = topic(cs, t = t);
     elif tid == -1:
         return cs;
     _contexts = list(cs['context'].keys());
