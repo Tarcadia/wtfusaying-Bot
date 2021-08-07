@@ -5,7 +5,7 @@ import jieba.posseg;
 import logging
 import time;
 
-VERSION = 'v20210804';
+VERSION = 'v20210807';
 
 logger = logging.getLogger(__name__);
 logger.setLevel(logging.DEBUG);
