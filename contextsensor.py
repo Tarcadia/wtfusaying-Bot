@@ -43,8 +43,8 @@ logger.info('Context Sensor Loaded');
 # 初始化一个contextsensor
 def new(
     contextcount        : int   = 20,
-    contextfilter               = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v', 'eng'),
-    contextmethod               = 'tfidf',
+    contextfilter       : tuple = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v', 'eng'),
+    contextmethod       : str   = 'tfidf',
     contextwei          : bool  = False,
     tau                 : float = 360,
     alpha               : float = 1
