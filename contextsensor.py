@@ -126,7 +126,7 @@ def push(cs: dict, vec: dict or set or list = dict(), t: float = None):
                 _q['v'] = 1;
                 _q['t'] = t;
                 cs['context'][_key] = _q;
-
+    return cs;
 
 # contextsensor = update(contextsensor, message, time)
 # 在time时刻向contextsensor中加入一条message
