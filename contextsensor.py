@@ -168,7 +168,7 @@ def topics(cs: dict, context: dict = None, t: int = None):
             _s = 0;
             for _k in context:
                 if _k in _topic['vec']:
-                    _v += context[_k]['v'] * _topic['vec'][_k];
+                    _v += context[_k] * _topic['vec'][_k];
                 if _topic['sum'] == 0:
                     _result.append(1);
                 else:
