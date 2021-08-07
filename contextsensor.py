@@ -125,12 +125,12 @@ def push(cs: dict, msg: str = '', t: float = None):
     for _k, _w in _keys:
         if _k in cs['context']:
             _q = cs['context'].pop(_k);
-            _q['v'] = _q['v'] * pow(2, cs['alpha'] * (_q['t'] - t) / cs['contextwin']) + _w;
+            _q['v'] = _q['v'] * pow(2, cs['alpha'] * (_q['t'] - t) / cs['contextwin']) + 1;
             _q['t'] = t;
             cs['context'][_k] = _q;
         else:
             _q = dict();
-            _q['v'] = _w;
+            _q['v'] = 1;
             _q['t'] = t;
             cs['context'][_k] = _q;
     _contexts = list(cs['context'].keys());
