@@ -186,7 +186,7 @@ def topic(cs: dict, context: dict = None, t: int = None):
         _topics = topics(cs, t = t);
         return _topics.index(max(_topics));
     elif context != None and t == None:
-        _topics = topics(cs, context = context, t = t);
+        _topics = topics(cs, context = context);
         return _topics.index(max(_topics));
 
 # contextsensor = updatetopic(contextsensor, tid, time)
