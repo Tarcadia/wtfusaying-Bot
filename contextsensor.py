@@ -2,7 +2,7 @@
 import jieba;
 import jieba.analyse;
 import jieba.posseg;
-import logging
+import logging;
 import time;
 
 VERSION = 'v20210804';
