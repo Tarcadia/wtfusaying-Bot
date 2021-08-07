@@ -169,10 +169,10 @@ def topics(cs: dict, context: dict = None, t: int = None):
             for _k in context:
                 if _k in _topic['vec']:
                     _v += context[_k] * _topic['vec'][_k];
-                if _topic['sum'] == 0:
-                    _result.append(1);
-                else:
-                    _result.append(_v / _topic['sum']);
+            if _topic['sum'] == 0:
+                _result.append(1);
+            else:
+                _result.append(_v / _topic['sum']);
         return _result;
 
 # tid = topic(contextsensor, time)
