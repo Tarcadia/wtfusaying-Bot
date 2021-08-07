@@ -36,6 +36,7 @@ logger.info('Sentence Generator Loaded');
 #   [
 #       {
 #           'sum'                       : float,                // 特征向量的和
+#           'bia'                       : float,                // 特征向量的偏移
 #           'vec'[<key>]                : dict{float}           // 单个topic的特征向量，用dict来实现稀疏输入的向量乘法
 #       }
 #   ]
@@ -59,7 +60,7 @@ def new(
         'contextmethod' : contextmethod,
         'alpha'         : alpha,
         'context'       : dict(),
-        'topics'        : [{'sum' : 0, 'vec' : dict()} for _ in range(topicdim)]
+        'topics'        : [{'sum' : 0, 'bia':0, 'vec' : dict()} for _ in range(topicdim)]
     };
     return _contextsensor;
 
@@ -82,6 +83,7 @@ def addtopic(cs: dict, vec: dict, count: int = 1):
     if type(vec) == dict and not vec == dict():
         _topic = {
             'sum'       : sum([vec[_k] for _k in vec]),
+            'bia'       : 0,
             'vec'       : vec
         };
         cs['topicdim'] += 1;
@@ -89,6 +91,7 @@ def addtopic(cs: dict, vec: dict, count: int = 1):
     elif (type(vec) == list or type(vec) == set) and not (vec == [] or vec == {}):
         _topic = {
             'sum'       : len(vec),
+            'bia'       : 0,
             'vec'       : {_k : 1 for _k in vec}
         };
         cs['topicdim'] += 1;
@@ -97,6 +100,7 @@ def addtopic(cs: dict, vec: dict, count: int = 1):
         for _i in range(count):
             _topic = {
                 'sum'   : 0,
+                'bia'   : 0,
                 'vec'   : dict()
             };
             cs['topics'].append(_topic);
@@ -145,14 +149,13 @@ def topics(cs: dict, context: dict = None, t: float = None):
         _result = [];
         for _topic in cs['topics']:
             _v = 0;
-            _s = 0;
             for _k in cs['context']:
                 if _k in _topic['vec']:
                     _v += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']) * _topic['vec'][_k];
             if _topic['sum'] == 0:
                 _result.append(1);
             else:
-                _result.append(_v / _topic['sum']);
+                _result.append((_v + _topic['bia']) / _topic['sum']);
         return _result;
     elif context == None and t != None:
         _result = [];
@@ -165,7 +168,7 @@ def topics(cs: dict, context: dict = None, t: float = None):
             if _topic['sum'] == 0:
                 _result.append(1);
             else:
-                _result.append(_v / _topic['sum']);
+                _result.append((_v + _topic['bia']) / _topic['sum']);
         return _result;
     elif context != None and t == None:
         _result = [];
@@ -178,7 +181,7 @@ def topics(cs: dict, context: dict = None, t: float = None):
             if _topic['sum'] == 0:
                 _result.append(1);
             else:
-                _result.append(_v / _topic['sum']);
+                _result.append((_v + _topic['bia']) / _topic['sum']);
         return _result;
 
 # tid = topic(contextsensor, time)
@@ -211,7 +214,7 @@ def updatetopic_ver1(cs: dict, tid: int = None, t: float = None):
     while _i < len(_contexts) and t - cs['context'][_contexts[_i]]['t'] > cs['contextwin']:
         cs['context'].pop(_contexts[_i]);
         _i += 1;
-    _s = 0;
+    _s = 1;
     for _k in cs['context']:
         if _k in cs['topics'][tid]['vec']:
             cs['topics'][tid]['vec'][_k] += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
@@ -220,6 +223,7 @@ def updatetopic_ver1(cs: dict, tid: int = None, t: float = None):
             cs['topics'][tid]['vec'][_k] = cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
             _s += cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']);
     cs['topics'][tid]['sum'] += _s;
+    cs['topics'][tid]['bia'] += 1;
     return cs;
 
 # contextsensor = updatetopic(contextsensor, tid, time)
