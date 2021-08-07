@@ -63,6 +63,12 @@ def new(
     };
     return _contextsensor;
 
+# contextvec = context(contextsensor, time)
+# 获取time时的context向量
+def context(cs: dict, t: float = None):
+    _v = {_k : cs['context'][_k]['v'] * pow(2, cs['alpha'] * (cs['context'][_k]['t'] - t) / cs['contextwin']) for _k in cs['context']};
+    return _v;
+
 # contextsensor = clearcontext(contextsensor)
 # 清除context，可以在原topic基础上继续操作
 def clearcontext(cs: dict):
@@ -100,7 +106,7 @@ def addtopic(cs: dict, vec: dict, count: int = 1):
 # contextsensor = push(contextsensor, message, time)
 # 在time时刻向contextsensor中加入一条message
 # 将会将message提取出tag加入context队列
-def push(cs: dict, msg: str = '', t: int = None):
+def push(cs: dict, msg: str = '', t: float = None):
     if t == None:
         t = time.time();
     if cs['contextmethod'] == 'all':
@@ -133,7 +139,7 @@ def push(cs: dict, msg: str = '', t: int = None):
 # topicvector = topic(contextsensor, time)
 # 在time时刻对context向量求与topic特征向量相关性
 # 计算得到topic空间上的向量组
-def topics(cs: dict, context: dict = None, t: int = None):
+def topics(cs: dict, context: dict = None, t: float = None):
     if context == None and t == None:
         t = time.time();
         _result = [];
@@ -178,7 +184,7 @@ def topics(cs: dict, context: dict = None, t: int = None):
 # tid = topic(contextsensor, time)
 # 在time时刻计算得到当前的topic的估计
 # 多个并列则返回第一个
-def topic(cs: dict, context: dict = None, t: int = None):
+def topic(cs: dict, context: dict = None, t: float = None):
     if context == None and t == None:
         _topics = topics(cs);
         return _topics.index(max(_topics));
@@ -193,7 +199,7 @@ def topic(cs: dict, context: dict = None, t: int = None):
 # 在time时刻监督学习contextsensor的topic符合tid所指的topic
 # 在time时刻将contextsensor的context向量加入tid所指的topic的特征向量中
 # 维护topic的特征向量的sum
-def updatetopic_ver1(cs: dict, tid: int = None, t: int = None):
+def updatetopic_ver1(cs: dict, tid: int = None, t: float = None):
     if t == None:
         t = time.time();
     if tid == None:
@@ -220,7 +226,7 @@ def updatetopic_ver1(cs: dict, tid: int = None, t: int = None):
 # 在time时刻监督学习contextsensor的topic符合tid所指的topic
 # 在time时刻将contextsensor的context向量加入tid所指的topic的特征向量中
 # 维护topic的特征向量的sum
-def updatetopic_ver2(cs: dict, tid: int = None, t: int = None):
+def updatetopic_ver2(cs: dict, tid: int = None, t: float = None):
     if t == None:
         t = time.time();
     if tid == None:
@@ -253,7 +259,7 @@ def updatetopic_ver2(cs: dict, tid: int = None, t: int = None):
 # 在time时刻监督学习contextsensor的topic符合tid所指的topic
 # 在time时刻将contextsensor的context向量加入tid所指的topic的特征向量中
 # 维护topic的特征向量的sum
-def updatetopic(cs: dict, tid: int = None, t: int = None):
+def updatetopic(cs: dict, tid: int = None, t: float = None):
     if t == None:
         t = time.time();
     if tid == None:
