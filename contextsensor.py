@@ -265,7 +265,7 @@ def updatetopic(cs: dict, tid: int = None, t: int = None):
     while _i < len(_contexts) and t - cs['context'][_contexts[_i]]['t'] > cs['contextwin']:
         cs['context'].pop(_contexts[_i]);
         _i += 1;
-    _topics = topics(cs, t);
+    _topics = topics(cs, t = t);
     for _tid in range(cs['topicdim']):
         if _tid == tid:
             _p = _topics[_tid] + 3;
