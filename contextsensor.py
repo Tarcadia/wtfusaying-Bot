@@ -14,7 +14,7 @@ logger_ch.setLevel(logging.DEBUG);
 logger_formatter = logging.Formatter(fmt='[%(asctime)s][%(name)s][%(levelname)s] >> %(message)s', datefmt='%Y%m%d-%H%M%S');
 logger_ch.setFormatter(logger_formatter);
 logger.addHandler(logger_ch);
-logger.info('Sentence Generator Loaded');
+logger.info('Context Sensor Loaded');
 
 # contextsensor         : dict
 # {
