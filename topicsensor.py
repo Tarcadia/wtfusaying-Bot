@@ -1,7 +1,6 @@
 
 import math;
 import json
-from operator import mul;
 import os;
 import logging
 
