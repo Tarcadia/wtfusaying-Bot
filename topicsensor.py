@@ -19,6 +19,7 @@ logger.info('Topic Sensor Loaded');
 # topicsensor           : dict
 # {
 #   memorypath          : str,          // 数据存储的路径，应当保证文件的可访问性以实现定期的数据存储
+#   recyclepath         : str,          // 数据回收站的路径，应当保证文件的可访问性以实现定期的数据存储
 #   topiccount          : int           // topic的个数
 #   topics[]            : list[]{dict}  // topic向量的列表
 #   [
@@ -42,11 +43,13 @@ logger.info('Topic Sensor Loaded');
 # 初始化一个topicsensor
 def new(
     memorypath          : str   = '',
+    recyclepath         : str   = '',
     topiccount          : int   = 32
     ):
 
     _topicsensor = {
         'memorypath'    : memorypath,
+        'recyclepath'    : recyclepath,
         'topiccount'    : 0,
         'topics'        : []
     };
@@ -118,6 +121,30 @@ def extend(ts: dict, n: int):
             'vec'       : dict()
         };
         ts['topics'].append(_topic);
+    return ts;
+
+# topicsensor = extend(topicsensor, n)
+# 将topicsensor中tid所指的topic放入回收站
+def waste(ts: dict, tid: int):
+    _topic = ts['topics'].pop(tid);
+
+    if os.path.isfile(ts['recyclepath']):
+
+        _fp = open(ts['recyclepath'], mode = 'r', encoding = 'utf-8');
+        _topics = json.load(_fp);
+        _fp.close();
+
+        _topics.append(_topic);
+
+        _fp = open(ts['recyclepath'], mode = 'w', encoding = 'utf-8');
+        json.dump(_topics, _fp, ensure_ascii = False, indent = 4);
+        _fp.close();
+
+    else:
+        _fp = open(ts['recyclepath'], mode = 'w', encoding = 'utf-8');
+        json.dump([_topic], _fp, ensure_ascii = False, indent = 4);
+        _fp.close();
+
     return ts;
 
 # topicsensor = add(topicsensor, tid, k, vec)
