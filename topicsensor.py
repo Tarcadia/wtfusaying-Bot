@@ -64,7 +64,7 @@ def new(
         _topicsensor['topiccount'] = topiccount;
     
     elif os.path.isfile(memorypath):
-        _fp = open(memorypath);
+        _fp = open(memorypath, mode = 'r', encoding = 'utf-8');
         _topics = json.load(_fp);
         _fp.close();
         _topicsensor['topiccount'] = len(_topics);
@@ -94,6 +94,7 @@ def save(ts):
 # topicsensor = extend(topicsensor, n)
 # 将topicsensor的topic清空
 def clear(ts: dict):
+    ts['topics'] = [];
     for _i in range(ts['topiccount']):
         _topic = {
             'sum'       : 0,
@@ -223,7 +224,10 @@ def norm(vec: dict or set or list):
     if type(vec) == set or type(vec) == list:
         vec = {_k : 1 for _k in vec};
     _sqs = sum([vec[_k] * vec[_k] for _k in vec]);
-    vec = {_k : math.sqrt(_sqs) * vec[_k] for _k in vec};
+    if _sqs != 0:
+        vec = {_k : vec[_k] / math.sqrt(_sqs) for _k in vec};
+    else:
+        vec = {_k : 0 for _k in vec};
     return vec;
 
 # vector = topic(topicsensor, tid)
@@ -245,7 +249,10 @@ def mult(ts: dict, tid: int, vec: dict or set or list):
     if type(vec) == set or type(vec) == list:
         vec = {_k : 1 for _k in vec};
     _s = sum([ts['topics'][tid]['vec'][_k] * vec[_k] for _k in vec if _k in ts['topics'][tid]['vec']]);
-    _s = _s / ts['topics'][tid]['sqs'];
+    if ts['topics'][tid]['sqs'] != 0:
+        _s = _s / ts['topics'][tid]['sqs'] + ts['topics'][tid]['bia'];
+    else:
+        _s = ts['topics'][tid]['bia'];
     return _s;
 
 # [vi]*topiccount = match(topicsensor, vector)
@@ -259,6 +266,6 @@ def match(ts: dict, tid: int, vec: dict or set or list):
 def matches(ts: dict, vec: dict or set or list):
     _val = [0] * ts['topiccount'];
     _vec = norm(vec);
-    for _i in ts['topiccount']:
+    for _i in range(ts['topiccount']):
         _val[_i] = mult(ts, _i, _vec);
     return _val;
