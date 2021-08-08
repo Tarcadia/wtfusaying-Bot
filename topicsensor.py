@@ -92,6 +92,20 @@ def save(ts):
     return ts;
 
 # topicsensor = extend(topicsensor, n)
+# 将topicsensor的topic清空
+def clear(ts: dict):
+    for _i in range(ts['topiccount']):
+        _topic = {
+            'sum'       : 0,
+            'sqs'       : 0,
+            'cnt'       : 0,
+            'bia'       : 0,
+            'vec'       : dict()
+        };
+        ts['topics'].append(_topic);
+    return ts;
+
+# topicsensor = extend(topicsensor, n)
 # 将topicsensor的topic增加n
 def extend(ts: dict, n: int):
     for _i in range(n):
