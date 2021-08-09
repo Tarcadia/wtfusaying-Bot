@@ -55,9 +55,10 @@ def new(
         'session'       : '',
         'state'         : 'None',
         'sync_id'       : -1,
-        'send'          : [],
-        'sending'       : [],
-        'failed'        : [],
+        'send'          : dict(),
+        'sending'       : dict(),
+        'failed'        : dict(),
+        'succed'        : dict(),
         'recv'          : []
     }
     return mm;
