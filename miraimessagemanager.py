@@ -100,7 +100,10 @@ def close(mm):
 # messagemanager = open(messagemanager)
 # 对一个messagemanager进行一次接收轮询
 def recv(mm):
-    _frame = mm['websocket'].recv_frame();
+    try:
+        _frame = mm['websocket'].recv_frame();
+    except:
+        pass;
     if _frame:
         if _frame.opcode in {wsabnf.ABNF.OPCODE_TEXT, wsabnf.ABNF.OPCODE_BINARY, wsabnf.ABNF.OPCODE_CONT}:
             mm['websocket'].cont_frame.validate(_frame);
