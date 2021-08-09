@@ -71,7 +71,7 @@ def open(mm):
 
     _uri = 'ws://' + mm['remote_host'] + '/message?' + 'verifyKey=' + mm['verify_key'] + '&qq=' + mm['verify_qq'];
     mm['websocket'].connect(_uri, timeout = mm['timeout']);
-    mm['websocket'].settimeout(0);
+    mm['websocket'].settimeout(0.1);
     _recv = mm['websocket'].recv();
     _auth = json.loads(_recv);
     if _auth['data']['code'] == 0:
