@@ -189,13 +189,6 @@ def pop(mm):
     return mm, data;
 
 # messagemanager = open(messagemanager)
-# 对一个messagemanager的接收队列进行全pop的迭代器
-def pops(mm):
-    while len(mm['recv']) > 0:
-        data = mm['recv'].pop(0);
-        yield mm, data;
-
-# messagemanager = open(messagemanager)
 # 对一个messagemanager的反馈队列pop一个元素，无消息返回None
 def ans(mm, syncid):
     if syncid in mm['succed']:
