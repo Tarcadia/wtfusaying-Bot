@@ -44,7 +44,8 @@ def new(
     remote_host         : str = 'localhost:8080',
     timeout             : float = 3,
     verify_qq           : str = '',
-    verify_key          : str = 'INITKEYxxxxxxxx'
+    verify_key          : str = 'INITKEYxxxxxxxx',
+    buffer_size         : int = 1024
     ):
     mm = {
         'remote_host'   : remote_host,
@@ -55,6 +56,7 @@ def new(
         'session'       : '',
         'state'         : 'None',
         'sync_id'       : -1,
+        'buffer_size'   : buffer_size,
         'send'          : dict(),
         'sending'       : dict(),
         'failed'        : dict(),
@@ -113,14 +115,14 @@ def recv(mm):
                 _opcode, _recv = mm['websocket'].cont_frame.extract(_frame);
                 if _opcode in {wsabnf.ABNF.OPCODE_TEXT}:
                     try:
-                        _data = json.loads(_recv);
+                        _data = json.loads(_recv.data);
                         if _data['syncId'] in {None, '', '-1', -1}:
                             mm['recv'].append(_data);
                         else:
                             mm['sending'].pop(int(_data['syncId']));
                             mm['succed']['syncId'] = _data;
                     except:
-                        logger.error('Invalid text frame');
+                        logger.error('Invalid text frame %s' % _recv);
                 else:
                     logger.error('Invalid binary frame');
         
