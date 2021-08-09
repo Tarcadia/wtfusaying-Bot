@@ -179,12 +179,33 @@ def update(mm):
         mm = trim(mm);
     return mm;
 
+# messagemanager = open(messagemanager)
+# 对一个messagemanager的接收队列pop一个元素，无消息返回None
 def pop(mm):
-    return;
+    if len(mm['recv']) > 0:
+        data = mm['recv'].pop(0);
+    else:
+        data = None;
+    return mm, data;
 
-def ans(mm):
-    return;
+# messagemanager = open(messagemanager)
+# 对一个messagemanager的接收队列进行全pop的迭代器
+def pops(mm):
+    while len(mm['recv']) > 0:
+        data = mm['recv'].pop(0);
+        yield mm, data;
 
+# messagemanager = open(messagemanager)
+# 对一个messagemanager的反馈队列pop一个元素，无消息返回None
+def ans(mm, syncid):
+    if syncid in mm['succed']:
+        data = mm['succed'].pop(syncid);
+    else:
+        data = None;
+    return mm, data;
+
+# messagemanager = open(messagemanager)
+# 对一个messagemanager的发送队列push一个元素
 def push(mm, data):
     if mm['state'] == 'Opened':
         data['syncId'] = mm['sync_id'];
