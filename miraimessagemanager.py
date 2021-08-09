@@ -70,7 +70,12 @@ def open(mm):
     mm['state'] = 'Opening';
 
     _uri = 'ws://' + mm['remote_host'] + '/message?' + 'verifyKey=' + mm['verify_key'] + '&qq=' + mm['verify_qq'];
-    mm['websocket'].connect(_uri, timeout = mm['timeout']);
+    try:
+        mm['websocket'].connect(_uri, timeout = mm['timeout']);
+    except:
+        mm['state'] = 'Failed';
+        logger.error('Log in timeout');
+        return mm;
     mm['websocket'].settimeout(0.1);
     _recv = mm['websocket'].recv();
     _auth = json.loads(_recv);
@@ -79,7 +84,7 @@ def open(mm):
         mm['session'] = _auth['data']['session'];
         mm['state'] = 'Opened';
     else:
-        logger.info('Log in failed with code: %d' % mm['state_code']);
+        logger.error('Log in failed with code: %d' % mm['state_code']);
         mm['state'] = 'Failed';
     return mm;
 
