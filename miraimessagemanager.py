@@ -103,7 +103,7 @@ def recv(mm):
     try:
         _frame = mm['websocket'].recv_frame();
     except:
-        pass;
+        return mm;
     if _frame:
         if _frame.opcode in {wsabnf.ABNF.OPCODE_TEXT, wsabnf.ABNF.OPCODE_BINARY, wsabnf.ABNF.OPCODE_CONT}:
             mm['websocket'].cont_frame.validate(_frame);
