@@ -74,8 +74,7 @@ def open(mm):
     mm['websocket'].settimeout(0);
     _recv = mm['websocket'].recv();
     _auth = json.loads(_recv);
-    mm['state_code'] = _auth['data']['code'];
-    if mm['state_code'] == 0:
+    if _auth['data']['code'] == 0:
         logger.info('Log in success');
         mm['session'] = _auth['data']['session'];
         mm['state'] = 'Opened';
