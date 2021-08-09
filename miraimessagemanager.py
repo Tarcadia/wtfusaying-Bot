@@ -70,7 +70,7 @@ def open(mm):
     mm['state'] = 'Opening';
 
     _uri = 'ws://' + mm['remote_host'] + '/message?' + 'verifyKey=' + mm['verify_key'] + '&qq=' + mm['verify_qq'];
-    mm['websocket'] = ws.connect(_uri, timeout = mm['timeout']);
+    mm['websocket'].connect(_uri, timeout = mm['timeout']);
     mm['websocket'].settimeout(0);
     _recv = mm['websocket'].recv();
     _auth = json.loads(_recv);
