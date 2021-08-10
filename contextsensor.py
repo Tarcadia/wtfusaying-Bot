@@ -163,7 +163,7 @@ class ContextSensor:
 
     def __init__(self) -> None:
         self._cs = new();
-        return self;
+        return;
 
     def clear(self) -> None:
         self._cs = clear(self._cs);
