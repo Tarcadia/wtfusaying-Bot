@@ -1,5 +1,5 @@
 
-import json
+import json;
 import websocket as ws;
 import websocket._abnf as wsabnf;
 import logging;
