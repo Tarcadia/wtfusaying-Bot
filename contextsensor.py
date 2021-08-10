@@ -168,14 +168,8 @@ class ContextSensor:
     def clear(self) -> None:
         self._cs = clear(self._cs);
 
-    def get(self, t: float = None):
-        self._cs = get(self._cs, t = t);
-    
-    def pop(self, t: float = None):
-        self._cs = pop(self._cs, t = t);
-    
-    def push(self, vec: dict = dict(), t: float = None):
-        self._cs = push(self._cs, vec = vec, t = t);
+    def get(self, t: float = None) -> dict:
+        return get(self._cs, t = t);
     
     def update(self, msg: str = '', t: float = None):
         self._cs = update(self._cs, msg = msg, t = t);
