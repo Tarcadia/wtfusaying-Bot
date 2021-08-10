@@ -211,6 +211,8 @@ def ans(mm, syncid):
 # 对一个messagemanager的发送队列push一个元素
 def push(mm, data):
     if mm['state'] == 'Opened':
+        if data == None:
+            data = {};
         data['syncId'] = mm['sync_id'];
         data['data']['sessionKey'] = mm['session'];
         mm['sync_id'] += 1;
