@@ -1,4 +1,5 @@
 
+from _typeshed import Self
 import jieba;
 import jieba.analyse;
 import jieba.posseg;
@@ -93,9 +94,7 @@ def pop(cs: dict, t: float = None):
     return cs;
 
 # contextsensor = push(contextsensor, contextvec, time)
-# 在time时刻向contextsensor中加入一条message
-# 将会将message提取出tag加入context队列
-# time时刻默认为调用时刻
+# 在time时刻向contextsensor中加入一个contextvector
 def push(cs: dict, vec: dict or set or list = dict(), t: float = None):
     
     if t == None:
@@ -156,3 +155,27 @@ def update(cs: dict, msg: str = '', t: float = None):
     cs = push(cs, _vec, t);
     cs = pop(cs, t);
     return cs;
+
+
+class ContextSensor:
+
+    _cs = None;
+
+    def __init__(self) -> None:
+        self._cs = new();
+        return self;
+
+    def clear(self) -> None:
+        self._cs = clear(self._cs);
+
+    def get(self, t: float = None):
+        self._cs = get(self._cs, t = t);
+    
+    def pop(self, t: float = None):
+        self._cs = pop(self._cs, t = t);
+    
+    def push(self, vec: dict = dict(), t: float = None):
+        self._cs = push(self._cs, vec = vec, t = t);
+    
+    def update(self, msg: str = '', t: float = None):
+        self._cs = update(self._cs, msg = msg, t = t);
