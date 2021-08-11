@@ -1,5 +1,4 @@
 
-from _typeshed import Self
 import jieba;
 import jieba.analyse;
 import jieba.posseg;
