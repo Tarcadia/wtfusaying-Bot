@@ -159,8 +159,6 @@ def update(cs: dict, msg: str = '', t: float = None):
 
 class ContextSensor:
 
-    _cs = None;
-
     def __init__(self) -> None:
         self._cs = new();
         return;
