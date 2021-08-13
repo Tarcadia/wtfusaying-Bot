@@ -228,7 +228,7 @@ def do_send(mm):
             if len(mm['buffer_send']) > 0:
                 _data = mm['buffer_send'].pop(0);
             else:
-                _data = None;
+                return mm;
         
         if _data:
             _buffback = None;
@@ -237,19 +237,18 @@ def do_send(mm):
                     if mm['state'] == 'Opened':
                         _send = json.dumps(_data);
                         mm['websocket'].send(_send);
-                        return mm;
                     else:
                         _buffback = _data;
                 except ws.WebSocketConnectionClosedException:
+                    _buffback = _data;
                     mm['state'] = 'Closing';
                     mm['websocket'].close();
                     mm['state'] = 'Closed';
                     logger.error('Invalid connection');
-                    return mm;
                 except:
+                    _buffback = _data;
                     mm['state'] = 'Failed';
                     logger.error('Send failed');
-                    return mm;
             
             if _buffback:
                 with mm['buffer_lock']:
