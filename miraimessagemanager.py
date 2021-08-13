@@ -363,6 +363,7 @@ class MiraiMessageManager:
         self,
         host            : str = 'localhost:8080',
         timeout         : float = 3,
+        socktimeout     : float = 0.3,
         verify_qq       : str = '',
         verify_key      : str = 'INITKEYxxxxxxxx',
         buffer_size     : int = 1024
@@ -379,6 +380,7 @@ class MiraiMessageManager:
         self._mm = new(
             host = host,
             timeout = timeout,
+            socktimeout = socktimeout,
             verify_qq = verify_qq,
             verify_key = verify_key,
             buffer_size = buffer_size
@@ -389,6 +391,7 @@ class MiraiMessageManager:
         self,
         host            : str = None,
         timeout         : float = None,
+        socktimeout     : float = None,
         verify_qq       : str = None,
         verify_key      : str = None,
         buffer_size     : int = None
@@ -398,6 +401,7 @@ class MiraiMessageManager:
             self._mm,
             host = host,
             timeout = timeout,
+            socktimeout = socktimeout,
             verify_qq = verify_qq,
             verify_key = verify_key,
             buffer_size = buffer_size
