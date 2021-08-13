@@ -496,6 +496,8 @@ class MiraiMessageManager:
         if self.state == 'Opened':
             self._th_recv_polling.start();
             self._th_send_polling.start();
+            while time.time() - _time_start < self._mm['timeout'] and not self._on_recv_polling and not self._on_send_polling:
+                pass;
             return [self._th_recv_polling, self._th_send_polling, self._th_conn_polling];
         else:
             self._on_conn_polling = False;
