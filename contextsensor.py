@@ -158,7 +158,15 @@ def update(cs: dict, msg: str = '', t: float = None):
 
 class ContextSensor:
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        contextcount    : int   = 20,
+        contextfilter   : tuple = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v', 'eng'),
+        contextmethod   : str   = 'tfidf',
+        contextwei      : bool  = False,
+        tau             : float = 360,
+        alpha           : float = 1
+    ) -> None:
         self._cs = new();
         return;
 
