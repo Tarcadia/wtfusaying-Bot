@@ -109,15 +109,16 @@ def set(
 def open(mm):
 
     with mm['connlock']:
-        if mm['state'] in {'None', 'Closed'}:
+        _state = mm['state']
+        if _state in {'None', 'Closed'}:
             mm['state'] = 'Opening';
             _header = {'connection': 'keep-alive', 'user-agent': BOT_AGENT};
             _url = '/bot' + mm['token'];
             try:
                 _cmd = '/getMe';
-                if mm['state'] in {'None'}:
+                if _state in {'None'}:
                     mm['connection'] = htpc.HTTPSConnection(host = TELEGRAM_HOST, timeout = mm['timeout']);
-                elif mm['state'] in {'Closed'}:
+                elif _state in {'Closed'}:
                     mm['connection'].connect();
                 mm['connection'].request('GET', _url + _cmd, headers = _header);
                 _resp = mm['connection'].getresponse();
