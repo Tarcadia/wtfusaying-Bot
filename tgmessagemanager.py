@@ -123,6 +123,7 @@ def open(mm):
                 _resp = mm['connection'].getresponse();
                 _code = _resp.status;
             except:
+                logger.error('Log in failed');
                 mm['state'] = 'Failed';
                 return mm;
             
