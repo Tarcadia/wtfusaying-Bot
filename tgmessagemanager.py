@@ -1,4 +1,5 @@
 
+from contextsensor import update
 import random;
 import json;
 import time;
@@ -33,7 +34,7 @@ BOT_AGENT = 'Bot';
 #   'connlock'          : RLock,        // 链接访问锁，包括链接实例的访问，修改和模块对外呈现的state的访问和修改
 #   'connection'        : httpsconn,    // 链接HTTPSConnection实例
 #   'state'             : str,          // 链接状态，'None' | 'Opening' | 'Opened' | 'Failed' | 'Closing' | 'Closed'
-#   'upd_id'            : int,          // 更新id，保留不实现，因为本来也不知道是多少
+#   'upd_id'            : int,          // 更新id
 #
 #   # 消息缓存队列
 #   'buffer_size'       : int = 1024,   // 缓存大小
@@ -155,7 +156,7 @@ def do_update(mm):
     with mm['connlock']:
         if mm['state'] == 'Opened':
             try:
-                _url = '/bot' + mm['token'] + '/getUpdates';
+                _url = '/bot' + mm['token'] + '/getUpdates?offset=' + str(mm['upd_id']);
                 _header = {'connection': 'keep-alive', 'user-agent': BOT_AGENT};
                 mm['connection'].request('GET', _url, headers = _header);
                 _resp = mm['connection'].getresponse();
@@ -198,6 +199,8 @@ def do_update(mm):
         if _data:
             upd_id = _data['update_id'];
             with mm['buffer_lock']:
+                if not upd_id in mm['buffer_recv']:
+                    mm['upd_id'] = upd_id + 1;
                 if len(mm['buffer_recv']) < mm['buffer_size']:
                     mm['buffer_recv'][upd_id] = _data;
                 else:
