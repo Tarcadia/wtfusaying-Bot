@@ -123,7 +123,8 @@ def set(
 def open(mm):
 
     with mm['wslock']:
-        if mm['state'] in {'None', 'Closed'}:
+        _state = mm['state'];
+        if _state in {'None', 'Closed'}:
             mm['state'] = 'Opening';
             _uri = 'ws://' + mm['host'] + '/all?' + 'verifyKey=' + mm['verify_key'] + '&qq=' + mm['verify_qq'];
             try:
