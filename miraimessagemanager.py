@@ -354,7 +354,6 @@ def recv(mm):
             if len(mm['buffer_recv']) > 0:
                 _recv = mm['buffer_recv'].pop(0);
                 return mm, _recv;
-        time.sleep(mm['socktimeout']);
     return mm, None;
 
 class MiraiMessageManager:
