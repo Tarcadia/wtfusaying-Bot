@@ -423,7 +423,7 @@ class TgMessageManager:
 
     def threadpolling(self):
         self._th_updt_polling = thr.Thread(
-            target = self._conn_polling,
+            target = self._updt_polling,
             name = 'Telegram Message Manager Updt Polling'
         )
 
