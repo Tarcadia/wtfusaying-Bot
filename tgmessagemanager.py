@@ -221,7 +221,7 @@ def query(mm, data: dict = None):
                     _cmd = data['command'];
                     _type = data['type'] if 'type' in data else 'application/json';
                     _body = data['content'] if 'content' in data else {};
-                    _url = '/bot' + mm['token'] + _cmd;
+                    _url = '/bot' + mm['token'] + '/' + _cmd;
                     if _type == 'application/x-www-form-urlencoded':
                         if type(_body) == str:
                             _send = _body;
