@@ -164,29 +164,34 @@ def do_recv(mm):
     time_start = time.time();
     while time.time() - time_start <= mm['timeout']:
         with mm['wslock']:
-            try:
-                if mm['state'] == 'Opened':
+            if mm['state'] == 'Opened':
+                try:
                     _recv = mm['websocket'].recv();
                     _data = json.loads(_recv);
                     _sync = _data['syncId'] if 'syncId' in _data else -1;
                     _cond = _data['data'] if 'data' in _data else {};
                     _code = _cond['code'] if 'code' in _cond else 0;
-                else:
+                
+                except ws.WebSocketTimeoutException:
+                    return mm;
+                
+                except json.JSONDecodeError:
+                    _data = None;
+                    logger.error('Invalid recv');
+                
+                except ws.WebSocketConnectionClosedException:
+                    mm['websocket'].close();
+                    mm['state'] = 'Closed';
                     logger.error('Invalid connection');
                     return mm;
-            except ws.WebSocketTimeoutException:
-                return mm;
-            except json.JSONDecodeError:
-                _data = None;
-                logger.error('Invalid recv');
-            except ws.WebSocketConnectionClosedException:
-                mm['websocket'].close();
-                mm['state'] = 'Closed';
+                
+                except:
+                    mm['state'] = 'Failed';
+                    logger.error('Recv failed');
+                    return mm;
+                
+            else:
                 logger.error('Invalid connection');
-                return mm;
-            except:
-                mm['state'] = 'Failed';
-                logger.error('Recv failed');
                 return mm;
             
             if _data:
@@ -232,25 +237,27 @@ def do_send(mm):
         if _data:
             _buffback = None;
             with mm['wslock']:
-                try:
-                    if mm['state'] == 'Opened':
+                if mm['state'] == 'Opened':
+                    try:
                         _send = json.dumps(_data);
                         mm['websocket'].send(_send);
-                    else:
-                        logger.error('Invalid connection');
+                    
+                    except ws.WebSocketConnectionClosedException:
                         _buffback = _data;
-                
-                except ws.WebSocketConnectionClosedException:
-                    _buffback = _data;
-                    mm['state'] = 'Closing';
-                    mm['websocket'].close();
-                    mm['state'] = 'Closed';
-                    logger.error('Invalid connection');
-                except:
-                    _buffback = _data;
-                    mm['state'] = 'Failed';
-                    logger.error('Send failed');
+                        mm['state'] = 'Closing';
+                        mm['websocket'].close();
+                        mm['state'] = 'Closed';
+                        logger.error('Invalid connection');
+                    
+                    except:
+                        _buffback = _data;
+                        mm['state'] = 'Failed';
+                        logger.error('Send failed');
             
+                else:
+                    logger.error('Invalid connection');
+                    _buffback = _data;
+                
             if _buffback:
                 with mm['buffer_lock']:
                     if len(mm['buffer_resp']) < mm['buffer_size']:
