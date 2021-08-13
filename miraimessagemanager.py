@@ -210,7 +210,7 @@ def do_recv(mm):
                     if len(mm['buffer_resp']) < mm['buffer_size']:
                         mm['buffer_resp'][int(_sync)] = _data;
                     else:
-                        _k = next(iter(mm['buffer_resp'].keys));
+                        _k = next(iter(mm['buffer_resp']));
                         mm['buffer_resp'].pop(_k);
                         mm['buffer_resp'][int(_sync)] = _data;
                         logger.error('Full resp buffer');
