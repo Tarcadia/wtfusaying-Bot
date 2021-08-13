@@ -237,7 +237,9 @@ def do_send(mm):
                         _send = json.dumps(_data);
                         mm['websocket'].send(_send);
                     else:
+                        logger.error('Invalid connection');
                         _buffback = _data;
+                
                 except ws.WebSocketConnectionClosedException:
                     _buffback = _data;
                     mm['state'] = 'Closing';
