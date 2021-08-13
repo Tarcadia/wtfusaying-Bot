@@ -255,10 +255,8 @@ def do_send(mm):
                 with mm['buffer_lock']:
                     if len(mm['buffer_resp']) < mm['buffer_size']:
                         mm['buffer_send'].insert(0, _buffback);
-                        logger.error('Invalid connection');
                         return mm;
                     else:
-                        logger.error('Invalid connection');
                         logger.error('Full send buffer');
                         return mm;
         else:
