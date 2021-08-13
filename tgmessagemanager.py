@@ -1,6 +1,8 @@
 
+import random;
 import json;
 import time;
+import io;
 import http.client as htpc;
 import threading as thr;
 import logging;
@@ -159,7 +161,7 @@ def do_update(mm):
                     _recv = _resp.read();
                     _pack = json.loads(_recv);
                     _ok = _pack['ok'];
-                    _datas = _pack['result'];
+                    _datas = _pack['result'] if 'result' in _pack else [];
                 else:
                     mm['state'] = 'Failed';
                     logger.error('Recv failed, with code %d' % _code);
@@ -210,11 +212,31 @@ def query(mm, data: dict = None):
         with mm['connlock']:
             if mm['state'] == 'Opened':
                 try: # SEND
-                    _cmd = data['cmd'];
-                    _type = data['type'];
-                    _body = data['body'];
+                    _cmd = data['command'];
+                    _type = data['type'] if 'type' in data else 'application/json';
+                    _body = data['content'] if 'content' in data else {};
                     _url = '/bot' + mm['token'] + _cmd;
-                    _send = json.dumps(_body);
+                    if _type == 'application/x-www-form-urlencoded':
+                        if type(_body) == str:
+                            _send = _body;
+                        elif type(_body) == dict:
+                            _send = '&'.join([_k + '=' + _body[_k] for _k in _body]);
+                        else:
+                            _send = str(_body);
+                    elif _type == 'application/json':
+                        _send = json.dumps(_body);
+                    elif _type == 'multipart/form-data' and isinstance(type(_body), io.FileIO):
+                        _name = data['name'] if 'name' in data else 'tmp';
+                        _fnam = data['filename'] if 'filename' in data else 'tmp';
+                        _ftyp = data['filetype'] if 'filetype' in data else 'application/*';
+                        _boundary = '-' + '-'.join(str(random.randint(1000000000000000, 9999999999999999))) + '---';
+                        _type = _type + '; ' + 'boundary=' + _boundary;
+                        _tag = 'Content-Disposition: form-data; name="%s"; filename="%s"' % (_name, _fnam);
+                        _tty = 'Content-Type: %s' % _ftyp;
+                        _list = ['--' + _boundary, _tag, _tty, '', _body.read(), '--' + _boundary + '--', ''];
+                        _send = '\r\n'.join(_list);
+                    else:
+                        _send = str(_body);
                     _header = {'connection': 'keep-alive', 'user-agent': BOT_AGENT, 'Content-Type': _type, 'Content-Length' : len(_send)};
                     mm['connection'].request('POST', _url, body = _send, headers = _header);
                 
@@ -412,6 +434,7 @@ class TgMessageManager:
             return [];
     
     def threadstop(self):
+        self.send({'command':'close'});
         self._on_updt_polling = False;
         self._th_updt_polling.join();
 
