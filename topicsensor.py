@@ -270,10 +270,15 @@ def pick(ts: dict, tid: int, n: int = None, k: float = None):
 # topicsensor = repara(topicsensor, tid)
 # 遍历更新sum，sqs等维护参数
 # 用于在topic多次更新后消除误差
-def repara(ts: dict, tid: int, n: int):
+def repara(ts: dict, tid: int):
     ts['topics'][tid]['sum'] = sum([ts['topics'][tid]['vec'][_k] for _k in ts['topics'][tid]['vec']]);
     ts['topics'][tid]['sqs'] = sum([ts['topics'][tid]['vec'][_k] * ts['topics'][tid]['vec'][_k] for _k in ts['topics'][tid]['vec']]);
     return ts;
+
+
+
+
+
 
 # vector = norm(vector)
 # 对vector进行归一化
@@ -326,3 +331,81 @@ def matches(ts: dict, vec: dict or set or list):
     for _i in range(ts['topiccount']):
         _val[_i] = mult(ts, _i, _vec);
     return _val;
+
+
+
+class TopicSensor:
+
+    def __init__(
+        self,
+        memorypath      : str   = '',
+        recyclepath     : str   = '',
+        topiccount      : int   = 32
+    ) -> None:
+        self._ts = new(
+            memorypath = memorypath,
+            recyclepath = recyclepath,
+            topiccount = topiccount
+        );
+        return;
+
+    def load(self):
+        self._ts = load(self._ts);
+        return;
+
+    def save(self):
+        self._ts = save(self._ts);
+        return;
+
+    def clear(self):
+        self._ts = clear(self._ts);
+        return;
+
+    def extend(self, n: int):
+        self._ts = extend(self, n = n);
+        return;
+
+    def waste(self, tid: int):
+        self._ts = waste(self._ts, tid = tid);
+        return;
+
+    def add(self, tid: int, k: float = 1, vec:dict or set or list = dict()):
+        self._ts = add(self._ts, tid = tid, k = k, vec = vec);
+        return;
+
+    def multime(self, tid: int, k: float):
+        self._ts = multime(self._ts, tid = tid, k = k);
+        return;
+
+    def shrink(self, tid: int, cntx: int):
+        self._ts = shrink(self._ts, tid = tid, cntx = cntx);
+        return;
+
+    def unify(self, tid: int):
+        self._ts = unify(self._ts, tid = tid);
+        return;
+
+    def pick(self, tid: int, n:int, k:float):
+        self._ts = pick(self._ts, tid = tid, n = n, k = k);
+        return;
+
+    def repara(self, tid: int):
+        self._ts = repara(self._ts, tid = tid);
+
+    def mult(self, tid: int, vec: dict or list or set):
+        return mult(self._ts, tid = tid, vec = vec);
+    
+    def match(self, tid: int, vec: dict or list or set):
+        return match(self._ts, tid = tid, vec = vec);
+    
+    def matches(self, vec: dict or list or set):
+        return matches(self._ts, vec = vec);
+
+    def topic(self, tid: int):
+        return topic(self._ts, tid = tid);
+
+    def keywords(self, tid: int, n: int):
+        return keywords(self._ts, tid = tid, n = n);
+    
+
+
