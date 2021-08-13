@@ -445,7 +445,6 @@ class TgMessageManager:
             return [];
     
     def threadstop(self):
-        self.send({'command':'close'});
         self._on_updt_polling = False;
         self._th_updt_polling.join();
 
