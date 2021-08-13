@@ -225,15 +225,19 @@ def query(mm, data: dict = None):
                             _send = str(_body);
                     elif _type == 'application/json':
                         _send = json.dumps(_body);
-                    elif _type == 'multipart/form-data' and isinstance(type(_body), io.FileIO):
-                        _name = data['name'] if 'name' in data else 'tmp';
-                        _fnam = data['filename'] if 'filename' in data else 'tmp';
-                        _ftyp = data['filetype'] if 'filetype' in data else 'application/*';
+                    elif _type == 'multipart/form-data' and type(_body) == list:
                         _boundary = '-' + '-'.join(str(random.randint(1000000000000000, 9999999999999999))) + '---';
-                        _type = _type + '; ' + 'boundary=' + _boundary;
-                        _tag = 'Content-Disposition: form-data; name="%s"; filename="%s"' % (_name, _fnam);
-                        _tty = 'Content-Type: %s' % _ftyp;
-                        _list = ['--' + _boundary, _tag, _tty, '', _body.read(), '--' + _boundary + '--', ''];
+                        _list = [];
+                        for _sub in _body:
+                            _name = _sub['name'] if 'name' in _sub else 'tmp';
+                            _fnam = _sub['filename'] if 'filename' in _sub else 'tmp';
+                            _ftyp = _sub['filetype'] if 'filetype' in _sub else 'application/*';
+                            _file = _sub['fileio'] if 'fileio' in _sub else None;
+                            _type = _type + '; ' + 'boundary=' + _boundary;
+                            _tag = 'Content-Disposition: form-data; name="%s"; filename="%s"' % (_name, _fnam);
+                            _tty = 'Content-Type: %s' % _ftyp;
+                            _list += ['--' + _boundary, _tag, _tty, '', _file.read()];
+                        _list.append('--' + _boundary + '--');
                         _send = '\r\n'.join(_list);
                     else:
                         _send = str(_body);
