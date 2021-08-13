@@ -173,10 +173,9 @@ def do_recv(mm):
                     _code = _cond['code'] if 'code' in _cond else 0;
                 else:
                     logger.error('Invalid connection');
-                    _data = None;
                     return mm;
             except ws.WebSocketTimeoutException:
-                _data = None;
+                return mm;
             except json.JSONDecodeError:
                 _data = None;
                 logger.error('Invalid recv');
