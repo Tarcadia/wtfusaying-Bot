@@ -109,7 +109,7 @@ def set(
 def open(mm):
 
     with mm['connlock']:
-        _state = mm['state']
+        _state = mm['state'];
         if _state in {'None', 'Closed'}:
             mm['state'] = 'Opening';
             _header = {'connection': 'keep-alive', 'user-agent': BOT_AGENT};
