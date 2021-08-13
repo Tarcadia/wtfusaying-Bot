@@ -19,7 +19,7 @@ logger.addHandler(logger_ch);
 logger.info('Telegram Message Manager Loaded');
 
 
-TELEGRAM_HOST = 'api.telegram.org/';
+TELEGRAM_HOST = 'api.telegram.org';
 BOT_AGENT = 'Bot';
 
 # tgmessagemanager      : dict
@@ -129,6 +129,7 @@ def open(mm):
                 return mm;
             
             if _code in range(200, 300):
+                _resp.read();
                 logger.info('Log in success');
                 mm['state'] = 'Opened';
             else:
