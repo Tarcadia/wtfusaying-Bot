@@ -27,6 +27,7 @@ logger.info('Mirai Message Manager Loaded');
 #   'verify_key'        : str,          // 验证key
 #
 #   # 链接实现
+#   'wslock'            : RLock,        // 链接访问锁，包括链接实例的访问，修改和模块对外呈现的state的访问和修改
 #   'websocket'         : websocket,    // 链接WebSocket实例
 #   'session'           : str,          // 链接Session
 #   'state'             : str,          // 连接状态，'None' | 'Opening' | 'Opened' | 'Failed' | 'Closing' | 'Closed'
@@ -34,7 +35,7 @@ logger.info('Mirai Message Manager Loaded');
 #
 #   # 消息缓存队列
 #   'buffer_size'       : int = 1024,   // 缓存大小
-#   'buffer_lock'       : lock,         // 缓存锁
+#   'buffer_lock'       : RLock,        // 缓存锁
 #   'buffer_send'       : list,         // 发送缓存
 #   'buffer_resp'       : dict[syncId], // 回复缓存
 #   'buffer_recv'       : list          // 接收缓存
