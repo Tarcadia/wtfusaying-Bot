@@ -229,14 +229,15 @@ def query(mm, data: dict = None):
                         _boundary = '-' + '-'.join(str(random.randint(1000000000000000, 9999999999999999))) + '---';
                         _list = [];
                         for _sub in _body:
-                            _name = _sub['name'] if 'name' in _sub else 'tmp';
-                            _fnam = _sub['filename'] if 'filename' in _sub else 'tmp';
-                            _ftyp = _sub['filetype'] if 'filetype' in _sub else 'application/*';
-                            _file = _sub['fileio'] if 'fileio' in _sub else None;
-                            _type = _type + '; ' + 'boundary=' + _boundary;
-                            _tag = 'Content-Disposition: form-data; name="%s"; filename="%s"' % (_name, _fnam);
-                            _tty = 'Content-Type: %s' % _ftyp;
-                            _list += ['--' + _boundary, _tag, _tty, '', _file.read()];
+                            if 'file' in _sub:
+                                _file = _sub['file'];
+                                _name = _sub['name'] if 'name' in _sub else 'tmp';
+                                _fnam = _sub['filename'] if 'filename' in _sub else 'tmp';
+                                _ftyp = _sub['filetype'] if 'filetype' in _sub else 'application/*';
+                                _type = _type + '; ' + 'boundary=' + _boundary;
+                                _tag = 'Content-Disposition: form-data; name="%s"; filename="%s"' % (_name, _fnam);
+                                _tty = 'Content-Type: %s' % _ftyp;
+                                _list += ['--' + _boundary, _tag, _tty, '', _file.read()];
                         _list.append('--' + _boundary + '--');
                         _send = '\r\n'.join(_list);
                     else:
