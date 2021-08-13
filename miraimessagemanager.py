@@ -125,7 +125,7 @@ def open(mm):
     with mm['wslock']:
         if mm['state'] in {'None', 'Closed'}:
             mm['state'] = 'Opening';
-            _uri = 'ws://' + mm['host'] + '/message?' + 'verifyKey=' + mm['verify_key'] + '&qq=' + mm['verify_qq'];
+            _uri = 'ws://' + mm['host'] + '/all?' + 'verifyKey=' + mm['verify_key'] + '&qq=' + mm['verify_qq'];
             try:
                 mm['websocket'].connect(_uri, timeout = mm['timeout']);
                 _recv = mm['websocket'].recv();
