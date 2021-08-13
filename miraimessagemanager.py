@@ -1,5 +1,5 @@
 
-import json
+import json;
 import time;
 import threading as thr;
 import websocket as ws;
