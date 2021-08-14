@@ -232,7 +232,7 @@ def pick(ts: dict, tid: int, n: int = None, k: float = None):
         _vec = {_k : _w for _k, _w in _kw[0 : min(len(_kw), n)]};
         _sum = sum([_w for _k, _w in _kw[0 : min(len(_kw), n)]]);
         _sqs = sum([_w * _w for _k, _w in _kw[0 : min(len(_kw), n)]]);
-        _bia = ts['topics'][tid]['bia'] * _sum / ts['topics'][tid]['sum'];
+        _bia = ts['topics'][tid]['bia'] * _sum / ts['topics'][tid]['sum'] if ts['topics'][tid]['sum'] != 0 else ts['topics'][tid]['bia'];
         ts['topics'][tid]['vec'] = _vec;
         ts['topics'][tid]['sum'] = _sum;
         ts['topics'][tid]['sqs'] = _sqs;
@@ -246,7 +246,7 @@ def pick(ts: dict, tid: int, n: int = None, k: float = None):
         _vec = {_kw[_i][0] : _kw[_i][1] for _i in _ks};
         _sum = sum([_kw[_i][1] for _i in _ks]);
         _sqs = sum([_kw[_i][1] * _kw[_i][1] for _i in _ks]);
-        _bia = ts['topics'][tid]['bia'] * _sum / ts['topics'][tid]['sum'];
+        _bia = ts['topics'][tid]['bia'] * _sum / ts['topics'][tid]['sum'] if ts['topics'][tid]['sum'] != 0 else ts['topics'][tid]['bia'];
         ts['topics'][tid]['vec'] = _vec;
         ts['topics'][tid]['sum'] = _sum;
         ts['topics'][tid]['sqs'] = _sqs;
@@ -260,7 +260,7 @@ def pick(ts: dict, tid: int, n: int = None, k: float = None):
         _vec = {_kw[_i][0] : _kw[_i][1] for _i in _ks};
         _sum = sum([_kw[_i][1] for _i in _ks]);
         _sqs = sum([_kw[_i][1] * _kw[_i][1] for _i in _ks]);
-        _bia = ts['topics'][tid]['bia'] * _sum / ts['topics'][tid]['sum'];
+        _bia = ts['topics'][tid]['bia'] * _sum / ts['topics'][tid]['sum'] if ts['topics'][tid]['sum'] != 0 else ts['topics'][tid]['bia'];
         ts['topics'][tid]['vec'] = _vec;
         ts['topics'][tid]['sum'] = _sum;
         ts['topics'][tid]['sqs'] = _sqs;
