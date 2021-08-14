@@ -256,7 +256,7 @@ def pick(ts: dict, tid: int, n: int = None, k: float = None):
         _kw = sorted(ts['topics'][tid]['vec'].items(), key = lambda x : x[1], reverse = True);
         _wq = [_w * _w for _k, _w in _kw];
         _cumwq = [sum(_wq[0 : _i + 1]) for _i in range(len(_wq))];
-        _ks = list(range(min(n, len(_cumwq)))) + [_i for _i in range(n, len(_cumwq)) if math.sqrt(_cumwq[_i]) / math.sqrt(sum(_wq)) <= k];
+        _ks = list(range(min(n, len(_cumwq)))) + [_i for _i in range(n, len(_cumwq)) if _cumwq[_i] / sum(_wq) <= k * k];
         _vec = {_kw[_i][0] : _kw[_i][1] for _i in _ks};
         _sum = sum([_kw[_i][1] for _i in _ks]);
         _sqs = sum([_kw[_i][1] * _kw[_i][1] for _i in _ks]);
