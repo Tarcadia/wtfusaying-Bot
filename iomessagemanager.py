@@ -63,11 +63,14 @@ def new(
 
 # messagemanager, bool = send(messagemanager, obj)
 # 进行一次向屏幕的发送
-def send(mm, data: dict = None):
+def send(mm, data: dict or str = None):
     _t = time.strftime('%Y%m%d-%H%M%S');
     with mm['print_lock']:
-        for _k in data:
-            print("[%15s] >> %6s : %s" % (_t, _k, data[_k]));
+        if type(data) == str:
+            print("[%15s] >> %s" % (_t, data));
+        elif type(data) == dict:
+            for _k in data:
+                print("[%15s] >> %6s : %s" % (_t, _k, data[_k]));
     return mm, True;
 
 # messagemanager, obj = recv(messagemanager)
@@ -81,7 +84,7 @@ def recv(mm):
 
 # messagemanager, obj = query(messagemanager, obj)
 # 对一个messagemanager的连接进行一次查询，等待成功返回查询结构，或等待失败返回None
-def query(mm, data: dict = None):
+def query(mm, data: dict or str = None):
     mm = send(mm, data = data);
     _data = raw_recv();
     return mm, _data;
@@ -131,11 +134,11 @@ class IOMessageManager:
     def close(self):
         return;
     
-    def send(self, data: dict = None):
+    def send(self, data: dict or str = None):
         self._mm, _ack = send(self._mm, data = data);
         return _ack;
     
-    def query(self, data: dict = None):
+    def query(self, data: dict or str = None):
         self._mm, _resp = query(self._mm, data = data);
         return _resp;
 
