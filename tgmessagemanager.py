@@ -67,7 +67,7 @@ def new(
     }
     return mm;
 
-# messagemanager = close(messagemanager)
+# messagemanager = set(messagemanager)
 # 对一个messagemanager进行部分设置
 def set(
     mm,
