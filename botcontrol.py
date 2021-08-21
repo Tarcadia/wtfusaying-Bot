@@ -275,7 +275,8 @@ class BotControl:
                 for _k in self._bc['mms']:
                     if self._bc['mms'][_k].check():
                         _recv = self._bc['mms'][_k].recv();
-                        self._bc = do_callback(self._bc, _k, _recv);
+                        if _recv:
+                            self._bc = do_callback(self._bc, _k, _recv);
 
         return;
     
