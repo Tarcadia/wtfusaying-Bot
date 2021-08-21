@@ -83,7 +83,7 @@ def recv(mm):
 # 对一个messagemanager的连接进行一次查询，等待成功返回查询结构，或等待失败返回None
 def query(mm, data: dict = None):
     mm = send(mm, data = data);
-    mm, _data = raw_recv(mm);
+    _data = raw_recv();
     return mm, _data;
 
 # messagemanager, succ = check(messagemanager)
@@ -98,7 +98,7 @@ def check(mm):
 # messagemanager = do_recv(messagemanager)
 # 对一个messagemanager进行一轮接收
 def do_recv(mm):
-    mm, _data = raw_recv(mm);
+    _data = raw_recv();
     mm, _ack = send(mm, data = _data);
     with mm['buffer_lock']:
         if len(mm['buffer_recv']) < mm['buffer_size']:
