@@ -218,7 +218,7 @@ class BotControl:
         );
         self._th_call_polling.start();
 
-        return;
+        return [self._th_call_polling];
     
     def threadstop(self):
         self._on_call_polling = False;
