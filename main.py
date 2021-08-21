@@ -53,9 +53,12 @@ def main():
     
 
     # 启动Polling
-    THREADS.extend(_iomm.threadpolling());
-    THREADS.extend(_mmm.threadpolling());
-    THREADS.extend(_tmm.threadpolling());
+    for _part in [
+        _iomm,
+        _mmm,
+        _tmm
+    ]:
+        THREADS.extend(_part.threadpolling());
 
     return;
 
