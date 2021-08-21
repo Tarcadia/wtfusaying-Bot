@@ -169,7 +169,8 @@ def do_callback(bc: dict, mmk: str, msg: dict):
                     try:
                         _cb['fnc'](mmk, msg);
                     except Exception as _err:
-                        logger.error('Call Back Failed');
+                        logger.error('Call Back Failed with %s' % type(_err));
+                        logger.debug(_err);
 
             else:
                 pass;
