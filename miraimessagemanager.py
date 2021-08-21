@@ -461,9 +461,6 @@ class MiraiMessageManager:
         return;
 
     def _conn_polling(self):
-
-        self._on_conn_polling = True;
-
         _reopen_delay = 1;
         _max_reopen_delay = 16;
         _last_open = time.time();
@@ -490,6 +487,7 @@ class MiraiMessageManager:
         return;
 
     def threadpolling(self):
+        self._on_conn_polling = True;
         self._th_recv_polling = thr.Thread(
             target = self._recv_polling,
             name = 'Mirai Message Manager Recv Polling'

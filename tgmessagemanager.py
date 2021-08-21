@@ -411,9 +411,6 @@ class TgMessageManager:
     
 
     def _updt_polling(self):
-
-        self._on_updt_polling = True;
-
         _reopen_delay = 1;
         _max_reopen_delay = 16;
         _last_open = time.time();
@@ -441,6 +438,7 @@ class TgMessageManager:
         return;
 
     def threadpolling(self):
+        self._on_updt_polling = True;
         self._th_updt_polling = thr.Thread(
             target = self._updt_polling,
             name = 'Telegram Message Manager Updt Polling'
