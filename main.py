@@ -48,7 +48,7 @@ _tmm = tmm.TgMessageManager(
     buffer_size         = 1024
 );
 
-
+_sys_cb_ = [];
 
 
 
@@ -61,25 +61,34 @@ def reload():
     import mods as _mods;
     ldr = _mods.loader;
     mods = _mods;
-    mods.loader.load();
-    for _cb in mods.loader.regs:
+
+    ldr.load();
+    THREADS.extend(mods.loader.threads);
+
+    _bc.clearcb();
+    for _cb in _sys_cb_:
+        _bc.regcallback(_cb['fnc'], _cb['flt']);
+    for _cb in ldr.regs:
         _bc.regcallback(_cb['fnc'], _cb['flt']);
 
+    return;
+
+def open():
+    ldr.open();
+    return;
+
+def close():
+    ldr.close();
+    return;
 
 
 # 底层系统组件接口
 
-_sys_cb_flt_reload = {
-    'mmk'               : {'IO'},
-    'msg'               : {
-        'msgs'          : 'reload',
-        'args'          : None
-    }
-};
-
+_sys_cb_flt_reload = {'mmk' : {'IO'}, 'msg' : {'call' : 'reload', 'args' : None}};
 def _sys_cb_fnc_reload(mmk, msg):
     reload();
 
+_sys_cb_flt_echo = {'mmk' : {'mirai', 'telegram'}, 'flt' : {}};
 def _sys_cb_fnc_echo(mmk, msg):
     logger.info(msg);
 
@@ -97,14 +106,15 @@ def main():
     _bc.regmessagemanager(_iomm, 'IO');
     
     # 注册各个callback接口到BotControl
-    _bc.regcallback(_sys_cb_fnc_echo);
+    _bc.regcallback(_sys_cb_fnc_echo, _sys_cb_flt_echo);
     _bc.regcallback(_sys_cb_fnc_reload, _sys_cb_flt_reload);
 
     # 启动Polling
     for _part in [
         _iomm,
         _mmm,
-        _tmm
+        _tmm,
+        _bc,
     ]:
         THREADS.extend(_part.threadpolling());
 
