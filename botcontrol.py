@@ -1,5 +1,4 @@
 
-import json;
 import re;
 import logging;
 import threading as thr;
@@ -123,7 +122,19 @@ def new():
     return _bc;
 
 def clear(bc: dict):
-    bc.clear();
+    with bc['setl']:
+        bc.clear();
+    return bc;
+
+def clearmm(bc: dict):
+    with bc['setl']:
+        bc['mms'].clear();
+    return bc;
+
+def clearcb(bc: dict):
+    with bc['setl']:
+        bc['cbs'].clear();
+    return bc;
 
 def regmessagemanager(bc: dict, mm:object, key:str = 'Default'):
     with bc['setl']:
@@ -190,6 +201,14 @@ class BotControl:
 
     def clear(self):
         self._bc = clear(self._bc);
+        return;
+
+    def clearmm(self):
+        self._bc = clearmm(self._bc);
+        return;
+    
+    def clearcb(self):
+        self._bc = clearcb(self._bc);
         return;
 
     def regmessagemanager(self, mm:object, key:str = 'Default'):
