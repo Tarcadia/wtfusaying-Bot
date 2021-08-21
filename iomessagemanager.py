@@ -26,6 +26,28 @@ logger.info('IO Message Manager Loaded');
 # }
 
 
+
+# obj = raw_recv()
+# 进行一次键盘接收
+def raw_recv():
+    _recv = input();
+    _recvs = _recv.split();
+
+    if len(_recvs) > 1:
+        _data = {
+            'call'          : _recvs[0],
+            'args'          : _recvs[1:]
+        }
+        
+    else:
+        _data = {
+            'call'          : _recvs[0],
+            'args'          : None
+        }
+    return _data;
+
+
+
 # messagemanager = new()
 # 初始化一个messagemanager
 def new(
@@ -48,30 +70,20 @@ def send(mm, data: dict = None):
             print("[%16s] >> %6s : %s" % (_t, _k, data[_k]));
     return mm, True;
 
-# messagemanager, obj = query(messagemanager)
-# 进行一次键盘接收
+# messagemanager, obj = recv(messagemanager)
+# 进行一次缓存接收
 def recv(mm):
-    _recv = input();
-    _recvs = _recv.split();
-
-    if len(_recvs) > 1:
-        _data = {
-            'call'          : _recvs[0],
-            'args'          : _recvs[1:]
-        }
-        
-    else:
-        _data = {
-            'call'          : _recvs[0],
-            'args'          : None
-        }
-    return mm, _data;
+    with mm['buffer_lock']:
+        if len(mm['buffer_recv']) > 0:
+            return mm, mm['buffer_recv'].pop(0);
+        else:
+            return mm, None;
 
 # messagemanager, obj = query(messagemanager, obj)
 # 对一个messagemanager的连接进行一次查询，等待成功返回查询结构，或等待失败返回None
 def query(mm, data: dict = None):
     mm = send(mm, data = data);
-    mm, _data = recv(mm);
+    mm, _data = raw_recv(mm);
     return mm, _data;
 
 # messagemanager, succ = check(messagemanager)
@@ -86,7 +98,7 @@ def check(mm):
 # messagemanager = do_recv(messagemanager)
 # 对一个messagemanager进行一轮接收
 def do_recv(mm):
-    mm, _data = recv(mm);
+    mm, _data = raw_recv(mm);
     mm, _ack = send(mm, data = _data);
     with mm['buffer_lock']:
         if len(mm['buffer_recv']) < mm['buffer_size']:
