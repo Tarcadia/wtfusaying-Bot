@@ -17,7 +17,7 @@ logger.addHandler(logger_ch);
 logger.info('Mirai Message Manager Loaded');
 
 
-# miraiapimanager       : dict
+# miraimessagemanager   : dict
 # {
 #   # 链接配置
 #   'host'              : str,          // 目标host
