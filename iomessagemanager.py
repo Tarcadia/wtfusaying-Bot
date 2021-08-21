@@ -1,6 +1,5 @@
 
 import time;
-import json;
 import threading as thr;
 import logging;
 
@@ -138,7 +137,11 @@ class IOMessageManager:
 
     def _updt_polling(self):
         while self._on_updt_polling:
-            self._mm = do_recv(self._mm);
+            try:
+                self._mm = do_recv(self._mm);
+            except Exception as _err:
+                logger.error('Recv failed for %s' % type(_err));
+                logger.debug(_err);
         return;
 
     def threadpolling(self):
