@@ -48,7 +48,12 @@ _tmm = tmm.TgMessageManager(
 );
 
 _sys_cb_ = [];
-
+_sys_doc = """
+help        : 获取帮助
+reload      : 重载组件
+    -a      : 重载全部组件
+    -m <m>  : 重载单个组件m
+""";
 
 
 # 底层系统组件实现
@@ -87,6 +92,11 @@ _sys_cb_flt_echo = {'mmk' : {'mirai', 'telegram'}, 'msg' : {}};
 def _sys_cb_fnc_echo(mmk, msg):
     logger.info(msg);
 
+_sys_cb_flt_help = {'mmk' : {'IO'}, 'msg' : {'call' : 'help'}};
+def _sys_cb_fnc_help(mmk, msg):
+    _bc.send(mmk, _sys_doc);
+    # 各个模块的help
+
 _sys_cb_flt_reload = {'mmk' : {'IO'}, 'msg' : {'call' : 'reload'}};
 def _sys_cb_fnc_reload(mmk, msg):
     if msg['args']:
@@ -94,6 +104,8 @@ def _sys_cb_fnc_reload(mmk, msg):
             reloadall();
         elif msg['args'][0] == '-m':
             reload(msg['args'][1:]);
+        else:
+            _bc.send(mmk, '参数不对，help一下');
 
 _sys_cb_.append({'fnc': _sys_cb_fnc_echo, 'flt': _sys_cb_flt_echo, 'key': '_sys_cb_echo'});
 _sys_cb_.append({'fnc': _sys_cb_fnc_reload, 'flt': _sys_cb_flt_reload, 'key': '_sys_cb_reload'});
