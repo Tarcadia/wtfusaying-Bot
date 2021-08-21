@@ -150,6 +150,7 @@ class IOMessageManager:
             target = self._updt_polling,
             name = 'IO Message Manager Update Polling'
         );
+        self._th_updt_polling.start();
         return [self._th_updt_polling];
     
     def threadstop(self):
