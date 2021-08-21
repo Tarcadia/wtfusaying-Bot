@@ -7,7 +7,6 @@ import iomessagemanager as iomm;
 import miraimessagemanager as mmm;
 import tgmessagemanager as tmm;
 
-import mods.loader as ldr;
 import mods;
 
 import logging;
@@ -52,72 +51,78 @@ _sys_cb_ = [];
 
 
 
-
-
-
 # 底层系统组件实现
 
-def reload():
+def reloadall():
     import mods as _mods;
-    ldr = _mods.loader;
     mods = _mods;
-
-    ldr.load();
-    THREADS.extend(mods.loader.threads);
-
+    # 1. 加载各个模块组件
+    # 2. 启动各个模块组件
+    # 3. 重注册接口
     _bc.clearcb();
     for _cb in _sys_cb_:
-        _bc.regcallback(_cb['fnc'], _cb['flt']);
-    for _cb in ldr.regs:
-        _bc.regcallback(_cb['fnc'], _cb['flt']);
-
+        _bc.regcallback(_cb['fnc'], _cb['flt'], _cb['key']);
+    #for _cb in _______:
+    #    _bc.regcallback(_cb['fnc'], _cb['flt']);
     return;
 
-def open():
-    ldr.open();
+def reload(modlist: list = []):
     return;
 
-def close():
-    ldr.close();
+def stop():
+    # 关闭BotControl
+    _bc.threadstop();
+    # 关闭各个MM
+    _iomm.threadstop();
+    _mmm.threadstop();
+    _tmm.threadstop();
+    # 关闭各个组件
+    #####
     return;
 
 
 # 底层系统组件接口
 
-_sys_cb_flt_reload = {'mmk' : {'IO'}, 'msg' : {'call' : 'reload', 'args' : None}};
-def _sys_cb_fnc_reload(mmk, msg):
-    reload();
-
 _sys_cb_flt_echo = {'mmk' : {'mirai', 'telegram'}, 'flt' : {}};
 def _sys_cb_fnc_echo(mmk, msg):
     logger.info(msg);
 
+_sys_cb_flt_reload = {'mmk' : {'IO'}, 'msg' : {'call' : 'reload'}};
+def _sys_cb_fnc_reload(mmk, msg):
+    if msg['args']:
+        if msg['args'][0] == '-a':
+            reloadall();
+        elif msg['args'][0] == '-m':
+            reload(msg['args'][1:]);
+
+_sys_cb_.append({'fnc': _sys_cb_fnc_echo, 'flt': _sys_cb_flt_echo, 'key': '_sys_cb_echo'});
+_sys_cb_.append({'fnc': _sys_cb_fnc_reload, 'flt': _sys_cb_flt_reload, 'key': '_sys_cb_reload'});
 
 
 
-
-
-
-
+# main
 def main():
     # 注册各个messagemanager类的接口到BotControl
     _bc.regmessagemanager(_mmm, 'mirai');
     _bc.regmessagemanager(_tmm, 'telegram');
     _bc.regmessagemanager(_iomm, 'IO');
-    
     # 注册各个callback接口到BotControl
-    _bc.regcallback(_sys_cb_fnc_echo, _sys_cb_flt_echo);
-    _bc.regcallback(_sys_cb_fnc_reload, _sys_cb_flt_reload);
-
-    # 启动Polling
-    for _part in [
+    for _cb in _sys_cb_:
+        _bc.regcallback(_cb['fnc'], _cb['flt'], _cb['key']);
+    # 启动各个组件
+    #####
+    # 启动各个MM
+    for _mm in [
         _iomm,
         _mmm,
-        _tmm,
-        _bc,
+        _tmm
     ]:
-        THREADS.extend(_part.threadpolling());
-
+        _mm.open();
+        _mm_thrs = _mm.threadpolling();
+        THREADS.extend(_mm_thrs);
+    # 启动BotControl
+    _bc_thrs = _bc.threadpolling();
+    THREADS.extend(_bc_thrs);
     return;
 
 if __name__ == '__main__':
