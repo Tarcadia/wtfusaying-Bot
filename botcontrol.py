@@ -147,7 +147,7 @@ def regmessagemanager(bc: dict, mm:object, key:str = 'Default'):
             bc['mms'][key] = mm;
     return bc;
 
-def regcallback(bc: dict, cbfunc:function, cbfilter:function or dict = None):
+def regcallback(bc: dict, cbfunc:object, cbfilter:object = None):
     with bc['setl']:
         _cb = {
             'flt': cbfilter,
@@ -228,7 +228,7 @@ class BotControl:
         self._bc = regmessagemanager(self._bc, mm = mm, key = key);
         return;
     
-    def regcallback(self, cbfunc:function, cbfilter:function or dict = None):
+    def regcallback(self, cbfunc:object, cbfilter:object = None):
         self._bc = regcallback(self._bc, cbfunc = cbfunc, cbfilter = cbfilter);
         return;
 
