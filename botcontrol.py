@@ -76,13 +76,7 @@ def cbfltmatch(msg: dict, flt: dict):
     if type(flt) == dict:
         for _k in flt:
             if _k in msg:
-                if (type(msg[_k]) == int or type(msg[_k]) == float) and (type(flt[_k]) == int or type(flt[_k]) == float):
-                    if flt[_k] == msg[_k]:
-                        _f = True;
-                    else:
-                        _f = False;
-                        break;
-                elif type(msg[_k]) == str and type(flt[_k]) == str:
+                if type(msg[_k]) == str and type(flt[_k]) == str:
                     if re.match(flt[_k], msg[_k]):
                         _f = True;
                     else:
@@ -108,8 +102,11 @@ def cbfltmatch(msg: dict, flt: dict):
                         break;
                     
                 else:
-                    _f = False;
-                    break;
+                    if flt[_k] == msg[_k]:
+                        _f = True;
+                    else:
+                        _f = False;
+                        break;
             else:
                 _f = False;
                 break;
