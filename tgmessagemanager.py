@@ -319,7 +319,7 @@ def send(mm, data: dict = None):
     else:
         return mm, True;
 
-# messagemanager, obj = query(messagemanager)
+# messagemanager, obj = recv(messagemanager)
 # 对一个messagemanager的连接进行一次接收，如果超时无内容返回None
 def recv(mm):
     time_start = time.time();

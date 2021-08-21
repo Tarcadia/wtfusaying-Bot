@@ -346,7 +346,7 @@ def query(mm, data: dict = None):
         logger.error('Invalid send');
         return mm, None;
 
-# messagemanager, obj = query(messagemanager)
+# messagemanager, obj = recv(messagemanager)
 # 对一个messagemanager的连接进行一次接收，如果超时无内容返回None
 def recv(mm):
     time_start = time.time();
