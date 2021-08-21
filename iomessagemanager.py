@@ -39,11 +39,13 @@ def raw_recv():
             'args'          : _recvs[1:]
         }
         
-    else:
+    elif len(_recvs) > 0:
         _data = {
             'call'          : _recvs[0],
             'args'          : None
         }
+    else:
+        _data = None;
     return _data;
 
 
