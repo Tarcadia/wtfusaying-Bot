@@ -7,7 +7,6 @@ import iomessagemanager as iomm;
 import miraimessagemanager as mmm;
 import tgmessagemanager as tmm;
 
-import mods.essential as ess;
 import mods.loader as ldr;
 import mods;
 
@@ -33,6 +32,7 @@ _bc = bc.BotControl();
 
 # 初始化API接口类（MessageManager）
 _iomm = iomm.IOMessageManager();
+
 _mmm = mmm.MiraiMessageManager(
     host                = CONSTS.REMOTE_HOST,
     timeout             = 10,
@@ -40,6 +40,7 @@ _mmm = mmm.MiraiMessageManager(
     verify_key          = CONSTS.VERIFY_KEY,
     buffer_size         = 1024
 );
+
 _tmm = tmm.TgMessageManager(
     timeout             = 10,
     conntimeout         = 3,
@@ -58,6 +59,7 @@ _tmm = tmm.TgMessageManager(
 
 def reload():
     import mods as _mods;
+    ldr = _mods.loader;
     mods = _mods;
     mods.loader.load();
     for _cb in mods.loader.regs:
