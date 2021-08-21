@@ -193,26 +193,28 @@ def query(bc: dict, mmk: str, msg: dict):
 
 def do_callback(bc: dict, mmk: str, msg: dict):
     with bc['setl']:
-        for _cb in bc['cbs']:
-
+        for _key in bc['cbs']:
+            _cb = bc['cbs'][_key];
             _flt = False;
             try:
                 if callable(_cb['flt']):
                     _flt = _cb['flt'](mmk, msg);
-            except:
-                logger.error('Call Filter Failed with %s' % type(_err));
+            except Exception as _err:
+                logger.error('Call filter failed at %s with %s' % (_key, type(_err)));
                 logger.debug(_err);
             
             if (
                 (_cb['flt'] == None) or
                 (callable(_cb['flt']) and _flt) or
-                (type(_cb['flt']) == dict and mmk in _cb['flt']['mmk'] and cbfltmatch(msg, _cb['flt']['msg']))
+                (type(_cb['flt']) == dict and
+                    'mmk' in _cb['flt'] and 'msg' in _cb['flt'] and
+                    mmk in _cb['flt']['mmk'] and cbfltmatch(msg, _cb['flt']['msg']))
             ):
                 with bc['cbl']:
                     try:
                         _cb['fnc'](mmk, msg);
                     except Exception as _err:
-                        logger.error('Call Back Failed with %s' % type(_err));
+                        logger.error('CallBack failed at %s with %s' % (_key, type(_err)));
                         logger.debug(_err);
 
             else:

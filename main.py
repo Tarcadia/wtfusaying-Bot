@@ -83,7 +83,7 @@ def stop():
 
 # 底层系统组件接口
 
-_sys_cb_flt_echo = {'mmk' : {'mirai', 'telegram'}, 'flt' : {}};
+_sys_cb_flt_echo = {'mmk' : {'mirai', 'telegram'}, 'msg' : {}};
 def _sys_cb_fnc_echo(mmk, msg):
     logger.info(msg);
 
