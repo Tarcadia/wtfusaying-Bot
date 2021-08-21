@@ -29,17 +29,23 @@ logger.info('Bot Control Loaded');
 #       cb              : dict
 #       {
 #           'flt'       : dict,         // 回调条件，一个dict或者一个函数；
-#                                       // 如果是dict，则判定是否dict中的key和对应的元素匹配，
-#                                       // 字符串支持re，list判定flt各元素在msg均存在元素匹配
-#                                       // dict中的迭代元素迭代判断，
+#                                       // 如果是dict，则有mmk和msg两条字段；
+#           {
+#               'mmk'   : set{str},     // 判定来源mmk是否在mmk集合里，
+#               'msg'   : dict          // 判定是否msg中的key和对应的元素匹配，
+#                                       // 字符串支持re，list判定flt各元素在msg均存在元素匹配，
+#                                       // dict中的迭代元素迭代判断；
+#           }
 #                       : or function   // 如果是函数，则调用函数判定；
 #           (
-#               msg     : dict          // 消息的内容
+#               mmk     : str,          // 该消息的来源，接口列表中的mmkey；
+#               msg     : dict          // 消息的内容；
 #           ) -> bool,
+#
 #           'fnc'       : function      // 回调函数；
 #           (
-#               mmk     : str,          // 该消息的来源，接口列表中的mmkey
-#               msg     : dict          // 消息的内容
+#               mmk     : str,          // 该消息的来源，接口列表中的mmkey；
+#               msg     : dict          // 消息的内容；
 #           ) -> None
 #       }
 #   ]
@@ -172,9 +178,19 @@ def query(bc: dict, mmk: str, msg: dict):
 def do_callback(bc: dict, mmk: str, msg: dict):
     with bc['setl']:
         for _cb in bc['cbs']:
-            if (_cb['flt'] == None
-            or type(_cb['flt']) == dict and cbfltmatch(msg, _cb['flt'])
-            or callable(_cb['flt']) and _cb['flt'](msg)
+
+            _flt = False;
+            try:
+                if callable(_cb['flt']):
+                    _flt = _cb['flt'](mmk, msg);
+            except:
+                logger.error('Call Filter Failed with %s' % type(_err));
+                logger.debug(_err);
+            
+            if (
+                (_cb['flt'] == None) or
+                (callable(_cb['flt']) and _flt) or
+                (type(_cb['flt']) == dict and mmk in _cb['flt']['mmk'] and cbfltmatch(msg, _cb['flt']['msg']))
             ):
                 with bc['cbl']:
                     try:
