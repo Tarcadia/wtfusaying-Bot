@@ -78,7 +78,8 @@ _sys_cb_flt_reload = {
 def _sys_cb_fnc_reload(mmk, msg):
     reload();
 
-
+def _sys_cb_fnc_echo(mmk, msg):
+    logger.info(msg);
 
 
 
@@ -94,6 +95,7 @@ def main():
     _bc.regmessagemanager(_iomm, 'IO');
     
     # 注册各个callback接口到BotControl
+    _bc.regcallback(_sys_cb_fnc_echo);
     _bc.regcallback(_sys_cb_fnc_reload, _sys_cb_flt_reload);
 
     # 启动Polling
