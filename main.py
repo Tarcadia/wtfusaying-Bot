@@ -104,10 +104,11 @@ def _sys_cb_fnc_reload(mmk, msg):
             reloadall();
         elif msg['args'][0] == '-m':
             reload(msg['args'][1:]);
-        else:
-            _bc.send(mmk, '参数不对，help一下');
+    else:
+        _bc.send(mmk, '参数不对，help一下');
 
 _sys_cb_.append({'fnc': _sys_cb_fnc_echo, 'flt': _sys_cb_flt_echo, 'key': '_sys_cb_echo'});
+_sys_cb_.append({'fnc': _sys_cb_fnc_help, 'flt': _sys_cb_flt_help, 'key': '_sys_cb_help'});
 _sys_cb_.append({'fnc': _sys_cb_fnc_reload, 'flt': _sys_cb_flt_reload, 'key': '_sys_cb_reload'});
 
 
