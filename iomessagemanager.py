@@ -44,7 +44,7 @@ def new(
 def send(mm, data: dict = None):
     _t = time.strftime('%Y%m%d-%H%M%S');
     with mm['print_lock']:
-        for _k in dict:
+        for _k in data:
             print("[%16s] >> %6s : %s" % (_t, _k, data[_k]));
     return mm, True;
 
@@ -62,7 +62,7 @@ def recv(mm):
         
     else:
         _data = {
-            'msgs'          : _recvs,
+            'call'          : _recvs[0],
             'args'          : None
         }
     return mm, _data;
@@ -137,11 +137,7 @@ class IOMessageManager:
 
     def _updt_polling(self):
         while self._on_updt_polling:
-            try:
-                self._mm = do_recv(self._mm);
-            except Exception as _err:
-                logger.error('Recv failed for %s' % type(_err));
-                logger.debug(_err);
+            self._mm = do_recv(self._mm);
         return;
 
     def threadpolling(self):
