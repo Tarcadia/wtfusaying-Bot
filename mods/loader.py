@@ -17,6 +17,15 @@ logger.info('Loader Loaded');
 def regs():
     return [];
 
+@property
+def threads():
+    return [];
 
 def load():
+    return;
+
+def open():
+    return;
+
+def close():
     return;
