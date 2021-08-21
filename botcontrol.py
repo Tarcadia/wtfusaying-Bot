@@ -44,7 +44,9 @@ logger.info('Bot Control Loaded');
 #           ) -> None
 #       }
 #   ]
-#   'cbl'               : Lock          // 回调锁；
+#   'cbl'               : RLock         // 回调锁；
+#   'setl'              : RLock         // 设置锁；
+#                                       // 用于避免在遍历mm接口列表和回调列表的过程中由于修改导致的异常
 # }
 
 
@@ -116,25 +118,28 @@ def new():
     _bc = dict();
     _bc['mms'] = dict();
     _bc['cbs'] = list();
-    _bc['cbl'] = thr.Lock();
+    _bc['cbl'] = thr.RLock();
+    _bc['setl'] = thr.RLock();
     return _bc;
 
 def clear(bc: dict):
     bc.clear();
 
 def regmessagemanager(bc: dict, mm:object, key:str = 'Default'):
-    if key in bc['mms']:
-        raise KeyError;
-    else:
-        bc['mms'][key] = mm;
+    with bc['setl']:
+        if key in bc['mms']:
+            raise KeyError;
+        else:
+            bc['mms'][key] = mm;
     return bc;
 
 def regcallback(bc: dict, cbfunc:function, cbfilter:function or dict = None):
-    _cb = {
-        'flt': cbfilter,
-        'fnc': cbfunc
-    };
-    bc['cbs'].append(_cb);
+    with bc['setl']:
+        _cb = {
+            'flt': cbfilter,
+            'fnc': cbfunc
+        };
+        bc['cbs'].append(_cb);
     return bc;
 
 def send(bc: dict, mmk: str, msg: dict):
@@ -154,18 +159,20 @@ def query(bc: dict, mmk: str, msg: dict):
     return bc, _rt;
 
 def do_callback(bc: dict, mmk: str, msg: dict):
-    for _cb in bc['cbs']:
-        if _cb['flt'] == None:
-            with bc['cbl']:
-                _cb['fnc'](mmk, msg);
-        elif type(_cb['flt']) == dict and cbfltmatch(msg, _cb['flt']):
-            with bc['cbl']:
-                _cb['fnc'](mmk, msg);
-        elif callable(_cb['flt']) and _cb['flt'](msg):
-            with bc['cbl']:
-                _cb['fnc'](mmk, msg);
-        else:
-            pass;
+    with bc['setl']:
+        for _cb in bc['cbs']:
+            if (_cb['flt'] == None
+            or type(_cb['flt']) == dict and cbfltmatch(msg, _cb['flt'])
+            or callable(_cb['flt']) and _cb['flt'](msg)
+            ):
+                with bc['cbl']:
+                    try:
+                        _cb['fnc'](mmk, msg);
+                    except Exception as _err:
+                        logger.error('Call Back Failed');
+
+            else:
+                pass;
     return bc;
 
 
@@ -202,10 +209,11 @@ class BotControl:
     
     def _call_polling(self):
         while self._on_call_polling:
-            for _k in self._bc['mms']:
-                if self._bc['mms'][_k].check():
-                    _recv = self._bc['mms'][_k].recv();
-                    self._bc = do_callback(self._bc, _k, _recv);
+            with self._bc['setl']:
+                for _k in self._bc['mms']:
+                    if self._bc['mms'][_k].check():
+                        _recv = self._bc['mms'][_k].recv();
+                        self._bc = do_callback(self._bc, _k, _recv);
 
         return;
     
