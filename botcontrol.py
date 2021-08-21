@@ -24,8 +24,8 @@ logger.info('Bot Control Loaded');
 #       mm              : object,       // 一个MessageManager类；
 #       ...                             // 这里没写一个MM基类，需要实现的接口的定义在下面；
 #   }
-#   'cbs'               : list,         // 回调列表；
-#   [
+#   'cbs'               : dict[cbkey],  // 回调列表；
+#   {
 #       cb              : dict
 #       {
 #           'flt'       : dict,         // 回调条件，一个dict或者一个函数；
@@ -48,7 +48,7 @@ logger.info('Bot Control Loaded');
 #               msg     : dict          // 消息的内容；
 #           ) -> None
 #       }
-#   ]
+#   },
 #   'cbl'               : RLock         // 回调锁；
 #   'setl'              : RLock         // 设置锁；
 #                                       // 用于避免在遍历mm接口列表和回调列表的过程中由于修改导致的异常
@@ -119,7 +119,7 @@ def cbfltmatch(msg: dict, flt: dict):
 def new():
     _bc = dict();
     _bc['mms'] = dict();
-    _bc['cbs'] = list();
+    _bc['cbs'] = dict();
     _bc['cbl'] = thr.RLock();
     _bc['setl'] = thr.RLock();
     return _bc;
@@ -139,7 +139,7 @@ def clearcb(bc: dict):
         bc['cbs'].clear();
     return bc;
 
-def regmessagemanager(bc: dict, mm:object, key:str = 'Default'):
+def regmessagemanager(bc: dict, mm: object, key: str = ''):
     with bc['setl']:
         if key in bc['mms']:
             raise KeyError;
@@ -147,13 +147,32 @@ def regmessagemanager(bc: dict, mm:object, key:str = 'Default'):
             bc['mms'][key] = mm;
     return bc;
 
-def regcallback(bc: dict, cbfunc:object, cbfilter:object = None):
+def regcallback(bc: dict, func: object, filter: object = None, key: str = ''):
     with bc['setl']:
-        _cb = {
-            'flt': cbfilter,
-            'fnc': cbfunc
-        };
-        bc['cbs'].append(_cb);
+        if key in bc['cbs']:
+            raise KeyError;
+        else:
+            _cb = {
+                'flt': filter,
+                'fnc': func
+            };
+            bc['cbs'][key] = _cb;
+    return bc;
+
+def deregmessagemanager(bc: dict, key: str = ''):
+    with bc['setl']:
+        if not key in bc['mms']:
+            raise KeyError;
+        else:
+            bc['mms'].pop(key);
+    return bc;
+
+def deregcallback(bc: dict, key: str = ''):
+    with bc['setl']:
+        if not key in bc['cbs']:
+            raise KeyError;
+        else:
+            bc['cbs'].pop(key);
     return bc;
 
 def send(bc: dict, mmk: str, msg: dict):
@@ -224,14 +243,22 @@ class BotControl:
         self._bc = clearcb(self._bc);
         return;
 
-    def regmessagemanager(self, mm:object, key:str = 'Default'):
+    def regmessagemanager(self, mm:object, key:str = ''):
         self._bc = regmessagemanager(self._bc, mm = mm, key = key);
         return;
     
-    def regcallback(self, cbfunc:object, cbfilter:object = None):
-        self._bc = regcallback(self._bc, cbfunc = cbfunc, cbfilter = cbfilter);
+    def regcallback(self, func:object, filter:object = None, key = ''):
+        self._bc = regcallback(self._bc, func = func, filter = filter, key = key);
         return;
 
+    def deregmessagemanager(self, key: str = ''): 
+        self._bc = deregmessagemanager(self._bc, key = key);
+        return;
+    
+    def deregcallback(self, key: str = ''): 
+        self._bc = deregcallback(self._bc, key = key);
+        return;
+    
     def send(self, mmk: str, msg: dict):
         self._bc, _rt = send(self._bc, mmk = mmk, msg = msg);
         return _rt;
