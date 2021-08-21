@@ -67,7 +67,7 @@ def send(mm, data: dict = None):
     _t = time.strftime('%Y%m%d-%H%M%S');
     with mm['print_lock']:
         for _k in data:
-            print("[%16s] >> %6s : %s" % (_t, _k, data[_k]));
+            print("[%15s] >> %6s : %s" % (_t, _k, data[_k]));
     return mm, True;
 
 # messagemanager, obj = recv(messagemanager)
