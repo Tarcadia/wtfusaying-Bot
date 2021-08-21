@@ -1,5 +1,6 @@
 
 import CONSTS;
+import mods;
 import botcontrol as bc;
 import iomessagemanager as iomm;
 import miraimessagemanager as mmm;
@@ -41,7 +42,27 @@ _tmm = tmm.TgMessageManager(
 );
 
 
+# 底层系统组件实现
 
+def reload():
+    import mods as _mods;
+    mods = _mods;
+    mods.loader.load();
+    for _cb in mods.loader.regs:
+        _bc.regcallback(_cb['fnc'], _cb['flt']);
+
+# 底层系统组件接口
+
+_sys_cb_flt_reload = {
+    'mmk'               : {'IO'},
+    'msg'               : {
+        'msgs'          : 'reload',
+        'args'          : None
+    }
+};
+
+def _sys_cb_fnc_reload(mmk, msg):
+    reload();
 
 def main():
     # 注册各个messagemanager类的接口到BotControl
@@ -50,7 +71,7 @@ def main():
     _bc.regmessagemanager(_iomm, 'IO');
     
     # 注册各个callback接口到BotControl
-    
+    _bc.regcallback(_sys_cb_fnc_reload, _sys_cb_flt_reload);
 
     # 启动Polling
     for _part in [
@@ -63,4 +84,4 @@ def main():
     return;
 
 if __name__ == '__main__':
-    main()
+    main();
