@@ -331,6 +331,17 @@ def recv(mm):
                 return mm, _recv;
     return mm, None;
 
+# messagemanager, succ = check(messagemanager)
+# 对一个messagemanager的连接进行一次查询，无内容返回False，有内容返回True
+def check(mm):
+    with mm['buffer_lock']:
+        if len(mm['buffer_recv']) > 0:
+            return mm, True;
+        else:
+            return mm, False;
+
+
+
 class TgMessageManager:
 
     @property
@@ -394,6 +405,9 @@ class TgMessageManager:
         self._mm, _recv = recv(self._mm);
         return _recv;
 
+    def check(self):
+        self._mm, _succ = check(self._mm);
+        return _succ;
     
 
     def _updt_polling(self):
