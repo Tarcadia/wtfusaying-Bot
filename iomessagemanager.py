@@ -63,7 +63,8 @@ def recv(mm):
         
     else:
         _data = {
-            'msgs'          : _recvs
+            'msgs'          : _recvs,
+            'args'          : None
         }
     return mm, _data;
 
