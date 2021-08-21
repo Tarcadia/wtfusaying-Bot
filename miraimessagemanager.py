@@ -42,7 +42,7 @@ logger.info('Mirai Message Manager Loaded');
 # }
 
 
-# messagemanager = new()
+# messagemanager = new(...)
 # 初始化一个messagemanager
 def new(
     host                : str = 'localhost:8080',
@@ -71,7 +71,7 @@ def new(
     }
     return mm;
 
-# messagemanager = close(messagemanager)
+# messagemanager = set(messagemanager, ...)
 # 对一个messagemanager进行部分设置
 def set(
     mm,
