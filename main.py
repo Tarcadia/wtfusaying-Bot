@@ -321,6 +321,7 @@ def _sys_cb_fnc_save(mmk, msg):
 _sys_cb_flt_stop = {'mmk' : {'IO'}, 'msg' : {'call' : 'stop'}};
 def _sys_cb_fnc_stop(mmk, msg):
     _bc.send(mmk, '正在关闭...');
+    global TO_STOP;
     TO_STOP = True;
     _bc.send(mmk, '已启动关闭线程');
 
