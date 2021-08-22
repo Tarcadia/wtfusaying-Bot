@@ -1,5 +1,5 @@
 
-import json;
+import json
 import time;
 import threading as thr;
 import websocket as ws;
@@ -521,8 +521,12 @@ class MiraiMessageManager:
 
         self._on_recv_polling = False;
         self._on_send_polling = False;
-        self._th_recv_polling.join();
-        self._th_send_polling.join();
+        if self._th_recv_polling.is_alive():
+            self._th_recv_polling.join();
+        if self._th_send_polling.is_alive():
+            self._th_send_polling.join();
 
         self._on_conn_polling = False;
-        self._th_conn_polling.join();
+        if self._th_conn_polling.is_alive():
+            self._th_conn_polling.join();
+        return;

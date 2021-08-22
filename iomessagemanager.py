@@ -168,4 +168,6 @@ class IOMessageManager:
     
     def threadstop(self):
         self._on_updt_polling = False;
-        self._th_updt_polling.join();
+        if self._th_updt_polling.is_alive():
+            self._th_updt_polling.join();
+        return;
