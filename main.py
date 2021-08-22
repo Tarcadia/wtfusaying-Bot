@@ -158,8 +158,14 @@ def reloadall():
     # 解注册当前所有模块组件接口，关闭当前所有模块组件
     for _modname in _sys_mods:
         _mod = _sys_mods[_modname];
-        for _cb in _mod._mod_cbs:
-            _bc.deregcallback(_cb['key']);
+        try:
+            for _cb in _mod._mod_cbs:
+                _bc.deregcallback(_cb['key']);
+        except KeyError:
+            logger.error('Failed dereg call back or Key Error');
+        except Exception as _err:
+            logger.error('Failed dereg call back %s with %s' % (_cb['key'], type(_err)));
+            logger.debug(_err);
         try:
             _mod.save();
         except Exception as _err:
@@ -200,8 +206,14 @@ def reloadmod(modlist: list = []):
         # 查找已有模块组件，解注册模块组件接口，关闭模块组件
         if _modname in _sys_mods:
             _mod = _sys_mods[_modname];
-            for _cb in _mod._mod_cbs:
-                _bc.deregcallback(_cb['key']);
+            try:
+                for _cb in _mod._mod_cbs:
+                    _bc.deregcallback(_cb['key']);
+            except KeyError:
+                logger.error('Failed dereg call back or Key Error');
+            except Exception as _err:
+                logger.error('Failed dereg call back %s with %s' % (_cb['key'], type(_err)));
+                logger.debug(_err);
             try:
                 _mod.save();
             except Exception as _err:
@@ -259,8 +271,14 @@ def stop():
     # 解注册当前所有模块组件接口，关闭当前所有模块组件
     for _modname in _sys_mods:
         _mod = _sys_mods[_modname];
-        for _cb in _mod._mod_cbs:
-            _bc.deregcallback(_cb['key']);
+        try:
+            for _cb in _mod._mod_cbs:
+                _bc.deregcallback(_cb['key']);
+        except KeyError:
+            logger.error('Failed dereg call back or Key Error');
+        except Exception as _err:
+            logger.error('Failed dereg call back %s with %s' % (_cb['key'], type(_err)));
+            logger.debug(_err);
         try:
             _mod.save();
         except Exception as _err:
