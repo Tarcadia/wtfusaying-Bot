@@ -184,14 +184,14 @@ def reloadall():
         except Exception as _err:
             logger.error('Failed start mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
-        for _cb in _mod._mod_cbs:
-            try:
+        try:
+            for _cb in _mod._mod_cbs:
                 _bc.regcallback(_cb['fnc'], _cb['flt'], _cb['key']);
-            except KeyError:
-                logger.error('Failed reg call back or Key Error');
-            except Exception as _err:
-                logger.error('Failed reg call back %s with %s' % (_cb['key'], type(_err)));
-                logger.debug(_err);
+        except KeyError:
+            logger.error('Failed reg call back or Key Error');
+        except Exception as _err:
+            logger.error('Failed reg call back %s with %s' % (_cb['key'], type(_err)));
+            logger.debug(_err);
     return;
 
 def reloadmod(modlist: list = []):
@@ -226,14 +226,14 @@ def reloadmod(modlist: list = []):
             except Exception as _err:
                 logger.error('Failed start mod %s with %s' % (_modname, type(_err)));
                 logger.debug(_err);
-            for _cb in _mod._mod_cbs:
-                try:
+            try:
+                for _cb in _mod._mod_cbs:
                     _bc.regcallback(_cb['fnc'], _cb['flt'], _cb['key']);
-                except KeyError:
-                    logger.error('Failed reg call back or Key Error');
-                except Exception as _err:
-                    logger.error('Failed reg call back %s with %s' % (_cb['key'], type(_err)));
-                    logger.debug(_err);
+            except KeyError:
+                logger.error('Failed reg call back or Key Error');
+            except Exception as _err:
+                logger.error('Failed reg call back %s with %s' % (_cb['key'], type(_err)));
+                logger.debug(_err);
         else:
             logger.debug('Failed import mod %s for non-exists' % _modname);
     return;
@@ -307,7 +307,7 @@ def _sys_cb_fnc_reload(mmk, msg):
                 _bc.send(mmk, '重加载完成');
             except Exception as _err:
                 _bc.send(mmk, '执行失败，help一下');
-                logger.error('Failed reloadmod with %s' % type(_err));
+                logger.error('Failed reload mod with %s' % type(_err));
                 logger.debug(_err);
     else:
         _bc.send(mmk, '参数不对，help一下');
