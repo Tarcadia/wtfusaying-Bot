@@ -160,14 +160,14 @@ class IOMessageManager:
         self._on_updt_polling = True;
         self._th_updt_polling = thr.Thread(
             target = self._updt_polling,
-            name = 'IO Message Manager Update Polling'
+            name = 'IO Message Manager Update Polling',
+            daemon = True
         );
         self._th_updt_polling.start();
         return [self._th_updt_polling];
     
     def threadstop(self):
         self._on_updt_polling = False;
-        self._th_updt_polling.daemon = True;
         if self._th_updt_polling.is_alive():
             self._th_updt_polling.join(timeout = 3);
         return;
