@@ -267,11 +267,23 @@ def save():
 
 def stop():
     # 关闭BotControl
-    _bc.threadstop();
+    try:
+        _bc.threadstop();
+    except:
+        pass;
     # 关闭各个MM
-    _iomm.threadstop();
-    _mmm.threadstop();
-    _tmm.threadstop();
+    try:
+        _iomm.threadstop();
+    except:
+        pass;
+    try:
+        _mmm.threadstop();
+    except:
+        pass;
+    try:
+        _tmm.threadstop();
+    except:
+        pass;
     # 解注册当前所有模块组件接口，关闭当前所有模块组件
     for _modname in _sys_mods:
         _mod = _sys_mods[_modname];
