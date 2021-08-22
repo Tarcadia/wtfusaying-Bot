@@ -275,7 +275,7 @@ def stop():
 
 def stopwatch():
     while not TO_STOP:
-        time.sleep(5);
+        time.sleep(1);
     stop();
 
 
