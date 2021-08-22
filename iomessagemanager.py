@@ -32,7 +32,6 @@ logger.info('IO Message Manager Loaded');
 def raw_recv():
     _recv = input();
     _recvs = _recv.split();
-
     if len(_recvs) > 1:
         _data = {
             'call'          : _recvs[0],
@@ -168,6 +167,7 @@ class IOMessageManager:
     
     def threadstop(self):
         self._on_updt_polling = False;
+        self._th_updt_polling.setDaemon();
         if self._th_updt_polling.is_alive():
-            self._th_updt_polling.join();
+            self._th_updt_polling.join(timeout = 3);
         return;
