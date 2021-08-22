@@ -1,9 +1,7 @@
 
-from contextsensor import update
 import random;
 import json;
 import time;
-import io;
 import http.client as htpc;
 import threading as thr;
 import logging;
