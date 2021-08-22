@@ -150,14 +150,18 @@ def reloadall():
     # 查找所有模块组件
     _modname_list = [];
     _files = os.listdir('./mods/');
+    logger.info('Detecting mods');
     for _file in _files:
+        logger.info('Detected file %s' % _file);
         _filename, _fileext = os.path.splitext(_file);
         if _fileext == 'py':
+            logger.info('Accept file %s' % _file);
             _modname = _filename;
             _modname_list.append(_modname);
     # 解注册当前所有模块组件接口，关闭当前所有模块组件
     for _modname in _sys_mods:
         _mod = _sys_mods[_modname];
+        logger.info('Import %s' % _modname);
         try:
             for _cb in _mod._mod_cbs:
                 _bc.deregcallback(_cb['key']);
