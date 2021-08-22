@@ -7,12 +7,15 @@ import iomessagemanager as iomm;
 import miraimessagemanager as mmm;
 import tgmessagemanager as tmm;
 
+import threading as thr;
+import time;
 import os;
 import importlib;
 import logging;
 
 VERSION = 'v20210820';
 THREADS = [];
+TO_STOP = False;
 
 logger = logging.getLogger(__name__);
 logger.setLevel(logging.DEBUG);
@@ -231,6 +234,8 @@ def reloadmod(modlist: list = []):
                 except Exception as _err:
                     logger.error('Failed reg call back %s with %s' % (_cb['key'], type(_err)));
                     logger.debug(_err);
+        else:
+            logger.debug('Failed import mod %s for non-exists' % _modname);
     return;
 
 def save():
@@ -265,7 +270,13 @@ def stop():
         except Exception as _err:
             logger.error('Failed stop mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
+    print('已关闭');
     return;
+
+def stopwatch():
+    while not TO_STOP:
+        time.sleep(5);
+    stop();
 
 
 
@@ -286,10 +297,14 @@ _sys_cb_flt_reload = {'mmk' : {'IO'}, 'msg' : {'call' : 'reload'}};
 def _sys_cb_fnc_reload(mmk, msg):
     if msg['args']:
         if msg['args'][0] == '-a':
+            _bc.send(mmk, '开始重加载全部...');
             reloadall();
+            _bc.send(mmk, '重加载完成');
         elif msg['args'][0] == '-m':
             try:
+                _bc.send(mmk, '开始重加载...');
                 reloadmod(msg['args'][1:]);
+                _bc.send(mmk, '重加载完成');
             except Exception as _err:
                 _bc.send(mmk, '执行失败，help一下');
                 logger.error('Failed reloadmod with %s' % type(_err));
@@ -299,11 +314,15 @@ def _sys_cb_fnc_reload(mmk, msg):
 
 _sys_cb_flt_save = {'mmk' : {'IO'}, 'msg' : {'call' : 'save'}};
 def _sys_cb_fnc_save(mmk, msg):
+    _bc.send(mmk, '开始保存...');
     save();
+    _bc.send(mmk, '保存完成');
 
 _sys_cb_flt_stop = {'mmk' : {'IO'}, 'msg' : {'call' : 'stop'}};
 def _sys_cb_fnc_stop(mmk, msg):
-    stop();
+    _bc.send(mmk, '正在关闭...');
+    TO_STOP = True;
+    _bc.send(mmk, '已启动关闭线程');
 
 _sys_cbs.append({'fnc': _sys_cb_fnc_echo, 'flt': _sys_cb_flt_echo, 'key': '_sys_cb_echo'});
 _sys_cbs.append({'fnc': _sys_cb_fnc_help, 'flt': _sys_cb_flt_help, 'key': '_sys_cb_help'});
@@ -342,4 +361,7 @@ def main():
     return;
 
 if __name__ == '__main__':
+    # 启动
     main();
+    # 退出等待
+    stopwatch();
