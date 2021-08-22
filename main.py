@@ -154,7 +154,7 @@ def reloadall():
     for _file in _files:
         logger.info('Detected file %s' % _file);
         _filename, _fileext = os.path.splitext(_file);
-        if _fileext == 'py':
+        if _fileext == '.py':
             logger.info('Accept file %s' % _file);
             _modname = _filename;
             _modname_list.append(_modname);
