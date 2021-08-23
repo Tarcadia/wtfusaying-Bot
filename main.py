@@ -5,6 +5,7 @@ import CONSTS;
 import botcontrol as bc;
 
 import iomessagemanager as iomm;
+import loopbackmessagemanager as lbmm;
 import miraimessagemanager as mmm;
 import tgmessagemanager as tmm;
 
@@ -114,6 +115,7 @@ _bc = bc.BotControl();
 
 # 初始化API接口类（MessageManager）
 _iomm = iomm.IOMessageManager();
+_lbmm = lbmm.LoopbackMessageManager();
 
 _mmm = mmm.MiraiMessageManager(
     host                = CONSTS.REMOTE_HOST,
@@ -374,6 +376,7 @@ def main():
     _bc.regmessagemanager(_mmm, 'mirai');
     _bc.regmessagemanager(_tmm, 'telegram');
     _bc.regmessagemanager(_iomm, 'IO');
+    _bc.regmessagemanager(_lbmm, 'Loopback');
     # 注册各个callback接口到BotControl
     for _cb in _sys_cbs:
         _bc.regcallback(_cb['fnc'], _cb['flt'], _cb['key']);
@@ -387,7 +390,7 @@ def main():
         _mod_thrs = _mod.start();
         THREADS.extend(_mod_thrs);
     # 启动各个MM
-    for _mm in [ _iomm, _mmm, _tmm ]:
+    for _mm in [ _iomm, _lbmm, _mmm, _tmm ]:
         _mm.open();
         _mm_thrs = _mm.threadpolling();
         THREADS.extend(_mm_thrs);
