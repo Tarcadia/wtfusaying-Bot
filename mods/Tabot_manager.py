@@ -219,6 +219,8 @@ def _tabot_cb_fnc_stop(mmk, msg):
     return;
 
 
+
+# 注册
 _mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_self,     'key': '_tabot_qm_cb_muted_qq_self'     });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_all,      'key': '_tabot_qm_cb_muted_qq_all'      });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,      'flt': _tabot_cb_flt_unmuted_qq_self,   'key': '_tabot_qm_cb_unmuted_qq_self'   });
