@@ -120,7 +120,9 @@ class LoopbackMessageManager:
         return _succ;
 
     def threadpolling(self):
+        logger.info('Loopback Message Manager Polling');
         return [];
     
     def threadstop(self):
+        logger.info('Loopback Message Manager Polling Stopped');
         return;

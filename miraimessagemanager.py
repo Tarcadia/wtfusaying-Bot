@@ -525,8 +525,11 @@ class MiraiMessageManager:
             self._th_recv_polling.join();
         if self._th_send_polling.is_alive():
             self._th_send_polling.join();
+        logger.info('Mirai Message Manager Recv Polling Stopped');
+        logger.info('Mirai Message Manager Send Polling Stopped');
 
         self._on_conn_polling = False;
         if self._th_conn_polling.is_alive():
             self._th_conn_polling.join();
+        logger.info('Mirai Message Manager Conn Polling Stopped');
         return;

@@ -459,5 +459,6 @@ class TgMessageManager:
         self._on_updt_polling = False;
         if self._th_updt_polling.is_alive():
             self._th_updt_polling.join();
+        logger.info('Telegram Message Manager Updt Polling Stopped');
         return;
 

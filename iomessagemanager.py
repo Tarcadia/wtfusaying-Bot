@@ -170,4 +170,5 @@ class IOMessageManager:
         self._on_updt_polling = False;
         if self._th_updt_polling.is_alive():
             self._th_updt_polling.join(timeout = 3);
+        logger.info('IO Message Manager Updt Polling Stopped');
         return;
