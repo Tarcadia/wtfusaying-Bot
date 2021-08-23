@@ -214,7 +214,7 @@ _tabot_cb_flt_stop_tg = {
 };
 def _tabot_cb_fnc_stop(mmk, msg):
     _src, _txt = fromtxtmsg(mmk, msg);
-    _msg = totxtmsg(mmk, _src['cid'], '对不起我帮不到你');
+    _msg = totxtmsg(mmk, _src['cid'], '好我这就自闭');
     _botcontrol.send(mmk, _msg);
     return;
 
