@@ -122,9 +122,27 @@ def totxtmsg(mmk, cid, txt):
     msg = None;
     if re.match('mirai.*', mmk):
         if cid[0] == 'p':
-            pass;
+            msg = {
+                'command'           : 'sendFriendMessage',
+                'content'           : {
+                    'target'        : int(cid[1:]),
+                    'messageChain'  : [{
+                        'type'      : 'Plain',
+                        'text'      : txt
+                    }]
+                }
+            }
         elif cid[0] == 'g':
-            pass;
+            msg = {
+                'command'           : 'sendGroupMessage',
+                'content'           : {
+                    'target'        : int(cid[1:]),
+                    'messageChain'  : [{
+                        'type'      : 'Plain',
+                        'text'      : txt
+                    }]
+                }
+            }
         else:
             pass;
     elif re.match('telegram.*', mmk):
