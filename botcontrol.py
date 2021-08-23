@@ -262,12 +262,12 @@ class BotControl:
         return;
     
     def send(self, mmk: str, msg: dict):
-        self._bc, _rt = send(self._bc, mmk = mmk, msg = msg);
-        return _rt;
+        self._bc, _ack = send(self._bc, mmk = mmk, msg = msg);
+        return _ack;
     
     def query(self, mmk: str, msg: dict):
-        self._bc, _rt = query(self._bc, mmk = mmk, msg = msg);
-        return _rt;
+        self._bc, _resp = query(self._bc, mmk = mmk, msg = msg);
+        return _resp;
     
     def _call_polling(self):
         while self._on_call_polling:
