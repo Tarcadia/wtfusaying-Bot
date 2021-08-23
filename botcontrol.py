@@ -108,7 +108,11 @@ def cbfltmatch(msg: dict, flt: dict):
     if type(flt) == dict:
         for _k in flt:
             if _k in msg:
-                _f = cbfltelemmetch(msg[_k], flt[_k]);
+                if cbfltelemmetch(msg[_k], flt[_k]):
+                    _f = True;
+                else:
+                    _f = False;
+                    break;
             else:
                 _f = False;
                 break;
