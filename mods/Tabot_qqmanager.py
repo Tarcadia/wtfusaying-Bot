@@ -1,6 +1,7 @@
 
 import CONSTS;
 
+
 import time;
 import logging;
 
@@ -34,45 +35,73 @@ _mod_help_doc = """
 
 # 实现
 
+def tellop(mmk, txt):
+    mmk, msg = totxtmsg(mmk, txt);
+    return;
+
 
 
 # 回调接口
 
-_tabot_cb_flt_muted_qq_self = {'mmk':{'mirai'},'msg':{'type':'BotMuteEvent'}};
-_tabot_cb_flt_muted_qq_all = {'mmk':{'mirai'},'msg':{'type':'GroupMuteAllEvent','current':True}};
-_tabot_cb_flt_muted_tg = {};
+_tabot_cb_flt_muted_qq_self = {
+    'mmk':{'mirai.*'},
+    'msg':{'type':'BotMuteEvent'}
+};
+_tabot_cb_flt_muted_qq_all = {
+    'mmk':{'mirai.*'},
+    'msg':{'type':'GroupMuteAllEvent','current':True}
+};
 def _tabot_cb_fnc_muted(mmk, msg):
-    if mmk == 'mirai':
-
-        pass;
-    elif mmk == 'telegram':
-        pass;
+    _gid = msg['operator']['group']['id'];
+    _gnm = msg['operator']['group']['name'];
     return;
 
-_tabot_cb_flt_unmuted_qq_self = {'mmk':{'mirai'},'msg':{'type':'BotUnmuteEvent'}};
-_tabot_cb_flt_unmuted_qq_all = {'mmk':{'mirai'},'msg':{'type':'GroupMuteAllEvent','current':False}};
-_tabot_cb_flt_unmuted_tg = {};
+_tabot_cb_flt_unmuted_qq_self = {
+    'mmk':{'mirai.*'},
+    'msg':{'type':'BotUnmuteEvent'}
+};
+_tabot_cb_flt_unmuted_qq_all = {
+    'mmk':{'mirai.*'},
+    'msg':{'type':'GroupMuteAllEvent','current':False}
+};
 def _tabot_cb_fnc_unmuted(mmk, msg):
+    _gid = msg['operator']['group']['id'];
+    _gnm = msg['operator']['group']['name'];
     return;
 
-_tabot_cb_flt_joingroup_qq = {'mmk':{'mirai'},'msg':{'type':'BotJoinGroupEvent'}};
-_tabot_cb_flt_joingroup_tg = {};
+_tabot_cb_flt_joingroup_qq = {
+    'mmk':{'mirai.*'},
+    'msg':{'type':'BotJoinGroupEvent'}
+};
 def _tabot_cb_fnc_joingroup(mmk, msg):
     return;
 
-_tabot_cb_flt_leavegroup_qq = {'mmk':{'mirai'},'msg':{'type':'BotLeaveEventActive'}};
-_tabot_cb_flt_leavegroup_tg = {};
+_tabot_cb_flt_leavegroup_qq = {
+    'mmk':{'mirai.*'},
+    'msg':{'type':'BotLeaveEventActive'}
+};
 def _tabot_cb_fnc_leavegroup(mmk, msg):
     return;
 
-_tabot_cb_flt_newmember_qq = {'mmk':{'mirai'},'msg':{'type':'MemberJoinEvent'}};
-_talker_cb_flt_newmember_tg = {};
+_tabot_cb_flt_newmember_qq = {
+    'mmk':{'mirai.*'},
+    'msg':{'type':'MemberJoinEvent'}
+};
 def _tabot_cb_fnc_newmember(mmk, msg):
     return;
 
-_tabot_cb_flt_invited_qq = {'mmk':{'mirai'},'msg':{'type':'BotInvitedJoinGroupRequestEvent'}};
-_tabot_cb_flt_invited_tg = {};
+_tabot_cb_flt_invited_qq = {
+    'mmk':{'mirai.*'},
+    'msg':{'type':'BotInvitedJoinGroupRequestEvent'}
+};
 def _tabot_cb_fnc_invited(mmk, msg):
+    _eid = msg['eventId'];
+    _fid = msg['fromId'];
+    _gid = msg['groupId'];
+    _gnm = msg['groupName'];
+    _cmd = {'content':{"eventId":_eid,"fromId":_fid,"groupId":_gid,"operate":0,"message":""}};
+    _botcontrol.send(mmk, _cmd);
+    tellop(mmk, '被邀请进入群%s(%s)'%(_gnm, _gid));
     return;
 
 _mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_self,     'key': '_tabot_qm_cb_muted_qq_self'     });
