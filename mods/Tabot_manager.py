@@ -1,8 +1,8 @@
 
 import CONSTS;
 
-from Tabot_talker import fromtxtmsg;
-from Tabot_talker import totxtmsg;
+from mods.Tabot_talker import fromtxtmsg;
+from mods.Tabot_talker import totxtmsg;
 
 import re;
 import time;
