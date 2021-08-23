@@ -117,7 +117,8 @@ def cbfltmatch(msg: dict, flt: dict):
 def cbmmkmatch(mmk, mmkset):
     _f = False;
     for _mmkmt in mmkset:
-        _f |= re.match(_mmkmt, mmk);
+        _match = re.match(_mmkmt, mmk);
+        _f |= bool(_match);
     return _f;
 
 
