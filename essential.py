@@ -85,9 +85,9 @@ def reloadall():
             for _cb in _mod._mod_cbs:
                 _sys_botcontrol.deregcallback(_cb['key']);
         except KeyError:
-            logger.error('Failed dereg call back or Key Error');
+            logger.error('Failed dereg callback or Key Error');
         except Exception as _err:
-            logger.error('Failed dereg call back %s with %s' % (_cb['key'], type(_err)));
+            logger.error('Failed dereg callback %s with %s' % (_cb['key'], type(_err)));
             logger.debug(_err);
         try:
             _mod.save();
@@ -123,9 +123,9 @@ def reloadall():
             for _cb in _mod._mod_cbs:
                 _sys_botcontrol.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
         except KeyError:
-            logger.error('Failed reg call back or Key Error');
+            logger.error('Failed reg callback or Key Error');
         except Exception as _err:
-            logger.error('Failed reg call back %s with %s' % (_cb['key'], type(_err)));
+            logger.error('Failed reg callback %s with %s' % (_cb['key'], type(_err)));
             logger.debug(_err);
     return;
 
@@ -138,9 +138,9 @@ def reloadmod(modlist: list = []):
                 for _cb in _mod._mod_cbs:
                     _sys_botcontrol.deregcallback(_cb['key']);
             except KeyError:
-                logger.error('Failed dereg call back or Key Error');
+                logger.error('Failed dereg callback or Key Error');
             except Exception as _err:
-                logger.error('Failed dereg call back %s with %s' % (_cb['key'], type(_err)));
+                logger.error('Failed dereg callback %s with %s' % (_cb['key'], type(_err)));
                 logger.debug(_err);
             try:
                 _mod.save();
@@ -174,9 +174,9 @@ def reloadmod(modlist: list = []):
                 for _cb in _mod._mod_cbs:
                     _sys_botcontrol.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
             except KeyError:
-                logger.error('Failed reg call back or Key Error');
+                logger.error('Failed reg callback or Key Error');
             except Exception as _err:
-                logger.error('Failed reg call back %s with %s' % (_cb['key'], type(_err)));
+                logger.error('Failed reg callback %s with %s' % (_cb['key'], type(_err)));
                 logger.debug(_err);
         else:
             logger.debug('Failed import mod %s for non-exists' % _modname);
@@ -211,9 +211,9 @@ def stop():
             for _cb in _mod._mod_cbs:
                 _sys_botcontrol.deregcallback(_cb['key']);
         except KeyError:
-            logger.error('Failed dereg call back or Key Error');
+            logger.error('Failed dereg callback or Key Error');
         except Exception as _err:
-            logger.error('Failed dereg call back %s with %s' % (_cb['key'], type(_err)));
+            logger.error('Failed dereg callback %s with %s' % (_cb['key'], type(_err)));
             logger.debug(_err);
         try:
             _mod.save();
