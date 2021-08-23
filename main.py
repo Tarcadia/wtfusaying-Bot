@@ -128,12 +128,12 @@ def main():
     _bc.regmessagemanager(_mmm, 'mirai');
     _bc.regmessagemanager(_tmm, 'telegram');
     # 注册各个callback接口到BotControl
-        for _cb in ess._sys_cbs:
-            _bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
+    for _cb in ess._sys_cbs:
+        _bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
     for _modname in ess._sys_mods:
         _mod = ess._sys_mods[_modname];
         for _cb in _mod._mod_cbs:
-                _bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
+            _bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
     # 启动各个组件
     for _modname in ess._sys_mods:
         _mod = ess._sys_mods[_modname];
