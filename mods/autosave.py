@@ -48,18 +48,21 @@ _autosave_cb_flt_autosave_t = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'au
 def _autosave_cb_fnc_autosave_t(mmk, msg):
     global _autosave_time;
     _autosave_time = int(msg['args'][1]);
+    _botcontrol.send('IO', 'Auto Save 已设置间隔时间');
     return;
 
 _autosave_cb_flt_autosave_on = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'autosave', 'args' : ['-on']}};
 def _autosave_cb_fnc_autosave_on(mmk, msg):
     global _autosave_on;
     _autosave_on = True;
+    _botcontrol.send('IO', 'Auto Save 已开启');
     return;
 
 _autosave_cb_flt_autosave_off = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'autosave', 'args' : ['-off']}};
 def _autosave_cb_fnc_autosave_off(mmk, msg):
     global _autosave_on;
     _autosave_on = False;
+    _botcontrol.send('IO', 'Auto Save 已关闭');
     return;
 
 _mod_cbs.append({'fnc': _autosave_cb_fnc_autosave_t, 'flt': _autosave_cb_flt_autosave_t, 'key': '_autosave_cb_autosave_t'});
