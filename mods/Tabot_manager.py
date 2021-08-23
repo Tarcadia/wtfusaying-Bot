@@ -62,8 +62,8 @@ def _tabot_cb_fnc_muted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
     logger.info('mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
-    tellop('mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
-    tellop('mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
+    tellop('mirai', 'mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
+    tellop('telegram', 'mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
     return;
 
 # 解除禁言
@@ -79,8 +79,8 @@ def _tabot_cb_fnc_unmuted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
     logger.info('mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
-    tellop('mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
-    tellop('mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
+    tellop('mirai', 'mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
+    tellop('telegram', 'mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
     return;
 
 # 加群
