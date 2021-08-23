@@ -128,12 +128,26 @@ def main():
     _bc.regmessagemanager(_mmm, 'mirai');
     _bc.regmessagemanager(_tmm, 'telegram');
     # 注册各个callback接口到BotControl
+    try:
+        for _cb in ess._sys_cbs:
+            _bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
+    except KeyError:
+        logger.error('Failed reg callback for Key Error');
+    except Exception as _err:
+        logger.error('Failed reg callback %s with %s' % (_cb['key'], type(_err)));
+        logger.debug(_err);
     for _cb in ess._sys_cbs:
         _bc.regcallback(_cb['fnc'], _cb['flt'], _cb['key']);
     for _modname in ess._sys_mods:
         _mod = ess._sys_mods[_modname];
+        try:
         for _cb in _mod._mod_cbs:
-            _bc.regcallback(_cb['fnc'], _cb['flt'], _cb['key']);
+                _bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
+        except KeyError:
+            logger.error('Failed reg callback for Key Error');
+        except Exception as _err:
+            logger.error('Failed reg callback %s with %s' % (_cb['key'], type(_err)));
+            logger.debug(_err);
     # 启动各个组件
     for _modname in ess._sys_mods:
         _mod = ess._sys_mods[_modname];

@@ -294,7 +294,7 @@ def load():
             _modname = _filename;
             _modname_list.append(_modname);
     
-    # 加载查找的模块组件，开启模块组件，注册接口
+    # 加载查找的模块组件，开启模块组件
     for _modname in _modname_list:
         try:
             _mod = importlib.import_module('mods.' + _modname);
@@ -308,14 +308,6 @@ def load():
             _sys_threads.extend(_mod_thrs);
         except Exception as _err:
             logger.error('Failed start mod %s with %s' % (_modname, type(_err)));
-            logger.debug(_err);
-        try:
-            for _cb in _mod._mod_cbs:
-                _sys_botcontrol.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
-        except KeyError:
-            logger.error('Failed reg call back or Key Error');
-        except Exception as _err:
-            logger.error('Failed reg call back %s with %s' % (_cb['key'], type(_err)));
             logger.debug(_err);
     
     return;
