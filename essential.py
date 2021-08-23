@@ -1,6 +1,4 @@
 
-import main;
-
 import os;
 import importlib;
 import logging;
@@ -48,8 +46,10 @@ logger.info('Essential Loaded');
 # stop()                            // 模块的合法结束
 
 
-
-_sys_cbs = [];                      # 底层系统组件的 call back 列表
+_sys_botcontrol = None;             # 底层系统组件的 Bot Control 引用
+_sys_threads = [];                  # 底层系统组件的线程列表，由main附入引用THREADS
+_sys_mms = [];                      # 底层系统组件的 Message Manager 列表
+_sys_cbs = [];                      # 底层系统组件的 Callback 列表
 _sys_mods = dict();                 # 引入mods列表
 _sys_help_doc = """
 # 底层系统组件
@@ -83,7 +83,7 @@ def reloadall():
         logger.info('Import %s' % _modname);
         try:
             for _cb in _mod._mod_cbs:
-                main._bc.deregcallback(_cb['key']);
+                _sys_botcontrol.deregcallback(_cb['key']);
         except KeyError:
             logger.error('Failed dereg call back or Key Error');
         except Exception as _err:
@@ -104,20 +104,20 @@ def reloadall():
     for _modname in _modname_list:
         try:
             _mod = importlib.import_module('mods.' + _modname);
-            _mod._botcontrol = main._bc;
+            _mod._botcontrol = _sys_botcontrol;
             _sys_mods[_modname] = _mod;
         except Exception as _err:
             logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
         try:
             _mod_thrs = _mod.start();
-            main.THREADS.extend(_mod_thrs);
+            _sys_threads.extend(_mod_thrs);
         except Exception as _err:
             logger.error('Failed start mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
         try:
             for _cb in _mod._mod_cbs:
-                main._bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
+                _sys_botcontrol.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
         except KeyError:
             logger.error('Failed reg call back or Key Error');
         except Exception as _err:
@@ -132,7 +132,7 @@ def reloadmod(modlist: list = []):
             _mod = _sys_mods[_modname];
             try:
                 for _cb in _mod._mod_cbs:
-                    main._bc.deregcallback(_cb['key']);
+                    _sys_botcontrol.deregcallback(_cb['key']);
             except KeyError:
                 logger.error('Failed dereg call back or Key Error');
             except Exception as _err:
@@ -153,20 +153,20 @@ def reloadmod(modlist: list = []):
         if os.path.isfile('./mods/' + _modname + '.py'):
             try:
                 _mod = importlib.import_module('mods.' + _modname);
-                _mod._botcontrol = main._bc;
+                _mod._botcontrol = _sys_botcontrol;
                 _sys_mods[_modname] = _mod;
             except Exception as _err:
                 logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
                 logger.debug(_err);
             try:
                 _mod_thrs = _mod.start();
-                main.THREADS.extend(_mod_thrs);
+                _sys_threads.extend(_mod_thrs);
             except Exception as _err:
                 logger.error('Failed start mod %s with %s' % (_modname, type(_err)));
                 logger.debug(_err);
             try:
                 for _cb in _mod._mod_cbs:
-                    main._bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
+                    _sys_botcontrol.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
             except KeyError:
                 logger.error('Failed reg call back or Key Error');
             except Exception as _err:
@@ -189,28 +189,21 @@ def save():
 def stop():
     # 关闭BotControl
     try:
-        main._bc.threadstop();
+        _sys_botcontrol.threadstop();
     except:
         pass;
     # 关闭各个MM
-    try:
-        main._iomm.threadstop();
-    except:
-        pass;
-    try:
-        main._mmm.threadstop();
-    except:
-        pass;
-    try:
-        main._tmm.threadstop();
-    except:
-        pass;
+    for _mm in _sys_mms:
+        try:
+            _mm.threadstop();
+        except:
+            pass;
     # 解注册当前所有模块组件接口，关闭当前所有模块组件
     for _modname in _sys_mods:
         _mod = _sys_mods[_modname];
         try:
             for _cb in _mod._mod_cbs:
-                main._bc.deregcallback(_cb['key']);
+                _sys_botcontrol.deregcallback(_cb['key']);
         except KeyError:
             logger.error('Failed dereg call back or Key Error');
         except Exception as _err:
@@ -239,42 +232,42 @@ def _sys_cb_fnc_echo(mmk, msg):
 
 _sys_cb_flt_help = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'help'}};
 def _sys_cb_fnc_help(mmk, msg):
-    main._bc.send('IO', _sys_help_doc);
+    _sys_botcontrol.send('IO', _sys_help_doc);
     for _modname in _sys_mods:
         _mod = _sys_mods[_modname];
-        main._bc.send('IO', _mod._mod_help_doc);
+        _sys_botcontrol.send('IO', _mod._mod_help_doc);
 
 _sys_cb_flt_reload = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'reload'}};
 def _sys_cb_fnc_reload(mmk, msg):
     if msg['args']:
         if msg['args'][0] == '-a':
-            main._bc.send('IO', '开始重加载全部...');
+            _sys_botcontrol.send('IO', '开始重加载全部...');
             reloadall();
-            main._bc.send('IO', '重加载完成');
+            _sys_botcontrol.send('IO', '重加载完成');
         elif msg['args'][0] == '-m':
             try:
-                main._bc.send('IO', '开始重加载...');
+                _sys_botcontrol.send('IO', '开始重加载...');
                 reloadmod(msg['args'][1:]);
-                main._bc.send('IO', '重加载完成');
+                _sys_botcontrol.send('IO', '重加载完成');
             except Exception as _err:
-                main._bc.send('IO', '执行失败，help一下');
+                _sys_botcontrol.send('IO', '执行失败，help一下');
                 logger.error('Failed reload mod with %s' % type(_err));
                 logger.debug(_err);
     else:
-        main._bc.send('IO', '参数不对，help一下');
+        _sys_botcontrol.send('IO', '参数不对，help一下');
 
 _sys_cb_flt_save = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'save'}};
 def _sys_cb_fnc_save(mmk, msg):
-    main._bc.send('IO', '开始保存...');
+    _sys_botcontrol.send('IO', '开始保存...');
     save();
-    main._bc.send('IO', '保存完成');
+    _sys_botcontrol.send('IO', '保存完成');
 
 _sys_cb_flt_stop = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'stop'}};
 def _sys_cb_fnc_stop(mmk, msg):
-    main._bc.send('IO', '正在关闭...');
+    _sys_botcontrol.send('IO', '正在关闭...');
     global TO_STOP;
     TO_STOP = True;
-    main._bc.send('IO', '已启动关闭线程');
+    _sys_botcontrol.send('IO', '已启动关闭线程');
 
 
 
@@ -305,20 +298,20 @@ def load():
     for _modname in _modname_list:
         try:
             _mod = importlib.import_module('mods.' + _modname);
-            _mod._botcontrol = main._bc;
+            _mod._botcontrol = _sys_botcontrol;
             _sys_mods[_modname] = _mod;
         except Exception as _err:
             logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
         try:
             _mod_thrs = _mod.start();
-            main.THREADS.extend(_mod_thrs);
+            _sys_threads.extend(_mod_thrs);
         except Exception as _err:
             logger.error('Failed start mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
         try:
             for _cb in _mod._mod_cbs:
-                main._bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
+                _sys_botcontrol.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
         except KeyError:
             logger.error('Failed reg call back or Key Error');
         except Exception as _err:
