@@ -14,7 +14,8 @@ logger_ch = logging.StreamHandler();
 logger_ch.setLevel(logging.DEBUG);
 logger_formatter = logging.Formatter(fmt='[%(asctime)s][%(levelname)s][%(name)s] >> %(message)s', datefmt='%Y%m%d-%H%M%S');
 logger_ch.setFormatter(logger_formatter);
-logger.addHandler(logger_ch);
+if not logger.hasHandlers():
+    logger.addHandler(logger_ch);
 logger.info('Auto Save Loaded');
 
 # 一个模块组件需要的定义实现：
