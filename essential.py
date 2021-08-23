@@ -294,7 +294,7 @@ def load():
             _modname = _filename;
             _modname_list.append(_modname);
     
-    # 加载查找的模块组件，开启模块组件
+    # 加载查找的模块组件
     for _modname in _modname_list:
         try:
             _mod = importlib.import_module('mods.' + _modname);
@@ -302,12 +302,6 @@ def load():
             _sys_mods[_modname] = _mod;
         except Exception as _err:
             logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
-            logger.debug(_err);
-        try:
-            _mod_thrs = _mod.start();
-            _sys_threads.extend(_mod_thrs);
-        except Exception as _err:
-            logger.error('Failed start mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
     
     return;
