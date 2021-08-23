@@ -42,10 +42,10 @@ def _emptymod_cb_fnc_event(mmk, msg):
     on_event(msg);
     return;
 
-_mod_cbs.append({'fnc': _emptymod_cb_fnc_event,     'flt': _emptymod_cb_flt_event,          'key': '_tabot_talker_cb_atme_qqgroup'  });
-#_mod_cbs.append({'fnc': _emptymod_cb_fnc_event,     'flt': _emptymod_cb_flt_event,          'key': '_tabot_talker_cb_atme_qqgroup'  });
-#_mod_cbs.append({'fnc': _emptymod_cb_fnc_event,     'flt': _emptymod_cb_flt_event,          'key': '_tabot_talker_cb_atme_qqgroup'  });
-#_mod_cbs.append({'fnc': _emptymod_cb_fnc_event,     'flt': _emptymod_cb_flt_event,          'key': '_tabot_talker_cb_atme_qqgroup'  });
+_mod_cbs.append({'fnc': _emptymod_cb_fnc_event,     'flt': _emptymod_cb_flt_event,          'key': '_emptymod_cb_func'              });
+#_mod_cbs.append({'fnc': _emptymod_cb_fnc_event,     'flt': _emptymod_cb_flt_event,          'key': '_emptymod_cb_func'              });
+#_mod_cbs.append({'fnc': _emptymod_cb_fnc_event,     'flt': _emptymod_cb_flt_event,          'key': '_emptymod_cb_func'              });
+#_mod_cbs.append({'fnc': _emptymod_cb_fnc_event,     'flt': _emptymod_cb_flt_event,          'key': '_emptymod_cb_func'              });
 
 
 

@@ -19,7 +19,7 @@ logger_formatter = logging.Formatter(fmt='[%(asctime)s][%(levelname)s][%(name)s]
 logger_ch.setFormatter(logger_formatter);
 if not logger.hasHandlers():
     logger.addHandler(logger_ch);
-logger.info('Tabot QQ Manager Loaded');
+logger.info('Tabot Manager Loaded');
 
 # 一个模块组件需要的定义实现：
 # 为一个单独的module的py，放在./mods/下以供调用，在调用时应当实现如下的接口
@@ -251,5 +251,5 @@ def save():
     return;
 
 def stop():
-    logger.info('Tabot QQ Manager Stopped');
+    logger.info('Tabot Manager Stopped');
     return;
