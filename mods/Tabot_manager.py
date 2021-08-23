@@ -52,11 +52,11 @@ def tellop(mmk, txt):
 # 禁言
 _tabot_cb_flt_muted_qq_self = {
     'mmk':{'mirai.*'},
-    'msg':{'type':'BotMuteEvent'}
+    'msg':{'data': {'type':'BotMuteEvent'}}
 };
 _tabot_cb_flt_muted_qq_all = {
     'mmk':{'mirai.*'},
-    'msg':{'type':'GroupMuteAllEvent','current':True}
+    'msg':{'data': {'type':'GroupMuteAllEvent','current':True}}
 };
 def _tabot_cb_fnc_muted(mmk, msg):
     _gid = msg['operator']['group']['id'];
@@ -69,11 +69,11 @@ def _tabot_cb_fnc_muted(mmk, msg):
 # 解除禁言
 _tabot_cb_flt_unmuted_qq_self = {
     'mmk':{'mirai.*'},
-    'msg':{'type':'BotUnmuteEvent'}
+    'msg':{'data': {'type':'BotUnmuteEvent'}}
 };
 _tabot_cb_flt_unmuted_qq_all = {
     'mmk':{'mirai.*'},
-    'msg':{'type':'GroupMuteAllEvent','current':False}
+    'msg':{'data': {'type':'GroupMuteAllEvent','current':False}}
 };
 def _tabot_cb_fnc_unmuted(mmk, msg):
     _gid = msg['operator']['group']['id'];
@@ -86,7 +86,7 @@ def _tabot_cb_fnc_unmuted(mmk, msg):
 # 加群
 _tabot_cb_flt_joingroup_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'type':'BotJoinGroupEvent'}
+    'msg':{'data': {'type':'BotJoinGroupEvent'}}
 };
 def _tabot_cb_fnc_joingroup(mmk, msg):
     _gid = msg['group']['id'];
@@ -99,11 +99,11 @@ def _tabot_cb_fnc_joingroup(mmk, msg):
 # 退群
 _tabot_cb_flt_leavegroup_qq_self = {
     'mmk':{'mirai.*'},
-    'msg':{'type':'BotLeaveEventActive'}
+    'msg':{'data': {'type':'BotLeaveEventActive'}}
 };
 _tabot_cb_flt_leavegroup_qq_kick = {
     'mmk':{'mirai.*'},
-    'msg':{'type':'BotLeaveEventKick'}
+    'msg':{'data': {'type':'BotLeaveEventKick'}}
 };
 def _tabot_cb_fnc_leavegroup(mmk, msg):
     _gid = msg['group']['id'];
@@ -116,7 +116,7 @@ def _tabot_cb_fnc_leavegroup(mmk, msg):
 # 群加人
 _tabot_cb_flt_newmember_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'type':'MemberJoinEvent'}
+    'msg':{'data': {'type':'MemberJoinEvent'}}
 };
 def _tabot_cb_fnc_newmember(mmk, msg):
     _uid = msg['member']['id'];
@@ -131,7 +131,7 @@ def _tabot_cb_fnc_newmember(mmk, msg):
 # 群踢人
 _tabot_cb_flt_kickmember_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'type':'MemberLeaveEventKick'}
+    'msg':{'data': {'type':'MemberLeaveEventKick'}}
 };
 def _tabot_cb_fnc_kickmember(mmk, msg):
     _uid = msg['member']['id'];
@@ -146,7 +146,7 @@ def _tabot_cb_fnc_kickmember(mmk, msg):
 # 群退人
 _tabot_cb_flt_quitmember_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'type':'MemberLeaveEventQuit'}
+    'msg':{'data': {'type':'MemberLeaveEventQuit'}}
 };
 def _tabot_cb_fnc_quitmember(mmk, msg):
     _uid = msg['member']['id'];
@@ -161,7 +161,7 @@ def _tabot_cb_fnc_quitmember(mmk, msg):
 # Bot被邀请加群
 _tabot_cb_flt_invited_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'type':'BotInvitedJoinGroupRequestEvent'}
+    'msg':{'data': {'type':'BotInvitedJoinGroupRequestEvent'}}
 };
 def _tabot_cb_fnc_invited(mmk, msg):
     _eid = msg['eventId'];
@@ -178,7 +178,7 @@ def _tabot_cb_fnc_invited(mmk, msg):
 # Bot指令
 _tabot_cb_flt_help_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'data':{'messageChain':[{'type':'Plain','text':'Tabot -help'}]}}
+    'msg':{'data': {'messageChain':[{'type':'Plain','text':'Tabot -help'}]}}
 };
 _tabot_cb_flt_help_tg = {
     'mmk':{'telegram.*'},
@@ -192,7 +192,7 @@ def _tabot_cb_fnc_help(mmk, msg):
 
 _tabot_cb_flt_ping_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'data':{'messageChain':[{'type':'Plain','text':'Tabot -ping'}]}}
+    'msg':{'data': {'messageChain':[{'type':'Plain','text':'Tabot -ping'}]}}
 };
 _tabot_cb_flt_ping_tg = {
     'mmk':{'telegram.*'},
@@ -206,7 +206,7 @@ def _tabot_cb_fnc_ping(mmk, msg):
 
 _tabot_cb_flt_stop_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'data':{'messageChain':[{'type':'Plain','text':'Tabot -stop'}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
+    'msg':{'data': {'messageChain':[{'type':'Plain','text':'Tabot -stop'}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
 };
 _tabot_cb_flt_stop_tg = {
     'mmk':{'telegram.*'},
