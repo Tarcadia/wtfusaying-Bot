@@ -46,7 +46,7 @@ logger.info('Essential Loaded');
 # save()                            // 模块的保存操作
 # stop()                            // 模块的合法结束
 
-
+_sys_tostop = False;                # 底层系统组件的结束控制，供main的stopwatch调用
 _sys_botcontrol = None;             # 底层系统组件的 Bot Control 引用
 _sys_threads = [];                  # 底层系统组件的线程列表，由main附入引用THREADS
 _sys_mms = [];                      # 底层系统组件的 Message Manager 列表
@@ -271,8 +271,8 @@ def _sys_cb_fnc_save(mmk, msg):
 _sys_cb_flt_stop = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'stop'}};
 def _sys_cb_fnc_stop(mmk, msg):
     _sys_botcontrol.send('IO', '正在关闭...');
-    global TO_STOP;
-    TO_STOP = True;
+    global _sys_tostop;
+    _sys_tostop = True;
     _sys_botcontrol.send('IO', '已启动关闭线程');
 
 

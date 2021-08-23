@@ -16,7 +16,6 @@ import logging;
 
 VERSION = 'v20210823';
 THREADS = [];
-TO_STOP = False;
 
 logger = logging.getLogger(__name__);
 logger.setLevel(logging.DEBUG);
@@ -150,7 +149,7 @@ def main():
     return;
 
 def stopwatch():
-    while not TO_STOP:
+    while not ess._sys_tostop:
         time.sleep(1);
     ess.stop();
 
