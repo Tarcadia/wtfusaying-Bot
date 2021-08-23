@@ -294,3 +294,4 @@ class BotControl:
     def threadstop(self):
         self._on_call_polling = False;
         self._th_call_polling.join();
+        logger.info('Bot Control Call Polling Stopped');
