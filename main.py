@@ -118,12 +118,15 @@ _tmm = tmm.TgMessageManager(
 
 def main():
     # 加载ess
+    ess._sys_botcontrol = _bc;
+    ess._sys_threads = THREADS;
+    ess._sys_mms = [ _iomm, _lbmm, _mmm, _tmm ];
     ess.load();
     # 注册各个messagemanager类的接口到BotControl
-    _bc.regmessagemanager(_mmm, 'mirai');
-    _bc.regmessagemanager(_tmm, 'telegram');
     _bc.regmessagemanager(_iomm, 'IO');
     _bc.regmessagemanager(_lbmm, 'Loopback');
+    _bc.regmessagemanager(_mmm, 'mirai');
+    _bc.regmessagemanager(_tmm, 'telegram');
     # 注册各个callback接口到BotControl
     for _cb in ess._sys_cbs:
         _bc.regcallback(_cb['fnc'], _cb['flt'], _cb['key']);
