@@ -92,6 +92,9 @@ logger.info('Main Loaded');
 _bc = bc.BotControl();
 
 # 初始化API接口类（MessageManager）
+# 注册各个messagemanager类的接口到BotControl时回要求一个mmk
+# 约定的，mmk在作为MM的标识符的同时应当起到识别mm类型的作用
+# 所以mmk应当满足'<type>_<xxx>'的形式，或至少满足'<type>.*'的正则判定
 _iomm = iomm.IOMessageManager();
 _lbmm = lbmm.LoopbackMessageManager();
 

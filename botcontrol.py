@@ -114,7 +114,11 @@ def cbfltmatch(msg: dict, flt: dict):
                 break;
     return _f;
 
-
+def cbmmkmatch(mmk, mmkset):
+    _f = False;
+    for _mmkmt in mmkset:
+        _f |= re.match(_mmkmt, mmk);
+    return _f;
 
 
 
@@ -210,7 +214,7 @@ def do_callback(bc: dict, mmk: str, msg: dict):
                 (callable(_cb['flt']) and _flt) or
                 (type(_cb['flt']) == dict and
                     'mmk' in _cb['flt'] and 'msg' in _cb['flt'] and
-                    mmk in _cb['flt']['mmk'] and cbfltmatch(msg, _cb['flt']['msg']))
+                    cbmmkmatch(mmk, _cb['flt']['mmk']) and cbfltmatch(msg, _cb['flt']['msg']))
             ):
                 with bc['cbl']:
                     try:
