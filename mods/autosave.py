@@ -62,9 +62,9 @@ def _autosave_cb_fnc_autosave_off(mmk, msg):
     _autosave_on = False;
     return;
 
-_mod_cbs.append({'fnc': _autosave_cb_fnc_autosave_t, 'flt': _autosave_cb_flt_autosave_t, 'key': '_autosave_cb_fnc_autosave_t'});
-_mod_cbs.append({'fnc': _autosave_cb_fnc_autosave_on, 'flt': _autosave_cb_flt_autosave_on, 'key': '_autosave_cb_fnc_autosave_on'});
-_mod_cbs.append({'fnc': _autosave_cb_fnc_autosave_off, 'flt': _autosave_cb_flt_autosave_off, 'key': '_autosave_cb_fnc_autosave_off'});
+_mod_cbs.append({'fnc': _autosave_cb_fnc_autosave_t, 'flt': _autosave_cb_flt_autosave_t, 'key': '_autosave_cb_autosave_t'});
+_mod_cbs.append({'fnc': _autosave_cb_fnc_autosave_on, 'flt': _autosave_cb_flt_autosave_on, 'key': '_autosave_cb_autosave_on'});
+_mod_cbs.append({'fnc': _autosave_cb_fnc_autosave_off, 'flt': _autosave_cb_flt_autosave_off, 'key': '_autosave_cb_autosave_off'});
 
 
 
