@@ -1,6 +1,8 @@
 
 import CONSTS;
 
+
+import re;
 import time;
 import logging;
 
@@ -32,8 +34,31 @@ _mod_help_doc = """
 # TB_Talker：Tabot组件，用于根据语境实现对话
 """;
 
-# 实现
+# 接口级实现
 
+# 一条 Tabot 里的 message 应该在接口处就被翻译成统一的形式，通过'<mmk>.<cid>'的形式实现唯一的对话场景的标识；
+# 在内部处理时应当用统一的逻辑处理统一的 Tabot Message 形式，将一条消息视作一个对话场景里的一个上下文元素；
+# 一条 Tabot 中的 message 应当是保护“来源”（src）或“去向”（tgt），和消息内容本体（msg）的；
+# Tabot_talker中的miraitxtmsg，tgtxtmsg，totxtmsg接口应当是有高优先级的，作为Tabot中通用的txtmsg处理接口；
+
+# src               : dict          // 一条Tabot里的message的来源的表示
+# {
+#   'mmk'           : mmk,          // 来源mmk，
+#   'cid'           : id,           // 来源chatid，形如'p<xxxxx>'或'g<xxxxx>'
+#                                   // p表示是私戳，g是群聊，c是channel，特别的，u表示未识别
+#                                   // <xxxxx>是qq号、qq群号、tg的chatid
+#   'uid'           : id,           // 来源userid，是qq号或者tg的user的id
+#   'mid'           : id,           // 消息的id，qq和tg的id
+#   'time'          : time          // 消息的时间
+# }
+
+# tgt               : dict          // 一条Tabot里的message的去向的表示
+# {
+#   'mmk'           : mmk,          // 去向mmk，
+#   'cid'           : id,           // 去向chatid，
+# }
+
+# 将一个miraimessage翻译成tabotmessage，限于文本内容
 def miraitxtmsg(mmk, msg):
     _t = '';
     if msg['type'] == 'FriendMessage':
@@ -42,6 +67,8 @@ def miraitxtmsg(mmk, msg):
         _t = 'p';
     elif msg['type'] == 'GroupMessage':
         _t = 'g';
+    else:
+        _t = 'u';
     _src = {
         'mmk'       : mmk,
         'cid'       : _t + str(msg['sender']['id']),
@@ -57,6 +84,7 @@ def miraitxtmsg(mmk, msg):
     _txt = ' '.join(_txtchain);
     return _src, _txt;
 
+# 将一个tgmessage翻译成tabotmessage，限于文本内容
 def tgtxtmsg(mmk, msg):
     _t = '';
     if msg['chat']['type'] == 'private':
@@ -67,6 +95,8 @@ def tgtxtmsg(mmk, msg):
         _t = 'g'
     elif msg['chat']['type'] == 'channel':
         _t = 'c'
+    else:
+        _t = 'u';
     _src = {
         'mmk'       : mmk,
         'cid'       : _t + str(msg['chat']['id']),
@@ -77,26 +107,69 @@ def tgtxtmsg(mmk, msg):
     _txt = msg['text'] if 'text' in msg else '';
     return _src, _txt;
 
-def totxtmsg(mmk, txt):
-    msg = {};
-    return mmk, msg;
+# 将一个tabotmessage翻译成mmk对应的message
+def totxtmsg(mmk, cid, txt):
+    msg = None;
+    if re.match('mirai.*', mmk):
+        if cid[0] == 'p':
+            pass;
+        elif cid[0] == 'g':
+            pass;
+        else:
+            pass;
+    elif re.match('telegram.*', mmk):
+        msg = None;
+        if cid[0] == 'p':
+            msg = {
+                'command'           : 'sendMessage',
+                'type'              : 'application/json',
+                'content': {
+                    'chat_id'       : int(cid[1:]),
+                    'text'          : txt
+                }
+            };
+        elif cid[0] == 'g':
+            msg = {
+                'command'           : 'sendMessage',
+                'type'              : 'application/json',
+                'content': {
+                    'chat_id'       : int(cid[1:]),
+                    'text'          : txt
+                }
+            };
+        elif cid[0] == 'c':
+            msg = {
+                'command'           : 'sendMessage',
+                'type'              : 'application/json',
+                'content': {
+                    'chat_id'       : '@' + cid[1:],
+                    'text'          : txt
+                }
+            };
+        else:
+            pass;
+    return msg;
 
-def sendtxtmsg(mmk, txt):
-    mmk, msg = totxtmsg(mmk, txt);
-    _botcontrol.send(mmk, msg);
+# 本地实现
 
 def on_atme(src, txt):
     return;
 
 # 回调接口
 
-_tabot_cb_flt_atme_qqgroup = {'mmk':{'mirai'},'msg':{'data':{'type':'GroupMessage','messageChain':[{'type':'At','target':CONSTS.BOT_QQ}]}}};
-_tabot_cb_flt_atme_tggroup = {'mmk':{'telegram'},'msg':{'message': {'text': '.*@%s.*' % CONSTS.BOT_TG, 'entities': [{'type': 'mention'}]}}};
+_tabot_cb_flt_atme_qqgroup = {
+    'mmk':{'mirai.*'},
+    'msg':{'data':{'type':'GroupMessage','messageChain':[{'type':'At','target':CONSTS.BOT_QQ}]}}
+};
+_tabot_cb_flt_atme_tggroup = {
+    'mmk':{'telegram.*'},
+    'msg':{'message': {'text': '.*@%s.*' % CONSTS.BOT_TG, 'entities': [{'type': 'mention'}]}}
+};
 def _tabot_cb_fnc_atme(mmk, msg):
-    if mmk == 'mirai':
+    if re.match('mirai.*', mmk):
         _src, _txt = miraitxtmsg(mmk, msg['data']);
         on_atme(_src, _txt);
-    elif mmk == 'telegram':
+    elif re.match('telegram.*', mmk):
         _src, _txt = tgtxtmsg(mmk, msg['message']);
         on_atme(_src, _txt);
     return;
