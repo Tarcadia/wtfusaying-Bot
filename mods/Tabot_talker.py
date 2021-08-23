@@ -107,6 +107,16 @@ def tgtxtmsg(mmk, msg):
     _txt = msg['text'] if 'text' in msg else '';
     return _src, _txt;
 
+# 将一个mmk的message翻译成一个tabotmessage
+def fromtxtmsg(mmk, msg):
+    if re.match('mirai.*', mmk):
+        _src, _txt = miraitxtmsg(mmk, msg['data']);
+    elif re.match('telegram.*', mmk):
+        _src, _txt = tgtxtmsg(mmk, msg['message']);
+    else:
+        _src, _txt = None, '';
+    return _src, _txt;
+
 # 将一个tabotmessage翻译成mmk对应的message
 def totxtmsg(mmk, cid, txt):
     msg = None;
@@ -166,12 +176,8 @@ _tabot_cb_flt_atme_tggroup = {
     'msg':{'message': {'text': '.*@%s.*' % CONSTS.BOT_TG, 'entities': [{'type': 'mention'}]}}
 };
 def _tabot_cb_fnc_atme(mmk, msg):
-    if re.match('mirai.*', mmk):
-        _src, _txt = miraitxtmsg(mmk, msg['data']);
-        on_atme(_src, _txt);
-    elif re.match('telegram.*', mmk):
-        _src, _txt = tgtxtmsg(mmk, msg['message']);
-        on_atme(_src, _txt);
+    _src, _txt = fromtxtmsg(mmk, msg);
+    on_atme(_src, _txt);
     return;
 
 _mod_cbs.append({'fnc': _tabot_cb_fnc_atme,         'flt': _tabot_cb_flt_atme_qqgroup,      'key': '_tabot_talker_cb_atme_qqgroup'  });
