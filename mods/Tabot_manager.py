@@ -206,7 +206,7 @@ def _tabot_cb_fnc_ping(mmk, msg):
 
 _tabot_cb_flt_stop_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'data':{'messageChain':[{'type':'Source', 'id':CONSTS.BOT_OP_QQ},{'type':'Plain','text':'Tabot -stop'}]}}
+    'msg':{'data':{'messageChain':[{'type':'Plain','text':'Tabot -stop'}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
 };
 _tabot_cb_flt_stop_tg = {
     'mmk':{'telegram.*'},
