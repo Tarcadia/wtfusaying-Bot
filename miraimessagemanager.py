@@ -237,27 +237,21 @@ def do_send(mm):
         
         if _data:
             _buffback = None;
-            with mm['wslock']:
-                if mm['state'] == 'Opened':
-                    try:
-                        _send = json.dumps(_data);
-                        mm['websocket'].send(_send);
-                    
-                    except ws.WebSocketConnectionClosedException:
-                        _buffback = _data;
-                        mm['state'] = 'Closing';
-                        mm['websocket'].close();
-                        mm['state'] = 'Closed';
-                        logger.error('Invalid connection');
-                    
-                    except:
-                        _buffback = _data;
-                        mm['state'] = 'Failed';
-                        logger.error('Send failed');
+            try:
+                _send = json.dumps(_data);
+                mm['websocket'].send(_send);
             
-                else:
-                    logger.error('Invalid connection');
-                    _buffback = _data;
+            except ws.WebSocketConnectionClosedException:
+                _buffback = _data;
+                mm['state'] = 'Closing';
+                mm['websocket'].close();
+                mm['state'] = 'Closed';
+                logger.error('Invalid connection');
+            
+            except:
+                _buffback = _data;
+                mm['state'] = 'Failed';
+                logger.error('Send failed');
                 
             if _buffback:
                 with mm['buffer_lock']:
