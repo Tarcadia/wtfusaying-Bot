@@ -1,4 +1,5 @@
 
+import sys;
 import os;
 import importlib;
 import logging;
@@ -80,7 +81,6 @@ def reloadall():
     # 解注册当前所有模块组件接口，关闭当前所有模块组件
     for _modname in _sys_mods:
         _mod = _sys_mods[_modname];
-        logger.info('Import %s' % _modname);
         try:
             for _cb in _mod._mod_cbs:
                 _sys_botcontrol.deregcallback(_cb['key']);
@@ -99,6 +99,9 @@ def reloadall():
         except Exception as _err:
             logger.error('Failed stop mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
+        
+        del sys.modules['mods.%s' % _modname];
+        logger.info('Deport %s' % _modname);
     # 重加载新查找的模块组件，开启模块组件，注册接口
     _sys_mods.clear();
     for _modname in _modname_list:
@@ -106,6 +109,7 @@ def reloadall():
             _mod = importlib.import_module('mods.' + _modname);
             _mod._botcontrol = _sys_botcontrol;
             _sys_mods[_modname] = _mod;
+            logger.info('Import %s' % _modname);
         except Exception as _err:
             logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
@@ -149,6 +153,8 @@ def reloadmod(modlist: list = []):
                 logger.error('Failed stop mod %s with %s' % (_modname, type(_err)));
                 logger.debug(_err);
             _sys_mods.pop(_modname);
+            del sys.modules['mods.%s' % _modname];
+            logger.info('Deport %s' % _modname);
         # 重加载模块组件，开启模块组件，注册接口
         if os.path.isfile('./mods/' + _modname + '.py'):
             try:
