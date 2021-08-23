@@ -117,7 +117,7 @@ def reloadall():
             logger.debug(_err);
         try:
             for _cb in _mod._mod_cbs:
-                main._bc.regcallback(_cb['fnc'], _cb['flt'], _cb['key']);
+                main._bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
         except KeyError:
             logger.error('Failed reg call back or Key Error');
         except Exception as _err:
@@ -166,7 +166,7 @@ def reloadmod(modlist: list = []):
                 logger.debug(_err);
             try:
                 for _cb in _mod._mod_cbs:
-                    main._bc.regcallback(_cb['fnc'], _cb['flt'], _cb['key']);
+                    main._bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
             except KeyError:
                 logger.error('Failed reg call back or Key Error');
             except Exception as _err:
@@ -318,7 +318,7 @@ def load():
             logger.debug(_err);
         try:
             for _cb in _mod._mod_cbs:
-                main._bc.regcallback(_cb['fnc'], _cb['flt'], _cb['key']);
+                main._bc.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
         except KeyError:
             logger.error('Failed reg call back or Key Error');
         except Exception as _err:
