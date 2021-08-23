@@ -105,6 +105,7 @@ logger.info('Main Loaded');
 # 为一个单独的module的py，放在./mods/下以供调用，在调用时应当实现如下的接口
 # _mod_help_doc     : str,          // 形如_sys_help_doc，为模块组件的help内容
 # _mod_cbs          : list,         // 形如_sys_cbs，为模块组件要注册的callback列表
+# _botcontrol       : botcontrol    // 系统由此参数附回系统的botcontrol接口
 # start()                           // 模块的合法启动，返回自己的线程列表，虽然没用，但是这是要求
 # save()                            // 模块的保存操作
 # stop()                            // 模块的合法结束
@@ -187,6 +188,7 @@ def reloadall():
     for _modname in _modname_list:
         try:
             _mod = importlib.import_module('mods.' + _modname);
+            _mod._botcontrol = _bc;
             _sys_mods[_modname] = _mod;
         except Exception as _err:
             logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
@@ -235,6 +237,7 @@ def reloadmod(modlist: list = []):
         if os.path.isfile('./mods/' + _modname + '.py'):
             try:
                 _mod = importlib.import_module('mods.' + _modname);
+                _mod._botcontrol = _bc;
                 _sys_mods[_modname] = _mod;
             except Exception as _err:
                 logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
