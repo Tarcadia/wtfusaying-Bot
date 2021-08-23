@@ -52,14 +52,14 @@ logger.info('Essential Loaded');
 _sys_cbs = [];                      # 底层系统组件的 call back 列表
 _sys_mods = dict();                 # 引入mods列表
 _sys_help_doc = """
-    # 底层系统组件
-    help                                : 获取帮助
-    reload                              : 重载组件
-        -a                              : 重载全部组件
-        -m <m1>[ <m2> ...]              : 重载组件<m_i>
-    save                                : 调起存档
-    stop                                : 合法结束运行
-    """;                            # 底层系统组件的help doc
+# 底层系统组件
+help                                : 获取帮助
+reload                              : 重载组件
+    -a                              : 重载全部组件
+    -m <m1>[ <m2> ...]              : 重载组件<m_i>
+save                                : 调起存档
+stop                                : 合法结束运行
+""";                                # 底层系统组件的help doc
 
 
 
