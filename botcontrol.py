@@ -70,43 +70,45 @@ logger.info('Bot Control Loaded');
 
 
 
+def cbfltelemmetch(e1, e2):
+    _f = True;
+    if type(e1) == str and type(e2) == str:
+        if re.match(e2, e1):
+            _f = True;
+        else:
+            _f = False;
+    elif type(e1) == dict and type(e2) == dict:
+        if cbfltmatch(e1, e2):
+            _f = True;
+        else:
+            _f = False;
+    elif type(e1) == list and type(e2) == list:
+        _r = True;
+        for _itm in e2:
+            _rr = False;
+            for _m in e1:
+                _rr |= cbfltelemmetch(_m, _itm);
+            _r &= _rr;
+        if _r:
+            _f = True;
+        else:
+            _f = False;
+        
+    else:
+        if e2 == e1:
+            _f = True;
+        else:
+            _f = False;
+    
+    return _f;
+
 
 def cbfltmatch(msg: dict, flt: dict):
     _f = True;
     if type(flt) == dict:
         for _k in flt:
             if _k in msg:
-                if type(msg[_k]) == str and type(flt[_k]) == str:
-                    if re.match(flt[_k], msg[_k]):
-                        _f = True;
-                    else:
-                        _f = False;
-                        break;
-                elif type(msg[_k]) == dict and type(flt[_k]) == dict:
-                    if cbfltmatch(msg[_k], flt[_k]):
-                        _f = True;
-                    else:
-                        _f = False;
-                        break;
-                elif type(msg[_k]) == list and type(flt[_k]) == list:
-                    _r = True;
-                    for _itm in flt[_k]:
-                        _rr = False;
-                        for _m in msg[_k]:
-                            _rr |= cbfltmatch(_m, _itm);
-                        _r &= _rr;
-                    if _r:
-                        _f = True;
-                    else:
-                        _f = False;
-                        break;
-                    
-                else:
-                    if flt[_k] == msg[_k]:
-                        _f = True;
-                    else:
-                        _f = False;
-                        break;
+                _f = cbfltelemmetch(msg[_k], flt[_k]);
             else:
                 _f = False;
                 break;
