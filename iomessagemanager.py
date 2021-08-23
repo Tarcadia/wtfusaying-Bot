@@ -86,7 +86,7 @@ def recv(mm):
 # messagemanager, obj = query(messagemanager, obj)
 # 对一个messagemanager的连接进行一次查询，等待成功返回查询结构，或等待失败返回None
 def query(mm, data: dict or str = None):
-    mm = send(mm, data = data);
+    mm, _ack = send(mm, data = data);
     _data = raw_recv();
     return mm, _data;
 
