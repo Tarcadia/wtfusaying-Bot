@@ -285,7 +285,7 @@ def send(mm, data: dict = None):
         _data = data.copy();
         _data['content'] = data['content'].copy();
         _data['syncId'] = _syncId;
-        _data['content']['session'] = _session;
+        _data['content']['sessionKey'] = _session;
         
         with mm['buffer_lock']:
             if len(mm['buffer_send']) < mm['buffer_size']:
