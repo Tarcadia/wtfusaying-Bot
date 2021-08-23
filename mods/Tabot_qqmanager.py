@@ -1,7 +1,9 @@
 
 import CONSTS;
 
+from Tabot_talker import totxtmsg;
 
+import re;
 import time;
 import logging;
 
@@ -36,7 +38,10 @@ _mod_help_doc = """
 # 实现
 
 def tellop(mmk, txt):
-    mmk, msg = totxtmsg(mmk, txt);
+    if re.match('mirai.*', mmk):
+        _botcontrol.send(mmk, totxtmsg(mmk, CONSTS.BOT_OP_QQCID, txt));
+    elif re.match('telegram.*', mmk):
+        _botcontrol.send(mmk, totxtmsg(mmk, CONSTS.BOT_OP_TGCID, txt));
     return;
 
 
@@ -101,7 +106,8 @@ def _tabot_cb_fnc_invited(mmk, msg):
     _gnm = msg['groupName'];
     _cmd = {'content':{"eventId":_eid,"fromId":_fid,"groupId":_gid,"operate":0,"message":""}};
     _botcontrol.send(mmk, _cmd);
-    tellop(mmk, '被邀请进入群%s(%s)'%(_gnm, _gid));
+    tellop('mirai', 'mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
+    tellop('telegram', 'mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
     return;
 
 _mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_self,     'key': '_tabot_qm_cb_muted_qq_self'     });
