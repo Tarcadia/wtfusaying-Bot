@@ -71,7 +71,7 @@ def miraitxtmsg(mmk, msg):
         _t = 'u';
     _src = {
         'mmk'       : mmk,
-        'cid'       : _t + str(msg['sender']['id']),
+        'cid'       : _t + str(msg['sender']['group']['id'] if _t == 'g' else msg['sender']['id']),
         'uid'       : msg['sender']['id'],
         'mid'       : msg['messageChain'][0]['id'],
         'time'      : msg['messageChain'][0]['time']
