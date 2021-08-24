@@ -34,7 +34,7 @@ _mod_help_doc = """
 
 # 实现
 
-def tellop(mmk, txt):
+def _tellop(mmk, txt):
     if re.match('mirai.*', mmk):
         _botcontrol.send(mmk, tmsgp.totxtmsg(mmk, CONSTS.BOT_OP_QQCID, txt));
     elif re.match('telegram.*', mmk):
@@ -58,8 +58,8 @@ def _tabot_cb_fnc_muted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
     logger.info('mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
-    tellop('mirai', 'mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
-    tellop('telegram', 'mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
+    _tellop('mirai', 'mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
+    _tellop('telegram', 'mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
     return;
 
 # 解除禁言
@@ -75,8 +75,8 @@ def _tabot_cb_fnc_unmuted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
     logger.info('mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
-    tellop('mirai', 'mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
-    tellop('telegram', 'mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
+    _tellop('mirai', 'mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
+    _tellop('telegram', 'mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
     return;
 
 # 加群
@@ -88,8 +88,8 @@ def _tabot_cb_fnc_joingroup(mmk, msg):
     _gid = msg['data']['group']['id'];
     _gnm = msg['data']['group']['name'];
     logger.info('mmk: %s 进入群%s(gid:%s)'%(mmk, _gnm, _gid));
-    tellop('mirai', 'mmk: %s 进入群%s(gid:%s)'%(mmk, _gnm, _gid));
-    tellop('telegram', 'mmk: %s 进入群%s(gid:%s)'%(mmk, _gnm, _gid));
+    _tellop('mirai', 'mmk: %s 进入群%s(gid:%s)'%(mmk, _gnm, _gid));
+    _tellop('telegram', 'mmk: %s 进入群%s(gid:%s)'%(mmk, _gnm, _gid));
     return;
 
 # 退群
@@ -105,8 +105,8 @@ def _tabot_cb_fnc_leavegroup(mmk, msg):
     _gid = msg['data']['group']['id'];
     _gnm = msg['data']['group']['name'];
     logger.info('mmk: %s 退出群%s(gid:%s)'%(mmk, _gnm, _gid));
-    tellop('mirai', 'mmk: %s 退出群%s(gid:%s)'%(mmk, _gnm, _gid));
-    tellop('telegram', 'mmk: %s 退出群%s(gid:%s)'%(mmk, _gnm, _gid));
+    _tellop('mirai', 'mmk: %s 退出群%s(gid:%s)'%(mmk, _gnm, _gid));
+    _tellop('telegram', 'mmk: %s 退出群%s(gid:%s)'%(mmk, _gnm, _gid));
     return;
 
 # 群加人
@@ -120,8 +120,8 @@ def _tabot_cb_fnc_newmember(mmk, msg):
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
     logger.info('mmk: %s 中%s(uid:%s)进入群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    tellop('mirai', 'mmk: %s 中%s(uid:%s)进入群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    tellop('telegram', 'mmk: %s 中%s(uid:%s)进入群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
+    _tellop('mirai', 'mmk: %s 中%s(uid:%s)进入群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
+    _tellop('telegram', 'mmk: %s 中%s(uid:%s)进入群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
     return;
 
 # 群踢人
@@ -135,8 +135,8 @@ def _tabot_cb_fnc_kickmember(mmk, msg):
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
     logger.info('mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    tellop('mirai', 'mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    tellop('telegram', 'mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
+    _tellop('mirai', 'mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
+    _tellop('telegram', 'mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
     return;
 
 # 群退人
@@ -150,8 +150,8 @@ def _tabot_cb_fnc_quitmember(mmk, msg):
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
     logger.info('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    tellop('mirai', 'mmk: %s 中%s(uid:%s)离开群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    tellop('telegram', 'mmk: %s 中%s(uid:%s)离开群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
+    _tellop('mirai', 'mmk: %s 中%s(uid:%s)离开群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
+    _tellop('telegram', 'mmk: %s 中%s(uid:%s)离开群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
     return;
 
 # Bot被邀请加群
@@ -170,8 +170,8 @@ def _tabot_cb_fnc_invited(mmk, msg):
     };
     _botcontrol.send(mmk, _cmd);
     logger.info('mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
-    tellop('mirai', 'mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
-    tellop('telegram', 'mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
+    _tellop('mirai', 'mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
+    _tellop('telegram', 'mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
     return;
 
 # Bot指令
