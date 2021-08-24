@@ -168,7 +168,10 @@ def _tabot_cb_fnc_invited(mmk, msg):
     _fid = msg['data']['fromId'];
     _gid = msg['data']['groupId'];
     _gnm = msg['data']['groupName'];
-    _cmd = {'content':{"eventId":_eid,"fromId":_fid,"groupId":_gid,"operate":0,"message":""}};
+    _cmd = {
+        'command':'resp_botInvitedJoinGroupRequestEvent',
+        'content':{"eventId":_eid,"fromId":_fid,"groupId":_gid,"operate":0,"message":""}
+    };
     _botcontrol.send(mmk, _cmd);
     logger.info('mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
     tellop('mirai', 'mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
