@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__);
 logger.setLevel(logging.DEBUG);
 logger_ch = logging.StreamHandler();
 logger_ch.setLevel(logging.DEBUG);
-logger_formatter = logging.Formatter(fmt='\033[1;34m[%(asctime)s][%(levelname)s][%(name)s]\033[0m >> %(message)s', datefmt='%Y%m%d-%H%M%S');
+logger_formatter = logging.Formatter(fmt='\033[1;34m[%(asctime)s][%(levelname)s]\033[0;32m[%(name)s]\033[0m >> %(message)s', datefmt='%Y%m%d-%H%M%S');
 logger_ch.setFormatter(logger_formatter);
 logger.addHandler(logger_ch);
 logger.info('Essential Loaded');
@@ -225,7 +225,7 @@ def stop():
         except Exception as _err:
             logger.error('Failed stop mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
-    print('\033[1;34m已关闭\033[0m');
+    print('\033[1;30;47m已关闭\033[0m');
     return;
 
 
