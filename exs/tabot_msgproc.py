@@ -1,9 +1,6 @@
 
 import CONSTS;
 
-from mods.Tabot_talker import fromtxtmsg;
-from mods.Tabot_talker import totxtmsg;
-
 import re;
 import logging;
 
