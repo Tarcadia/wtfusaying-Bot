@@ -9,7 +9,6 @@ import time;
 import logging;
 
 VERSION = 'v20210823';
-CONFIG = './config/autosave.json';
 
 logger = logging.getLogger(__name__);
 logger.setLevel(logging.DEBUG);
