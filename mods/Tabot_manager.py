@@ -1,11 +1,8 @@
 
 import CONSTS;
-
-from mods.Tabot_talker import fromtxtmsg;
-from mods.Tabot_talker import totxtmsg;
+import exs.tabot_msgproc as tmsgp;
 
 import re;
-import time;
 import logging;
 
 VERSION = 'v20210823';
@@ -39,9 +36,9 @@ _mod_help_doc = """
 
 def tellop(mmk, txt):
     if re.match('mirai.*', mmk):
-        _botcontrol.send(mmk, totxtmsg(mmk, CONSTS.BOT_OP_QQCID, txt));
+        _botcontrol.send(mmk, tmsgp.totxtmsg(mmk, CONSTS.BOT_OP_QQCID, txt));
     elif re.match('telegram.*', mmk):
-        _botcontrol.send(mmk, totxtmsg(mmk, CONSTS.BOT_OP_TGCID, txt));
+        _botcontrol.send(mmk, tmsgp.totxtmsg(mmk, CONSTS.BOT_OP_TGCID, txt));
     return;
 
 
@@ -187,8 +184,8 @@ _tabot_cb_flt_help_tg = {
     'msg':{'message': {'text': 'Tabot -help'}}
 };
 def _tabot_cb_fnc_help(mmk, msg):
-    _src, _txt = fromtxtmsg(mmk, msg);
-    _msg = totxtmsg(mmk, _src['cid'], '对不起我帮不到你');
+    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
+    _msg = tmsgp.totxtmsg(mmk, _src['cid'], '对不起我帮不到你');
     _botcontrol.send(mmk, _msg);
     return;
 
@@ -201,8 +198,8 @@ _tabot_cb_flt_ping_tg = {
     'msg':{'message': {'text': 'Tabot -ping'}}
 };
 def _tabot_cb_fnc_ping(mmk, msg):
-    _src, _txt = fromtxtmsg(mmk, msg);
-    _msg = totxtmsg(mmk, _src['cid'], 'Pong!');
+    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
+    _msg = tmsgp.totxtmsg(mmk, _src['cid'], 'Pong!');
     _botcontrol.send(mmk, _msg);
     return;
 
@@ -215,8 +212,8 @@ _tabot_cb_flt_stop_tg = {
     'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': 'Tabot -stop'}}
 };
 def _tabot_cb_fnc_stop(mmk, msg):
-    _src, _txt = fromtxtmsg(mmk, msg);
-    _msg = totxtmsg(mmk, _src['cid'], '好我这就自闭');
+    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
+    _msg = tmsgp.totxtmsg(mmk, _src['cid'], '好我这就自闭');
     _botcontrol.send(mmk, _msg);
     _cmd = {'call':'stop', 'args':[]};
     _botcontrol.send('Loopback', _cmd);
