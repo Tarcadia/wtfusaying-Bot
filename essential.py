@@ -52,12 +52,15 @@ _sys_threads = [];                  # 底层系统组件的线程列表，由mai
 _sys_mms = [];                      # 底层系统组件的 Message Manager 列表
 _sys_cbs = [];                      # 底层系统组件的 Callback 列表
 _sys_mods = dict();                 # 引入mods列表
+_sys_exs = dict();                  # 引入exs列表
 _sys_help_doc = """
 # 底层系统组件
 help                                : 获取帮助
 reload                              : 重载组件
     -a                              : 重载全部组件
     -m <m1>[ <m2> ...]              : 重载组件<m_i>
+    -x <ex1>[ <ex2> ...]            : 重载ex模块<ex_i>
+    -e                              : 同 -x
 save                                : 调起存档
 stop                                : 合法结束运行
 """;                                # 底层系统组件的help doc
@@ -65,7 +68,6 @@ stop                                : 合法结束运行
 
 
 # 底层系统组件实现
-
 def reloadall():
     # 查找所有模块组件
     _modname_list = [];
@@ -78,9 +80,20 @@ def reloadall():
             logger.info('Accept file %s' % _file);
             _modname = _filename;
             _modname_list.append(_modname);
+    # 查找所有额外支持
+    _exname_list = [];
+    _files = os.listdir('./exs/');
+    logger.info('Detecting exs');
+    for _file in _files:
+        logger.info('Detected file %s' % _file);
+        _filename, _fileext = os.path.splitext(_file);
+        if _fileext == '.py':
+            logger.info('Accept file %s' % _file);
+            _exname = _filename;
+            _exname_list.append(_exname);
     # 解注册当前所有模块组件接口，关闭当前所有模块组件
     for _modname in _sys_mods:
-        _mod = _sys_mods[_modname];
+        _mod = _sys_mods.pop(_modname);
         try:
             for _cb in _mod._mod_cbs:
                 _sys_botcontrol.deregcallback(_cb['key']);
@@ -101,7 +114,21 @@ def reloadall():
             logger.debug(_err);
         
         del sys.modules['mods.%s' % _modname];
-        logger.info('Deport %s' % _modname);
+        logger.info('Deport mods.%s' % _modname);
+    # 卸载当前所有exs
+    for _exname in _sys_exs:
+        _ex = _sys_exs.pop(_exname);
+        del sys.modules['exs.%s' % _exname];
+        logger.info('Deport exs.%s' % _exname);
+    # 重载当前所有exs
+    for _exname in _exname_list:
+        try:
+            _ex = importlib.import_module('exs.' +  _exname);
+            _sys_exs[_exname] = _ex;
+            logger.info('Import exs.%s' % _exname);
+        except Exception as _err:
+            logger.error('Failed import ex %s with %s' % (_exname, type(_err)));
+            logger.debug(_err);
     # 重加载新查找的模块组件，开启模块组件，注册接口
     _sys_mods.clear();
     for _modname in _modname_list:
@@ -109,7 +136,7 @@ def reloadall():
             _mod = importlib.import_module('mods.' + _modname);
             _mod._botcontrol = _sys_botcontrol;
             _sys_mods[_modname] = _mod;
-            logger.info('Import %s' % _modname);
+            logger.info('Import mods.%s' % _modname);
         except Exception as _err:
             logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
@@ -129,11 +156,13 @@ def reloadall():
             logger.debug(_err);
     return;
 
+
+
 def reloadmod(modlist: list = []):
     for _modname in modlist:
         # 查找已有模块组件，解注册模块组件接口，关闭模块组件
         if _modname in _sys_mods:
-            _mod = _sys_mods[_modname];
+            _mod = _sys_mods.pop(_modname);
             try:
                 for _cb in _mod._mod_cbs:
                     _sys_botcontrol.deregcallback(_cb['key']);
@@ -152,15 +181,15 @@ def reloadmod(modlist: list = []):
             except Exception as _err:
                 logger.error('Failed stop mod %s with %s' % (_modname, type(_err)));
                 logger.debug(_err);
-            _sys_mods.pop(_modname);
             del sys.modules['mods.%s' % _modname];
-            logger.info('Deport %s' % _modname);
+            logger.info('Deport mods.%s' % _modname);
         # 重加载模块组件，开启模块组件，注册接口
         if os.path.isfile('./mods/' + _modname + '.py'):
             try:
                 _mod = importlib.import_module('mods.' + _modname);
                 _mod._botcontrol = _sys_botcontrol;
                 _sys_mods[_modname] = _mod;
+                logger.info('Import mods.%s' % _modname);
             except Exception as _err:
                 logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
                 logger.debug(_err);
@@ -182,6 +211,81 @@ def reloadmod(modlist: list = []):
             logger.debug('Failed import mod %s for non-exists' % _modname);
     return;
 
+
+
+def reloadex(exlist: list = []):
+    for _exname in exlist:
+        # 查找已有模块组件，解注册模块组件接口，关闭模块组件
+        if _exname in _sys_exs:
+            _ex = _sys_exs.pop(_exname);
+            del sys.modules['exs.%s' % _exname];
+            logger.info('Deport exs.%s' % _exname);
+        # 重加载模块组件，开启模块组件，注册接口
+        if os.path.isfile('./exs/' + _exname + '.py'):
+            try:
+                _ex = importlib.import_module('mods.' + _exname);
+                _sys_exs[_exname] = _ex;
+                logger.info('Import exs.%s' % _exname);
+            except Exception as _err:
+                logger.error('Failed import mod %s with %s' % (_exname, type(_err)));
+                logger.debug(_err);
+        else:
+            logger.debug('Failed import mod %s for non-exists' % _exname);
+    return;
+
+
+
+# 底层系统组件加载
+def load():
+
+    # 注册底层系统组件的callback
+    _sys_cbs.append({'fnc': _sys_cb_fnc_echo, 'flt': _sys_cb_flt_echo, 'key': '_sys_cb_echo'});
+    _sys_cbs.append({'fnc': _sys_cb_fnc_help, 'flt': _sys_cb_flt_help, 'key': '_sys_cb_help'});
+    _sys_cbs.append({'fnc': _sys_cb_fnc_reload, 'flt': _sys_cb_flt_reload, 'key': '_sys_cb_reload'});
+    _sys_cbs.append({'fnc': _sys_cb_fnc_save, 'flt': _sys_cb_flt_save, 'key': '_sys_cb_save'});
+    _sys_cbs.append({'fnc': _sys_cb_fnc_stop, 'flt': _sys_cb_flt_stop, 'key': '_sys_cb_stop'});
+
+    # 查找所有exs
+    _exname_list = [];
+    _files = os.listdir('./exs/');
+    for _file in _files:
+        _filename, _fileext = os.path.splitext(_file);
+        if _fileext == '.py':
+            _exname = _filename;
+            _exname_list.append(_exname);
+
+    # 加载查找的exs
+    for _exname in _exname_list:
+        try:
+            _ex = importlib.import_module('exs.' + _exname);
+            _sys_exs[_exname] = _ex;
+        except Exception as _err:
+            logger.error('Failed import ex %s with %s' % (_exname, type(_err)));
+            logger.debug(_err);
+
+    # 查找所有模块组件
+    _modname_list = [];
+    _files = os.listdir('./mods/');
+    for _file in _files:
+        _filename, _fileext = os.path.splitext(_file);
+        if _fileext == '.py':
+            _modname = _filename;
+            _modname_list.append(_modname);
+    
+    # 加载查找的模块组件
+    for _modname in _modname_list:
+        try:
+            _mod = importlib.import_module('mods.' + _modname);
+            _mod._botcontrol = _sys_botcontrol;
+            _sys_mods[_modname] = _mod;
+        except Exception as _err:
+            logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
+            logger.debug(_err);
+    
+    return;
+
+
+
 def save():
     for _modname in _sys_mods:
         _mod = _sys_mods[_modname];
@@ -191,6 +295,8 @@ def save():
             logger.error('Failed save mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
     return;
+
+
 
 def stop():
     # 关闭BotControl
@@ -259,6 +365,15 @@ def _sys_cb_fnc_reload(mmk, msg):
                 _sys_botcontrol.send('IO', '执行失败，help一下');
                 logger.error('Failed reload mod with %s' % type(_err));
                 logger.debug(_err);
+        elif msg['args'][0] == '-x' or msg['args'][0] == '-e':
+            try:
+                _sys_botcontrol.send('IO', '开始重加载...');
+                reloadex(msg['args'][1:]);
+                _sys_botcontrol.send('IO', '重加载完成');
+            except Exception as _err:
+                _sys_botcontrol.send('IO', '执行失败，help一下');
+                logger.error('Failed reload mod with %s' % type(_err));
+                logger.debug(_err);
     else:
         _sys_botcontrol.send('IO', '参数不对，help一下');
 
@@ -276,38 +391,3 @@ def _sys_cb_fnc_stop(mmk, msg):
     _sys_botcontrol.send('IO', '已启动关闭线程');
 
 
-
-# 底层系统组件加载
-
-def load():
-
-    # 注册底层系统组件的callback
-    _sys_cbs.append({'fnc': _sys_cb_fnc_echo, 'flt': _sys_cb_flt_echo, 'key': '_sys_cb_echo'});
-    _sys_cbs.append({'fnc': _sys_cb_fnc_help, 'flt': _sys_cb_flt_help, 'key': '_sys_cb_help'});
-    _sys_cbs.append({'fnc': _sys_cb_fnc_reload, 'flt': _sys_cb_flt_reload, 'key': '_sys_cb_reload'});
-    _sys_cbs.append({'fnc': _sys_cb_fnc_save, 'flt': _sys_cb_flt_save, 'key': '_sys_cb_save'});
-    _sys_cbs.append({'fnc': _sys_cb_fnc_stop, 'flt': _sys_cb_flt_stop, 'key': '_sys_cb_stop'});
-
-    # 查找所有模块组件
-    _modname_list = [];
-    _files = os.listdir('./mods/');
-    logger.info('Detecting mods');
-    for _file in _files:
-        logger.info('Detected file %s' % _file);
-        _filename, _fileext = os.path.splitext(_file);
-        if _fileext == '.py':
-            logger.info('Accept file %s' % _file);
-            _modname = _filename;
-            _modname_list.append(_modname);
-    
-    # 加载查找的模块组件
-    for _modname in _modname_list:
-        try:
-            _mod = importlib.import_module('mods.' + _modname);
-            _mod._botcontrol = _sys_botcontrol;
-            _sys_mods[_modname] = _mod;
-        except Exception as _err:
-            logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
-            logger.debug(_err);
-    
-    return;
