@@ -2,6 +2,7 @@
 import sys;
 import os;
 import importlib;
+import threading as thr;
 import logging;
 
 VERSION = 'v20210822';
@@ -351,31 +352,36 @@ def _sys_cb_fnc_help(mmk, msg):
 
 _sys_cb_flt_reload = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'reload'}};
 def _sys_cb_fnc_reload(mmk, msg):
-    if msg['args']:
-        if msg['args'][0] == '-a':
-            _sys_botcontrol.send('IO', '开始重加载全部...');
-            reloadall();
-            _sys_botcontrol.send('IO', '重加载完成');
-        elif msg['args'][0] == '-m':
-            try:
-                _sys_botcontrol.send('IO', '开始重加载...');
-                reloadmod(msg['args'][1:]);
-                _sys_botcontrol.send('IO', '重加载完成');
-            except Exception as _err:
-                _sys_botcontrol.send('IO', '执行失败，help一下');
-                logger.error('Failed reload mod with %s' % type(_err));
-                logger.debug(_err);
-        elif msg['args'][0] == '-x' or msg['args'][0] == '-e':
-            try:
-                _sys_botcontrol.send('IO', '开始重加载...');
-                reloadex(msg['args'][1:]);
-                _sys_botcontrol.send('IO', '重加载完成');
-            except Exception as _err:
-                _sys_botcontrol.send('IO', '执行失败，help一下');
-                logger.error('Failed reload mod with %s' % type(_err));
-                logger.debug(_err);
+    def toreload():
+        with _sys_botcontrol.setlock:
+            if msg['args']:
+                if msg['args'][0] == '-a':
+                    _sys_botcontrol.send('IO', '开始重加载全部...');
+                    reloadall();
+                    _sys_botcontrol.send('IO', '重加载全部完成');
+                elif msg['args'][0] == '-m' and len(msg['args'] >= 2):
+                    _sys_botcontrol.send('IO', '开始重加载组件模块...');
+                    reloadmod(msg['args'][1:]);
+                    _sys_botcontrol.send('IO', '重加载组件模块完成');
+                elif msg['args'][0] == '-x' or msg['args'][0] == '-e' and len(msg['args'] >= 2):
+                    _sys_botcontrol.send('IO', '开始重加载额外模块...');
+                    reloadex(msg['args'][1:]);
+                    _sys_botcontrol.send('IO', '重加载额外模块完成');
+                else:
+                    _sys_botcontrol.send('IO', '参数不对，help一下');
+        return;
+    
+    if (msg['args'] and (
+        (msg['args'][0] == '-a') or
+        (msg['args'][0] == '-m' and len(msg['args'] >= 2)) or
+        (msg['args'][0] == '-x' or msg['args'][0] == '-e' and len(msg['args'] >= 2))
+    )):
+        _thr_reload = thr.Thread(target = toreload, name = 'To Reload Run');
+        _sys_botcontrol.send('IO', '开启重加载线程...');
+        _thr_reload.start();
     else:
         _sys_botcontrol.send('IO', '参数不对，help一下');
+    
 
 _sys_cb_flt_save = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'save'}};
 def _sys_cb_fnc_save(mmk, msg):

@@ -241,6 +241,7 @@ class BotControl:
 
         self._on_call_polling = False;
         self._th_call_polling = None;
+        self.setlock = self._bc['setl'];
 
         return;
 
