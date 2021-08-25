@@ -50,7 +50,7 @@ def new(
 
     _topicsensor = {
         'memorypath'    : memorypath,
-        'recyclepath'    : recyclepath,
+        'recyclepath'   : recyclepath,
         'topiccount'    : 0,
         'topics'        : []
     };
