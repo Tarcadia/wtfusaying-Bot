@@ -367,9 +367,8 @@ def _sys_cb_fnc_cmd_echo(mmk, msg):
             _sys_echoon = False;
         else:
             _sys_botcontrol.send('IO', '参数不对，help一下');
-        _sys_botcontrol.send('IO', 'echo: %s' % _sys_echoon);
     else:
-        _sys_botcontrol.send('IO', 'echo: %s' % _sys_echoon);
+        _sys_botcontrol.send('IO', {'echo' : _sys_echoon});
 
 _sys_cb_flt_cmd_reload = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'reload'}};
 def _sys_cb_fnc_cmd_reload(mmk, msg):
