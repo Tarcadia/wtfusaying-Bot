@@ -351,6 +351,13 @@ class WordLinkSensor:
         );
         return;
 
+    def __iter__(self):
+        for _w in self._wls['words']:
+            yield _w;
+    
+    def __getitem__(self, key):
+        return self._wls['words'][key]['vec'];
+
     def load(self):
         self._wls = load(self._wls);
         return;

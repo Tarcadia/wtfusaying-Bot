@@ -351,6 +351,10 @@ class TopicSensor:
         );
         return;
 
+    def __iter__(self):
+        for _topic in self._ts['topics']:
+            yield _topic['vec'];
+
     def load(self):
         self._ts = load(self._ts);
         return;
