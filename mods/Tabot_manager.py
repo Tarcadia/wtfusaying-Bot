@@ -45,6 +45,21 @@ def _tellop(mmk, txt):
 
 # 回调接口
 
+_tabot_cb_flt_msgecho = {
+    'mmk':{'mirai.*', 'telegram.*'},
+    'msg':{}
+};
+def _tabot_cb_fnc_msgecho(mmk, msg):
+    if re.match('mirai.*', mmk):
+        _cmd = {'mmk': mmk, 'syncid': msg['syncId']};
+        _cmd.update(msg['data']);
+        _botcontrol.send('IO', _cmd);
+    elif re.match('telegram.*', mmk):
+        _cmd = {'mmk': mmk, 'syncid': msg['update_id']};
+        _cmd.update(msg['message']);
+        _botcontrol.send('IO', _cmd);
+    return;
+
 # 禁言
 _tabot_cb_flt_muted_qq_self = {
     'mmk':{'mirai.*'},
@@ -222,6 +237,7 @@ def _tabot_cb_fnc_stop(mmk, msg):
 
 
 # 注册
+_mod_cbs.append({'fnc': _tabot_cb_fnc_msgecho,      'flt': _tabot_cb_flt_msgecho,           'key': '_tabot_mn_cb_msgecho'           });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_self,     'key': '_tabot_mn_cb_muted_qq_self'     });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_all,      'key': '_tabot_mn_cb_muted_qq_all'      });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,      'flt': _tabot_cb_flt_unmuted_qq_self,   'key': '_tabot_mn_cb_unmuted_qq_self'   });
