@@ -93,7 +93,7 @@ def reloadall():
             _exname = _filename;
             _exname_list.append(_exname);
     # 解注册当前所有模块组件接口，关闭当前所有模块组件
-    _mods_topop = _sys_mods.keys().copy();
+    _mods_topop = list(_sys_mods.keys()).copy();
     for _modname in _mods_topop:
         _mod = _sys_mods.pop(_modname);
         try:
@@ -117,7 +117,7 @@ def reloadall():
         del sys.modules['mods.%s' % _modname];
         logger.info('Deport mods.%s' % _modname);
     # 卸载当前所有exs
-    _exs_topop = _sys_exs.keys().copy();
+    _exs_topop = list(_sys_exs.keys()).copy();
     for _exname in _exs_topop:
         _ex = _sys_exs.pop(_exname);
         del sys.modules['exs.%s' % _exname];
