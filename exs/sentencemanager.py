@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__);
 logger.setLevel(logging.DEBUG);
 logger_ch = logging.StreamHandler();
 logger_ch.setLevel(logging.DEBUG);
-logger_formatter = logging.Formatter(fmt='\033[1;34m[%(asctime)s][%(levelname)s]\033[0;32m[%(name)s]\033[0m >> %(message)s', datefmt='%Y%m%d-%H%M%S');
+logger_formatter = logging.Formatter(fmt='\033[0m%(asctime)s \033[1;34m[%(levelname)s]\033[0;36m[%(name)s]\033[0m >> %(message)s', datefmt='%H:%M');
 logger_ch.setFormatter(logger_formatter);
 if not logger.hasHandlers():
     logger.addHandler(logger_ch);
