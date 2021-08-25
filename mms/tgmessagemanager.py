@@ -409,8 +409,9 @@ class TgMessageManager:
     
 
     def _updt_polling(self):
-        _reopen_delay = 1;
-        _max_reopen_delay = 16;
+        _def_reopen_delay = 10;
+        _max_reopen_delay = 120;
+        _reopen_delay = _def_reopen_delay;
         _last_open = time.time();
         
         while self._on_updt_polling:
@@ -430,7 +431,7 @@ class TgMessageManager:
             elif self.state == 'Opened':
                 self._mm = do_update(self._mm);
                 _last_open = time.time();
-                _reopen_delay = 1;
+                _reopen_delay = _def_reopen_delay;
             time.sleep(_reopen_delay);
         self.close();
         return;
