@@ -70,8 +70,9 @@ def send(mm, data: dict or str = None):
         if type(data) == str:
             print("\033[0m%5s \033[1;34m[OUT]\033[0m >> \033[0m%s" % (_t, data));
         elif type(data) == dict:
+            print("\033[0m%5s \033[1;34m[OUT]\033[0m >>" % _t);
             for _k in data:
-                print("\033[0m%5s \033[1;34m[OUT]\033[0m >> \033[0;32m%8s\033[0m : %s" % (_t, _k, data[_k]));
+                print("\033[0m            >> \033[0;32m%8s\033[0m : %s" % (_k, data[_k]));
     return mm, True;
 
 # messagemanager, obj = recv(messagemanager)
