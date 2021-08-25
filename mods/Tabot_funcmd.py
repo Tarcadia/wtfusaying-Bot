@@ -83,11 +83,28 @@ _tabot_funcmd_reboot_talks = [
     "你可以尝试在本地终端输入 shutdown -p 以实现",
     "sudo rm -rf /*",
 ]
+_tabot_funcmd_jgb_talks = [
+    "鸡公煲",
+    "想吃鸡公煲了",
+    "为什么不吃花雕醉鸡呢",
+]
+_tabot_funcmd_hdzj_talks = [
+    "花雕醉鸡",
+    "花雕醉鸡yyds，好吃到跺jiojio，我暴风吸入，绝绝子",
+    "想吃花雕醉鸡了",
+    "为什么不吃鸡公煲呢",
+]
 
 
 
-_tabot_cmd_henshin = 't -henshin';
-_tabot_cmd_reboot = 't -reboot';
+_tabot_cmd_henshin = 't -.*henshin.*';
+_tabot_cmd_reboot = 't -.*reboot.*';
+_tabot_cmd_tarcadia = 't -.*tarcadia.*';
+_tabot_cmd_cat = 't -.*cat.*';
+_tabot_cmd_dog = 't -.*dog.*';
+_tabot_cmd_amdyes = '.*[Aa][Mm][Dd] [Yy][Ee][Ss].*';
+_tabot_cmd_jgb = '.*(鸡公煲|[Jj][Gg][Bb])+.*';
+_tabot_cmd_hdzj = '.*花.*雕.*醉.*鸡.*';
 
 # 回调接口
 
@@ -211,6 +228,36 @@ def _tabot_funcmd_cb_fnc_reboot(mmk, msg):
     _botcontrol.send(mmk, _msg);
     return;
 
+_tabot_funcmd_cb_flt_jgb_qq = {
+    'mmk':{'mirai.*'},
+    'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_jgb}]}}
+};
+_tabot_funcmd_cb_flt_jgb_tg = {
+    'mmk':{'telegram.*'},
+    'msg':{'message': {'text': _tabot_cmd_jgb}}
+};
+def _tabot_funcmd_cb_fnc_jgb(mmk, msg):
+    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
+    _txt = random.choice(_tabot_funcmd_jgb_talks);
+    _msg = tmsgp.totxtmsg(mmk, _src['cid'], _txt);
+    _botcontrol.send(mmk, _msg);
+    return;
+
+_tabot_funcmd_cb_flt_hdzj_qq = {
+    'mmk':{'mirai.*'},
+    'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_hdzj}]}}
+};
+_tabot_funcmd_cb_flt_hdzj_tg = {
+    'mmk':{'telegram.*'},
+    'msg':{'message': {'text': _tabot_cmd_hdzj}}
+};
+def _tabot_funcmd_cb_fnc_hdzj(mmk, msg):
+    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
+    _txt = random.choice(_tabot_funcmd_hdzj_talks);
+    _msg = tmsgp.totxtmsg(mmk, _src['cid'], _txt);
+    _botcontrol.send(mmk, _msg);
+    return;
+
 
 
 # 注册
@@ -226,6 +273,10 @@ _mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_henshin, 'flt': _tabot_funcmd_cb_fl
 _mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_henshin, 'flt': _tabot_funcmd_cb_flt_henshin_tg, 'key': '_tabot_funcmd_cb_henshin_tg'});
 _mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_reboot, 'flt': _tabot_funcmd_cb_flt_reboot_qq, 'key': '_tabot_funcmd_cb_reboot_qq'});
 _mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_reboot, 'flt': _tabot_funcmd_cb_flt_reboot_tg, 'key': '_tabot_funcmd_cb_reboot_tg'});
+_mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_jgb, 'flt': _tabot_funcmd_cb_flt_jgb_qq, 'key': '_tabot_funcmd_cb_jgb_qq'});
+_mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_jgb, 'flt': _tabot_funcmd_cb_flt_jgb_tg, 'key': '_tabot_funcmd_cb_jgb_tg'});
+_mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_hdzj, 'flt': _tabot_funcmd_cb_flt_hdzj_qq, 'key': '_tabot_funcmd_cb_hdzj_qq'});
+_mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_hdzj, 'flt': _tabot_funcmd_cb_flt_hdzj_tg, 'key': '_tabot_funcmd_cb_hdzj_tg'});
 
 
 
