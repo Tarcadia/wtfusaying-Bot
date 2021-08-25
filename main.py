@@ -4,10 +4,10 @@ import CONSTS;
 
 import botcontrol as bc;
 
-import iomessagemanager as iomm;
-import loopbackmessagemanager as lbmm;
-import miraimessagemanager as mmm;
-import tgmessagemanager as tmm;
+import mms.iomessagemanager as iomm;
+import mms.loopbackmessagemanager as lbmm;
+import mms.miraimessagemanager as mmm;
+import mms.tgmessagemanager as tmm;
 
 import essential as ess;
 
