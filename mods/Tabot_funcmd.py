@@ -120,7 +120,10 @@ _tabot_funcmd_cb_flt_chatstatic_tggroup = {
 def _tabot_funcmd_cb_fnc_chatstatic(mmk, msg):
     _src, txt = tmsgp.fromtxtmsg(mmk, msg);
     _key = mmk + '.' + _src['cid'];
-    _tabot_chat_talk_static[_key] = _tabot_chat_talk_static[_key][-min(10, len(_tabot_chat_talk_static[_key])):] + [_src['time']];
+    if _key in _tabot_chat_talk_static:
+        _tabot_chat_talk_static[_key] = _tabot_chat_talk_static[_key][-min(10, len(_tabot_chat_talk_static[_key])):] + [_src['time']];
+    else:
+        _tabot_chat_talk_static[_key] = [_src['time']];
 
 # 解除禁言
 _tabot_funcmd_cb_flt_unmuted_qq_self = {
