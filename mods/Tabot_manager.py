@@ -218,6 +218,22 @@ def _tabot_cb_fnc_ping(mmk, msg):
     _botcontrol.send(mmk, _msg);
     return;
 
+_tabot_cb_flt_reload_qq = {
+    'mmk':{'mirai.*'},
+    'msg':{'data':{'messageChain':[{'type':'Plain','text':'Tabot -reload'}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
+};
+_tabot_cb_flt_reload_tg = {
+    'mmk':{'telegram.*'},
+    'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': 'Tabot -reload'}}
+};
+def _tabot_cb_fnc_reload(mmk, msg):
+    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
+    _msg = tmsgp.totxtmsg(mmk, _src['cid'], '组件重载启动');
+    _botcontrol.send(mmk, _msg);
+    _cmd = {'call':'reload', 'args':['-a']};
+    _botcontrol.send('Loopback', _cmd);
+    return;
+
 _tabot_cb_flt_stop_qq = {
     'mmk':{'mirai.*'},
     'msg':{'data': {'messageChain':[{'type':'Plain','text':'Tabot -stop'}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
@@ -254,6 +270,8 @@ _mod_cbs.append({'fnc': _tabot_cb_fnc_help,         'flt': _tabot_cb_flt_help_qq
 _mod_cbs.append({'fnc': _tabot_cb_fnc_help,         'flt': _tabot_cb_flt_help_tg,           'key': '_tabot_mn_cb_help_tg'           });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_ping,         'flt': _tabot_cb_flt_ping_qq,           'key': '_tabot_mn_cb_ping_qq'           });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_ping,         'flt': _tabot_cb_flt_ping_tg,           'key': '_tabot_mn_cb_ping_tg'           });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_reload,       'flt': _tabot_cb_flt_reload_qq,         'key': '_tabot_mn_cb_reload_qq'         });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_reload,       'flt': _tabot_cb_flt_reload_tg,         'key': '_tabot_mn_cb_reload_tg'         });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_stop,         'flt': _tabot_cb_flt_stop_qq,           'key': '_tabot_mn_cb_stop_qq'           });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_stop,         'flt': _tabot_cb_flt_stop_tg,           'key': '_tabot_mn_cb_stop_tg'           });
 
