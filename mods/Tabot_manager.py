@@ -216,25 +216,25 @@ def _tabot_cb_fnc_invited(mmk, msg):
 # Bot指令
 _tabot_cb_flt_help_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'data': {'messageChain':[{'type':'Plain','text':'Tabot -help'}]}}
+    'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_help}]}}
 };
 _tabot_cb_flt_help_tg = {
     'mmk':{'telegram.*'},
-    'msg':{'message': {'text': 'Tabot -help'}}
+    'msg':{'message': {'text': _tabot_cmd_help}}
 };
 def _tabot_cb_fnc_help(mmk, msg):
     _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
-    _msg = tmsgp.totxtmsg(mmk, _src['cid'], '对不起我帮不到你');
+    _msg = tmsgp.totxtmsg(mmk, _src['cid'], _tabot_cmd_help_doc);
     _botcontrol.send(mmk, _msg);
     return;
 
 _tabot_cb_flt_ping_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'data': {'messageChain':[{'type':'Plain','text':'Tabot -ping'}]}}
+    'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_ping}]}}
 };
 _tabot_cb_flt_ping_tg = {
     'mmk':{'telegram.*'},
-    'msg':{'message': {'text': 'Tabot -ping'}}
+    'msg':{'message': {'text': _tabot_cmd_ping}}
 };
 def _tabot_cb_fnc_ping(mmk, msg):
     _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
@@ -244,11 +244,11 @@ def _tabot_cb_fnc_ping(mmk, msg):
 
 _tabot_cb_flt_reload_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'data':{'messageChain':[{'type':'Plain','text':'Tabot -reload'}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
+    'msg':{'data':{'messageChain':[{'type':'Plain','text':_tabot_cmd_reload}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
 };
 _tabot_cb_flt_reload_tg = {
     'mmk':{'telegram.*'},
-    'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': 'Tabot -reload'}}
+    'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': _tabot_cmd_reload}}
 };
 def _tabot_cb_fnc_reload(mmk, msg):
     _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
@@ -260,11 +260,11 @@ def _tabot_cb_fnc_reload(mmk, msg):
 
 _tabot_cb_flt_stop_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'data': {'messageChain':[{'type':'Plain','text':'Tabot -stop'}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
+    'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_stop}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
 };
 _tabot_cb_flt_stop_tg = {
     'mmk':{'telegram.*'},
-    'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': 'Tabot -stop'}}
+    'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': _tabot_cmd_stop}}
 };
 def _tabot_cb_fnc_stop(mmk, msg):
     _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
