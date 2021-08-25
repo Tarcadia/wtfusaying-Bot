@@ -73,11 +73,21 @@ _tabot_funcmd_quitmember_talks = [
 ]
 _tabot_funcmd_henshin_talks = [
     "库库库七七",
-    "嘚呤缤叮叮匡",
+    "dling bin 叮叮匡",
+    "bling bling biu biu biu, chua chua chua xiu xiu",
     "我不认为我真的具有变身的能力",
 ]
+_tabot_funcmd_reboot_talks = [
+    "我不认为你应当抱有可以让我reboot的想法",
+    "你是否是存在对自己权限的过度自信认知",
+    "你可以尝试在本地终端输入 shutdown -p 以实现",
+    "sudo rm -rf /*",
+]
 
-_tabot_cmd_henshin = 'tabot -henshin';
+
+
+_tabot_cmd_henshin = 't -henshin';
+_tabot_cmd_reboot = 't -reboot';
 
 # 回调接口
 
@@ -181,7 +191,23 @@ _tabot_funcmd_cb_flt_henshin_tg = {
 };
 def _tabot_funcmd_cb_fnc_henshin(mmk, msg):
     _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
-    _msg = tmsgp.totxtmsg(mmk, _src['cid'], _tabot_funcmd_henshin_talks);
+    _txt = random.choice(_tabot_funcmd_henshin_talks);
+    _msg = tmsgp.totxtmsg(mmk, _src['cid'], _txt);
+    _botcontrol.send(mmk, _msg);
+    return;
+
+_tabot_funcmd_cb_flt_reboot_qq = {
+    'mmk':{'mirai.*'},
+    'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_reboot}]}}
+};
+_tabot_funcmd_cb_flt_reboot_tg = {
+    'mmk':{'telegram.*'},
+    'msg':{'message': {'text': _tabot_cmd_reboot}}
+};
+def _tabot_funcmd_cb_fnc_reboot(mmk, msg):
+    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
+    _txt = random.choice(_tabot_funcmd_reboot_talks);
+    _msg = tmsgp.totxtmsg(mmk, _src['cid'], _txt);
     _botcontrol.send(mmk, _msg);
     return;
 
@@ -198,6 +224,8 @@ _mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_quitmember, 'flt': _tabot_funcmd_cb
 
 _mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_henshin, 'flt': _tabot_funcmd_cb_flt_henshin_qq, 'key': '_tabot_funcmd_cb_henshin_qq'});
 _mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_henshin, 'flt': _tabot_funcmd_cb_flt_henshin_tg, 'key': '_tabot_funcmd_cb_henshin_tg'});
+_mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_reboot, 'flt': _tabot_funcmd_cb_flt_reboot_qq, 'key': '_tabot_funcmd_cb_reboot_qq'});
+_mod_cbs.append({'fnc': _tabot_funcmd_cb_fnc_reboot, 'flt': _tabot_funcmd_cb_flt_reboot_tg, 'key': '_tabot_funcmd_cb_reboot_tg'});
 
 
 
