@@ -294,7 +294,7 @@ def norm(vec: dict or set or list):
 
 # vector = wordlink(wordlinksensor, w)
 # 返回关键词w的wordlink的vector形式
-def topic(wls: dict, w: str):
+def wordlink(wls: dict, w: str):
     _vec = wls['words'][w]['vec'];
     return norm(_vec);
 
@@ -356,7 +356,7 @@ class WordLinkSensor:
             yield _w;
     
     def __getitem__(self, key):
-        return self._wls['words'][key]['vec'];
+        return self.wordlink(key);
 
     def load(self):
         self._wls = load(self._wls);
@@ -402,8 +402,8 @@ class WordLinkSensor:
     def matches(self, vec: dict or list or set):
         return matches(self._wls, vec = vec);
 
-    def topic(self, w: str):
-        return topic(self._wls, w = w);
+    def wordlink(self, w: str):
+        return wordlink(self._wls, w = w);
 
     def keywords(self, w: str, n: int):
         return keywords(self._wls, w = w, n = n);
