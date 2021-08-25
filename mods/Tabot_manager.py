@@ -29,7 +29,7 @@ logger.info('Tabot Manager Loaded');
 _botcontrol = None;
 _mod_cbs = [];
 _mod_help_doc = """
-# TB_Talker：Tabot组件，用于处理QQ的各类非聊天交互
+# Tabot Manager：Tabot组件，用于处理各类非聊天交互
 """;
 
 # 实现

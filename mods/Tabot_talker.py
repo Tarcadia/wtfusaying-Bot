@@ -28,7 +28,7 @@ logger.info('Tabot Talker Loaded');
 _botcontrol = None;
 _mod_cbs = [];
 _mod_help_doc = """
-# TB_Talker：Tabot组件，用于根据语境实现对话
+# Tabot Talker：Tabot组件，用于根据语境实现对话
 """;
 
 # 接口级实现
