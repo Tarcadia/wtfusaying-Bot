@@ -169,7 +169,14 @@ class ContextSensor:
         tau             : float = 360,
         alpha           : float = 1
     ) -> None:
-        self._cs = new();
+        self._cs = new(
+            contextcount = contextcount,
+            contextfilter = contextfilter,
+            contextmethod = contextmethod,
+            contextwei = contextwei,
+            tau = tau,
+            alpha = alpha
+        );
         return;
 
     def clear(self) -> None:
