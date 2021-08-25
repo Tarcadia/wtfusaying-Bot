@@ -87,7 +87,7 @@ def load(ts):
         ts['topics'] = _topics;
     return ts;
 
-# save(topicsensor)
+# topicsensor = save(topicsensor)
 # 为topicsensor进行一次文件保存
 def save(ts):
     _fp = open(ts['memorypath'], mode = 'w', encoding = 'utf-8');
@@ -95,7 +95,7 @@ def save(ts):
     _fp.close();
     return ts;
 
-# topicsensor = extend(topicsensor, n)
+# topicsensor = clear(topicsensor)
 # 将topicsensor的topic清空
 def clear(ts: dict):
     ts['topics'] = [];
@@ -124,7 +124,7 @@ def extend(ts: dict, n: int):
         ts['topics'].append(_topic);
     return ts;
 
-# topicsensor = extend(topicsensor, n)
+# topicsensor = waste(topicsensor, tid)
 # 将topicsensor中tid所指的topic放入回收站
 def waste(ts: dict, tid: int):
     _topic = ts['topics'].pop(tid);
@@ -319,7 +319,7 @@ def mult(ts: dict, tid: int, vec: dict or set or list):
         _s = ts['topics'][tid]['bia'];
     return _s;
 
-# [vi]*topiccount = match(topicsensor, vector)
+# v = match(topicsensor, vector)
 # 计算vector与tid所指的topic的匹配结果，即归一化后的向量乘法
 def match(ts: dict, tid: int, vec: dict or set or list):
     _val = mult(ts, tid, norm(vec));
