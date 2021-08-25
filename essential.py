@@ -57,6 +57,9 @@ _sys_exs = dict();                  # 引入exs列表
 _sys_help_doc = """
 # 底层系统组件
 help                                : 获取帮助
+echo                                : 控制mm消息回显
+    -on                             : 开启mm消息回显
+    -off                            : 关闭mm消息回显
 reload                              : 重载组件
     -a                              : 重载全部组件
     -m <m1>[ <m2> ...]              : 重载组件<m_i>
@@ -65,6 +68,8 @@ reload                              : 重载组件
 save                                : 调起存档
 stop                                : 合法结束运行
 """;                                # 底层系统组件的help doc
+
+_sys_echoon = True;
 
 
 
@@ -241,10 +246,11 @@ def load():
 
     # 注册底层系统组件的callback
     _sys_cbs.append({'fnc': _sys_cb_fnc_echo, 'flt': _sys_cb_flt_echo, 'key': '_sys_cb_echo'});
-    _sys_cbs.append({'fnc': _sys_cb_fnc_help, 'flt': _sys_cb_flt_help, 'key': '_sys_cb_help'});
-    _sys_cbs.append({'fnc': _sys_cb_fnc_reload, 'flt': _sys_cb_flt_reload, 'key': '_sys_cb_reload'});
-    _sys_cbs.append({'fnc': _sys_cb_fnc_save, 'flt': _sys_cb_flt_save, 'key': '_sys_cb_save'});
-    _sys_cbs.append({'fnc': _sys_cb_fnc_stop, 'flt': _sys_cb_flt_stop, 'key': '_sys_cb_stop'});
+    _sys_cbs.append({'fnc': _sys_cb_fnc_cmd_help, 'flt': _sys_cb_flt_cmd_help, 'key': '_sys_cb_cmd_help'});
+    _sys_cbs.append({'fnc': _sys_cb_fnc_cmd_echo, 'flt': _sys_cb_flt_cmd_echo, 'key': '_sys_cb_cmd_echo'});
+    _sys_cbs.append({'fnc': _sys_cb_fnc_cmd_reload, 'flt': _sys_cb_flt_cmd_reload, 'key': '_sys_cb_cmd_reload'});
+    _sys_cbs.append({'fnc': _sys_cb_fnc_cmd_save, 'flt': _sys_cb_flt_cmd_save, 'key': '_sys_cb_cmd_save'});
+    _sys_cbs.append({'fnc': _sys_cb_fnc_cmd_stop, 'flt': _sys_cb_flt_cmd_stop, 'key': '_sys_cb_cmd_stop'});
 
     # 查找所有exs
     _exname_list = [];
@@ -341,17 +347,32 @@ def stop():
 
 _sys_cb_flt_echo = {'mmk' : {'mirai', 'telegram'}, 'msg' : {}};
 def _sys_cb_fnc_echo(mmk, msg):
-    logger.info(msg);
+    if _sys_echoon:
+        _sys_botcontrol.send('IO', msg);
 
-_sys_cb_flt_help = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'help'}};
-def _sys_cb_fnc_help(mmk, msg):
+_sys_cb_flt_cmd_help = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'help'}};
+def _sys_cb_fnc_cmd_help(mmk, msg):
     _sys_botcontrol.send('IO', _sys_help_doc);
     for _modname in _sys_mods:
         _mod = _sys_mods[_modname];
         _sys_botcontrol.send('IO', _mod._mod_help_doc);
 
-_sys_cb_flt_reload = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'reload'}};
-def _sys_cb_fnc_reload(mmk, msg):
+_sys_cb_flt_cmd_echo = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'echo'}};
+def _sys_cb_fnc_cmd_echo(mmk, msg):
+    global _sys_echoon;
+    if msg['args']:
+        if msg['args'][0] == '-on':
+            _sys_echoon = True;
+        elif msg['args'][0] == '-off':
+            _sys_echoon = False;
+        else:
+            _sys_botcontrol.send('IO', '参数不对，help一下');
+        _sys_botcontrol.send('IO', 'echo: %s' % _sys_echoon);
+    else:
+        _sys_botcontrol.send('IO', 'echo: %s' % _sys_echoon);
+
+_sys_cb_flt_cmd_reload = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'reload'}};
+def _sys_cb_fnc_cmd_reload(mmk, msg):
     def toreload():
         with _sys_botcontrol.setlock:
             if msg['args']:
@@ -383,14 +404,14 @@ def _sys_cb_fnc_reload(mmk, msg):
         _sys_botcontrol.send('IO', '参数不对，help一下');
     
 
-_sys_cb_flt_save = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'save'}};
-def _sys_cb_fnc_save(mmk, msg):
+_sys_cb_flt_cmd_save = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'save'}};
+def _sys_cb_fnc_cmd_save(mmk, msg):
     _sys_botcontrol.send('IO', '开始保存...');
     save();
     _sys_botcontrol.send('IO', '保存完成');
 
-_sys_cb_flt_stop = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'stop'}};
-def _sys_cb_fnc_stop(mmk, msg):
+_sys_cb_flt_cmd_stop = {'mmk' : {'IO', 'Loopback'}, 'msg' : {'call' : 'stop'}};
+def _sys_cb_fnc_cmd_stop(mmk, msg):
     _sys_botcontrol.send('IO', '正在关闭...');
     global _sys_tostop;
     _sys_tostop = True;
