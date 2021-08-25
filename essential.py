@@ -93,7 +93,8 @@ def reloadall():
             _exname = _filename;
             _exname_list.append(_exname);
     # 解注册当前所有模块组件接口，关闭当前所有模块组件
-    for _modname in _sys_mods:
+    _mods_topop = _sys_mods.keys().copy();
+    for _modname in _mods_topop:
         _mod = _sys_mods.pop(_modname);
         try:
             for _cb in _mod._mod_cbs:
@@ -113,11 +114,11 @@ def reloadall():
         except Exception as _err:
             logger.error('Failed stop mod %s with %s' % (_modname, type(_err)));
             logger.debug(_err);
-        
         del sys.modules['mods.%s' % _modname];
         logger.info('Deport mods.%s' % _modname);
     # 卸载当前所有exs
-    for _exname in _sys_exs:
+    _exs_topop = _sys_exs.keys().copy();
+    for _exname in _exs_topop:
         _ex = _sys_exs.pop(_exname);
         del sys.modules['exs.%s' % _exname];
         logger.info('Deport exs.%s' % _exname);
@@ -131,7 +132,6 @@ def reloadall():
             logger.error('Failed import ex %s with %s' % (_exname, type(_err)));
             logger.debug(_err);
     # 重加载新查找的模块组件，开启模块组件，注册接口
-    _sys_mods.clear();
     for _modname in _modname_list:
         try:
             _mod = importlib.import_module('mods.' + _modname);
