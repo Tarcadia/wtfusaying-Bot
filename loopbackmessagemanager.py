@@ -40,11 +40,11 @@ def new(
 # messagemanager, bool = send(messagemanager, obj)
 # 进行一次向loopback的发送
 def send(mm, data: dict or str = None):
-    if type(data) == str:
-        logger.info(data);
-    elif type(data) == dict:
-        for _k in data:
-            logger.info('%6s : %s' % (_k, data[_k]));
+    #if type(data) == str:
+    #    logger.info(data);
+    #elif type(data) == dict:
+    #    for _k in data:
+    #        logger.info('%6s : %s' % (_k, data[_k]));
     with mm['buffer_lock']:
         if len(mm['buffer_recv']) < mm['buffer_size']:
             mm['buffer_recv'].append(data);

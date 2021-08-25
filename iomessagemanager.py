@@ -104,7 +104,7 @@ def check(mm):
 # 对一个messagemanager进行一轮接收
 def do_recv(mm):
     _data = raw_recv();
-    mm, _ack = send(mm, data = _data);
+    # mm, _ack = send(mm, data = _data);
     with mm['buffer_lock']:
         if len(mm['buffer_recv']) < mm['buffer_size']:
             mm['buffer_recv'].append(_data);

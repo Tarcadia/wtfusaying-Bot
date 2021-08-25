@@ -345,7 +345,7 @@ def stop():
 
 # 底层系统组件接口
 
-_sys_cb_flt_echo = {'mmk' : {'mirai', 'telegram'}, 'msg' : {}};
+_sys_cb_flt_echo = {'mmk' : {'mirai', 'telegram', 'IO', 'Loopback'}, 'msg' : {}};
 def _sys_cb_fnc_echo(mmk, msg):
     if _sys_echoon:
         _sys_botcontrol.send('IO', msg);
