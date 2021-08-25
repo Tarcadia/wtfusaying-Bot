@@ -30,7 +30,31 @@ _botcontrol = None;
 _mod_cbs = [];
 _mod_help_doc = """
 # Tabot Manager：Tabot组件，用于处理各类非聊天交互
+# 一般来说，我帮不到你，但如果你执意需要帮助的话，以下的信息可能在某些情况下会是对你调用执行的一种协助性指示
+tabot                               : 在聊天环境中调用以实现相关功能
+    -help                           : 在聊天环境中展示帮助信息
+    -ping                           : 在聊天环境中Ping本聊天处理系统，执行取决于架构实现下实际的作用效果
+    -reload                         : 在特定的开发环境下应当执行环境支持的组件重载功能
+    -stop                           : 在特定的开发环境下应当执行环境支持的系统关闭功能
 """;
+
+
+
+# tabot的全局变量
+_tabot_cmd_help = 'tabot -help';
+_tabot_cmd_ping = 'tabot -ping';
+_tabot_cmd_reload = 'tabot -reload';
+_tabot_cmd_stop = 'tabot -stop';
+_tabot_cmd_help_doc = """
+一般来说，我帮不到你。
+但如果你执意需要帮助的话，以下的信息可能在某些情况下会是对你调用执行的一种协助性指示
+tabot           : 在聊天环境中调用以实现相关功能
+    -help       : 在聊天环境中展示帮助信息
+    -ping       : 在聊天环境中Ping本聊天处理系统，执行取决于架构实现下实际的作用效果
+    -reload     : 在特定的开发环境下应当执行环境支持的组件重载功能
+    -stop       : 在特定的开发环境下应当执行环境支持的系统关闭功能
+""";
+
 
 # 实现
 
