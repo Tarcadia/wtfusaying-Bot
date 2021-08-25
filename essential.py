@@ -359,11 +359,11 @@ def _sys_cb_fnc_reload(mmk, msg):
                     _sys_botcontrol.send('IO', '开始重加载全部...');
                     reloadall();
                     _sys_botcontrol.send('IO', '重加载全部完成');
-                elif msg['args'][0] == '-m' and len(msg['args'] >= 2):
+                elif msg['args'][0] == '-m' and len(msg['args']) >= 2:
                     _sys_botcontrol.send('IO', '开始重加载组件模块...');
                     reloadmod(msg['args'][1:]);
                     _sys_botcontrol.send('IO', '重加载组件模块完成');
-                elif msg['args'][0] == '-x' or msg['args'][0] == '-e' and len(msg['args'] >= 2):
+                elif msg['args'][0] == '-x' or msg['args'][0] == '-e' and len(msg['args']) >= 2:
                     _sys_botcontrol.send('IO', '开始重加载额外模块...');
                     reloadex(msg['args'][1:]);
                     _sys_botcontrol.send('IO', '重加载额外模块完成');
@@ -373,8 +373,8 @@ def _sys_cb_fnc_reload(mmk, msg):
     
     if (msg['args'] and (
         (msg['args'][0] == '-a') or
-        (msg['args'][0] == '-m' and len(msg['args'] >= 2)) or
-        (msg['args'][0] == '-x' or msg['args'][0] == '-e' and len(msg['args'] >= 2))
+        (msg['args'][0] == '-m' and len(msg['args']) >= 2) or
+        (msg['args'][0] == '-x' or msg['args'][0] == '-e' and len(msg['args']) >= 2)
     )):
         _thr_reload = thr.Thread(target = toreload, name = 'To Reload Run');
         _sys_botcontrol.send('IO', '开启重加载线程...');
