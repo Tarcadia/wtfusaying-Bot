@@ -44,6 +44,7 @@ def _tabot_chat_talkable(mmk, cid):
     _key = mmk + '.' + cid;
     if _key not in _tabot_chat_last_talk_time or time.time() - _tabot_chat_last_talk_time[_key] > 10:
         if _key in _tabot_chat_talk_static and len(_tabot_chat_talk_static[_key]) >= 10 and time.time() - _tabot_chat_talk_static[_key][-10] < 60*60*24:
+            _tabot_chat_last_talk_time[mmk + '.' + cid] = time.time();
             return True;
     return False;
 
@@ -103,7 +104,7 @@ _tabot_cmd_tarcadia = 't -.*tarcadia.*';
 _tabot_cmd_cat = 't -.*cat.*';
 _tabot_cmd_dog = 't -.*dog.*';
 _tabot_cmd_amdyes = '.*[Aa][Mm][Dd] [Yy][Ee][Ss].*';
-_tabot_cmd_jgb = '.*(鸡公煲|[Jj][Gg][Bb])+.*';
+_tabot_cmd_jgb = '.*((鸡.*公.*煲)|([Jj][Gg][Bb]))+.*';
 _tabot_cmd_hdzj = '.*花.*雕.*醉.*鸡.*';
 
 # 回调接口
@@ -137,7 +138,6 @@ def _tabot_funcmd_cb_fnc_unmuted(mmk, msg):
         _txt = random.choice(_tabot_funcmd_unmuted_talks);
         _msg = tmsgp.totxtmsg(mmk, _cid, _txt);
         _botcontrol.send(mmk, _msg);
-        _tabot_chat_last_talk_time[mmk + '.' + _cid] = time.time();
     return;
 
 # 加群
@@ -148,11 +148,10 @@ _tabot_funcmd_cb_flt_joingroup_qq = {
 def _tabot_funcmd_cb_fnc_joingroup(mmk, msg):
     _gid = msg['data']['group']['id'];
     _cid = 'g' + str(_gid);
-    if random.random() <= 0.8 and _tabot_chat_talkable(mmk, _cid):
+    if random.random() <= 0.8:
         _txt = random.choice(_tabot_funcmd_joingroup_talks);
         _msg = tmsgp.totxtmsg(mmk, _cid, _txt);
         _botcontrol.send(mmk, _msg);
-        _tabot_chat_last_talk_time[mmk + '.' + _cid] = time.time();
     return;
 
 # 群加人
@@ -167,7 +166,6 @@ def _tabot_funcmd_cb_fnc_newmember(mmk, msg):
         _txt = random.choice(_tabot_funcmd_newmember_talks);
         _msg = tmsgp.totxtmsg(mmk, _cid, _txt);
         _botcontrol.send(mmk, _msg);
-        _tabot_chat_last_talk_time[mmk + '.' + _cid] = time.time();
     return;
 
 # 群踢人
@@ -182,7 +180,6 @@ def _tabot_funcmd_cb_fnc_kickmember(mmk, msg):
         _txt = random.choice(_tabot_funcmd_kickmember_talks);
         _msg = tmsgp.totxtmsg(mmk, _cid, _txt);
         _botcontrol.send(mmk, _msg);
-        _tabot_chat_last_talk_time[mmk + '.' + _cid] = time.time();
     return;
 
 # 群退人
@@ -197,7 +194,6 @@ def _tabot_funcmd_cb_fnc_quitmember(mmk, msg):
         _txt = random.choice(_tabot_funcmd_quitmember_talks);
         _msg = tmsgp.totxtmsg(mmk, _cid, _txt);
         _botcontrol.send(mmk, _msg);
-        _tabot_chat_last_talk_time[mmk + '.' + _cid] = time.time();
     return;
 
 # Bot指令
@@ -231,6 +227,7 @@ def _tabot_funcmd_cb_fnc_reboot(mmk, msg):
     _botcontrol.send(mmk, _msg);
     return;
 
+# bot关键词
 _tabot_funcmd_cb_flt_jgb_qq = {
     'mmk':{'mirai.*'},
     'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_jgb}]}}
@@ -241,9 +238,10 @@ _tabot_funcmd_cb_flt_jgb_tg = {
 };
 def _tabot_funcmd_cb_fnc_jgb(mmk, msg):
     _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
-    _txt = random.choice(_tabot_funcmd_jgb_talks);
-    _msg = tmsgp.totxtmsg(mmk, _src['cid'], _txt);
-    _botcontrol.send(mmk, _msg);
+    if random.random() <= 0.8 and _tabot_chat_talkable(mmk, _src['cid']):
+        _txt = random.choice(_tabot_funcmd_jgb_talks);
+        _msg = tmsgp.totxtmsg(mmk, _src['cid'], _txt);
+        _botcontrol.send(mmk, _msg);
     return;
 
 _tabot_funcmd_cb_flt_hdzj_qq = {
@@ -256,9 +254,10 @@ _tabot_funcmd_cb_flt_hdzj_tg = {
 };
 def _tabot_funcmd_cb_fnc_hdzj(mmk, msg):
     _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
-    _txt = random.choice(_tabot_funcmd_hdzj_talks);
-    _msg = tmsgp.totxtmsg(mmk, _src['cid'], _txt);
-    _botcontrol.send(mmk, _msg);
+    if random.random() <= 0.8 and _tabot_chat_talkable(mmk, _src['cid']):
+        _txt = random.choice(_tabot_funcmd_hdzj_talks);
+        _msg = tmsgp.totxtmsg(mmk, _src['cid'], _txt);
+        _botcontrol.send(mmk, _msg);
     return;
 
 
