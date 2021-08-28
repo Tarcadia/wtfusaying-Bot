@@ -88,9 +88,9 @@ def valuetalk(tm: dict, t = None):
         v = tm['value'] * pow(2, -dt / tm['tau']);
         return v;
 
-# 计算当前是否可以发言
-def cantalk(tm: dict, t = None):
-    return random.random() <= valuetalk(tm = tm, t = t);
+# 计算当前是否可以发言，p为引入条件概率
+def cantalk(tm: dict, p: float = 1, t = None):
+    return random.random() <= p * valuetalk(tm = tm, t = t);
 
 class ThermalMeter():
 
@@ -125,5 +125,5 @@ class ThermalMeter():
         self._tm = ontalk(self._tm, t = t);
         return;
     
-    def cantalk(self, t = None):
-        return cantalk(self._tm);
+    def cantalk(self, p: float = 1, t = None):
+        return cantalk(self._tm, p = p, t = t);
