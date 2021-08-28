@@ -75,7 +75,7 @@ def oncalltalk(tm: dict, t = None):
         t = time.time();
     with tm['talklock']:
         dt = t - tm['valuetime'];
-        tm['value'] = tm['value'] * pow(2, -dt / tm['tau']) - 1 / tm['callrate'];
+        tm['value'] = tm['value'] * pow(2, -dt / tm['tau']) - 1 / tm['talkrate'];
         tm['valuetime'] = t;
     return tm;
 
