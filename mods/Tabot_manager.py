@@ -107,8 +107,8 @@ t               : 在聊天环境中调用以实现相关功能
 
 # 向OP发送消息，由于是便捷实现的函数，所以mmk的使用不解耦于其他实现，需要根据情况改动；
 def _tellop(txt):
-    _tgttg = {'mmk': 'mirai', 'ctype': 'p', 'rcid': CONSTS.BOT_OP_QQ, 'cid': 'mirai.p' + str(CONSTS.BOT_OP_QQ)};
-    _tgtqq = {'mmk': 'telegram', 'ctype': 'p', 'rcid': CONSTS.BOT_OP_TG, 'cid': 'telegram.p' + str(CONSTS.BOT_OP_TG)};
+    _tgtqq = tmsgp.src(mmk = 'mirai', ctype = 'p', rcid = CONSTS.BOT_OP_QQ);
+    _tgttg = tmsgp.src(mmk = 'telegram', ctype = 'p', rcid = CONSTS.BOT_OP_TG);
     _botcontrol.send('mirai', tmsgp.tomsgtxt(_tgtqq, txt));
     _botcontrol.send('telegram', tmsgp.tomsgtxt(_tgttg, txt));
     return;
