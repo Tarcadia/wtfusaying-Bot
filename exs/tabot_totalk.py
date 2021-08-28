@@ -94,15 +94,16 @@ def trycantalk(src, p: float = 1):
 
 def strparams(src):
     lines = [];
+    lines.append("当前对话key：%s" % src['cid']);
     if src['cid'] in thermals and thermals[src['cid']]:
-        lines.append("当前对话前向度：%.3f\%" % thermals[src['cid']].value * 100);
+        lines.append("————前向度：%.1f%%" % (thermals[src['cid']].value * 100));
     else:
-        lines.append("当前对话前向度缺失");
+        lines.append("————前向度缺失");
     if src['cid'] in contexts and contexts[src['cid']]:
         cvec = contexts[src['cid']].get();
-        lines.append("当前上下文关键词：" + ','.join(['%s: %.1f' % (_k, cvec[_k]) for _k in cvec]));
+        lines.append("————上下文关键词：" + ','.join(['%s: %.1f' % (_k, cvec[_k]) for _k in cvec]));
     else:
-        lines.append("当前上下文信息缺失");
+        lines.append("————上下文信息缺失");
     return '\n'.join(lines);
 
 # 接口函数
