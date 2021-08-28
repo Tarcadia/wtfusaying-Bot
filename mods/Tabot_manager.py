@@ -98,9 +98,7 @@ _tabot_cb_flt_muted_qq_all = {
 def _tabot_cb_fnc_muted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
-    logger.info('mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
-    _tellop('mirai', 'mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
-    _tellop('telegram', 'mmk: %s 在群%s(gid:%s)中被禁言'%(mmk, _gnm, _gid));
+    logger.info('mmk: %s 在群%s(gid:%s)中被禁言' % (mmk, _gnm, _gid));
     return;
 
 # 解除禁言
@@ -115,9 +113,7 @@ _tabot_cb_flt_unmuted_qq_all = {
 def _tabot_cb_fnc_unmuted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
-    logger.info('mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
-    _tellop('mirai', 'mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
-    _tellop('telegram', 'mmk: %s 在群%s(gid:%s)中被解除禁言'%(mmk, _gnm, _gid));
+    logger.info('mmk: %s 在群%s(gid:%s)中被解除禁言' % (mmk, _gnm, _gid));
     return;
 
 # 加群
@@ -128,6 +124,7 @@ _tabot_cb_flt_joingroup_qq = {
 def _tabot_cb_fnc_joingroup(mmk, msg):
     _gid = msg['data']['group']['id'];
     _gnm = msg['data']['group']['name'];
+    logger.info('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
     logger.info('mmk: %s 进入群%s(gid:%s)'%(mmk, _gnm, _gid));
     _tellop('mirai', 'mmk: %s 进入群%s(gid:%s)'%(mmk, _gnm, _gid));
     _tellop('telegram', 'mmk: %s 进入群%s(gid:%s)'%(mmk, _gnm, _gid));
@@ -145,9 +142,7 @@ _tabot_cb_flt_leavegroup_qq_kick = {
 def _tabot_cb_fnc_leavegroup(mmk, msg):
     _gid = msg['data']['group']['id'];
     _gnm = msg['data']['group']['name'];
-    logger.info('mmk: %s 退出群%s(gid:%s)'%(mmk, _gnm, _gid));
-    _tellop('mirai', 'mmk: %s 退出群%s(gid:%s)'%(mmk, _gnm, _gid));
-    _tellop('telegram', 'mmk: %s 退出群%s(gid:%s)'%(mmk, _gnm, _gid));
+    logger.info('mmk: %s 退出群%s(gid:%s)' % (mmk, _gnm, _gid));
     return;
 
 # 群加人
@@ -160,9 +155,7 @@ def _tabot_cb_fnc_newmember(mmk, msg):
     _unm = msg['data']['member']['memberName'];
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
-    logger.info('mmk: %s 中%s(uid:%s)进入群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    _tellop('mirai', 'mmk: %s 中%s(uid:%s)进入群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    _tellop('telegram', 'mmk: %s 中%s(uid:%s)进入群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
+    logger.info('mmk: %s 中%s(uid:%s)进入群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     return;
 
 # 群踢人
@@ -175,9 +168,7 @@ def _tabot_cb_fnc_kickmember(mmk, msg):
     _unm = msg['data']['member']['memberName'];
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
-    logger.info('mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    _tellop('mirai', 'mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    _tellop('telegram', 'mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
+    logger.info('mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     return;
 
 # 群退人
@@ -190,9 +181,7 @@ def _tabot_cb_fnc_quitmember(mmk, msg):
     _unm = msg['data']['member']['memberName'];
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
-    logger.info('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    _tellop('mirai', 'mmk: %s 中%s(uid:%s)离开群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
-    _tellop('telegram', 'mmk: %s 中%s(uid:%s)离开群%s(gid:%s)'%(mmk, _unm, _uid, _gnm, _gid));
+    logger.info('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     return;
 
 # Bot被邀请加群
@@ -206,13 +195,11 @@ def _tabot_cb_fnc_invited(mmk, msg):
     _gid = msg['data']['groupId'];
     _gnm = msg['data']['groupName'];
     _cmd = {
-        'command':'resp_botInvitedJoinGroupRequestEvent',
-        'content':{"eventId":_eid,"fromId":_fid,"groupId":_gid,"operate":0,"message":""}
+        'command': 'resp_botInvitedJoinGroupRequestEvent',
+        'content': {"eventId":_eid, "fromId":_fid, "groupId":_gid, "operate":0, "message":""}
     };
     _botcontrol.send(mmk, _cmd);
-    logger.info('mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
-    _tellop('mirai', 'mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
-    _tellop('telegram', 'mmk: %s 中被邀请进入群%s(gid:%s)'%(mmk, _gnm, _gid));
+    logger.info('mmk: %s 中被邀请进入群%s(gid:%s)' % (mmk, _gnm, _gid));
     return;
 
 # Bot指令
@@ -246,17 +233,14 @@ def _tabot_cb_fnc_ping(mmk, msg):
 
 _tabot_cb_flt_reload_qq = {
     'mmk':{'mirai.*'},
-    'msg':{'data':{'messageChain':[{'type':'Plain','text':_tabot_cmd_reload}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
+    'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_reload}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
 };
 _tabot_cb_flt_reload_tg = {
     'mmk':{'telegram.*'},
     'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': _tabot_cmd_reload}}
 };
 def _tabot_cb_fnc_reload(mmk, msg):
-    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
-    _msg = tmsgp.totxtmsg(mmk, _src['cid'], '组件重载启动');
-    _botcontrol.send(mmk, _msg);
-    _cmd = {'call':'reload', 'args':['-a']};
+    _cmd = {'call': 'reload', 'args': ['-a']};
     _botcontrol.send('Loopback', _cmd);
     return;
 
@@ -269,10 +253,7 @@ _tabot_cb_flt_stop_tg = {
     'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': _tabot_cmd_stop}}
 };
 def _tabot_cb_fnc_stop(mmk, msg):
-    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
-    _msg = tmsgp.totxtmsg(mmk, _src['cid'], '好我这就自闭');
-    _botcontrol.send(mmk, _msg);
-    _cmd = {'call':'stop', 'args':[]};
+    _cmd = {'call': 'stop', 'args': []};
     _botcontrol.send('Loopback', _cmd);
     return;
 
