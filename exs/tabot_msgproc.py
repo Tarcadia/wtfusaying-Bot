@@ -173,16 +173,20 @@ def tomsgtxt(tgt, txt, quote = None):
         if re.match('mirai.*', tgt['mmk']):
             if tgt['ctype'] == 'p':
                 _cmd = 'sendFriendMessage';
+                _target = 'qq';
             elif tgt['ctype'] == 'pt':
-                _cmd = 'sendFriendMessage';
+                _cmd = 'sendTempMessage';
+                _target = 'qq';
             elif tgt['ctype'] == 'g':
-                _cmd = 'sendFriendMessage';
+                _cmd = 'sendGroupMessage';
+                _target = 'group';
             elif tgt['ctype'] == 'gt':
-                _cmd = 'sendFriendMessage';
+                _cmd = 'sendTempMessage';
+                _target = 'group';
             else:
                 _cmd = '';
             if _cmd:
-                _msg = {'command': _cmd, 'content': {'target': tgt['rcid'], 'messageChain': [{'type': 'Plain', 'text': txt}]}};
+                _msg = {'command': _cmd, 'content': {_target: tgt['rcid'], 'messageChain': [{'type': 'Plain', 'text': txt}]}};
                 if quote == True:
                     _msg['command']['quote'] = tgt['mid'];
                 elif quote:
