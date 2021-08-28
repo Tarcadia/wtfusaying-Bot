@@ -1,6 +1,7 @@
 
 import CONSTS;
 import exs.tabot_msgproc as tmsgp;
+import exs.tabot_totalk as ttalk;
 
 import re;
 import logging;
@@ -44,6 +45,7 @@ t                                   : 在聊天环境中调用以实现相关功
 _tabot_cmd_help = 't -help';
 _tabot_cmd_ping = 't -ping';
 _tabot_cmd_reload = 't -reload';
+_tabot_cmd_save = 't -save';
 _tabot_cmd_stop = 't -stop';
 _tabot_cmd_help_doc = """
 一般来说，我帮不到你。
@@ -52,6 +54,7 @@ t               : 在聊天环境中调用以实现相关功能
     -help       : 在聊天环境中展示帮助信息
     -ping       : 在聊天环境中Ping本聊天处理系统，执行取决于架构实现下实际的作用效果
     -reload     : 在特定的开发环境下应当执行环境支持的组件重载功能
+    -save       : 在特定的开发环境下应当执行环境支持的系统保存功能
     -stop       : 在特定的开发环境下应当执行环境支持的系统关闭功能
     -henshin    : 变身
     -reboot     : 并不能控制重启
@@ -72,10 +75,7 @@ def _tellop(txt):
 
 # 回调接口
 
-_tabot_cb_flt_msgecho = {
-    'mmk':{'mirai.*', 'telegram.*'},
-    'msg':{}
-};
+_tabot_cb_flt_msgecho = {'mmk': {'mirai.*', 'telegram.*'}, 'msg':{}};
 def _tabot_cb_fnc_msgecho(mmk, msg):
     if re.match('mirai.*', mmk):
         _cmd = {'mmk': mmk, 'syncid': msg['syncId']};
@@ -88,14 +88,8 @@ def _tabot_cb_fnc_msgecho(mmk, msg):
     return;
 
 # 禁言
-_tabot_cb_flt_muted_qq_self = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'type':'BotMuteEvent'}}
-};
-_tabot_cb_flt_muted_qq_all = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'type':'GroupMuteAllEvent','current':True}}
-};
+_tabot_cb_flt_muted_qq_self = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'BotMuteEvent'}}};
+_tabot_cb_flt_muted_qq_all = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'GroupMuteAllEvent', 'current': True}}};
 def _tabot_cb_fnc_muted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
@@ -104,14 +98,8 @@ def _tabot_cb_fnc_muted(mmk, msg):
     return;
 
 # 解除禁言
-_tabot_cb_flt_unmuted_qq_self = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'type':'BotUnmuteEvent'}}
-};
-_tabot_cb_flt_unmuted_qq_all = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'type':'GroupMuteAllEvent','current':False}}
-};
+_tabot_cb_flt_unmuted_qq_self = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'BotUnmuteEvent'}}};
+_tabot_cb_flt_unmuted_qq_all = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'GroupMuteAllEvent', 'current': False}}};
 def _tabot_cb_fnc_unmuted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
@@ -120,10 +108,7 @@ def _tabot_cb_fnc_unmuted(mmk, msg):
     return;
 
 # 加群
-_tabot_cb_flt_joingroup_qq = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'type':'BotJoinGroupEvent'}}
-};
+_tabot_cb_flt_joingroup_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'BotJoinGroupEvent'}}};
 def _tabot_cb_fnc_joingroup(mmk, msg):
     _gid = msg['data']['group']['id'];
     _gnm = msg['data']['group']['name'];
@@ -132,14 +117,8 @@ def _tabot_cb_fnc_joingroup(mmk, msg):
     return;
 
 # 退群
-_tabot_cb_flt_leavegroup_qq_self = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'type':'BotLeaveEventActive'}}
-};
-_tabot_cb_flt_leavegroup_qq_kick = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'type':'BotLeaveEventKick'}}
-};
+_tabot_cb_flt_leavegroup_qq_self = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'BotLeaveEventActive'}}};
+_tabot_cb_flt_leavegroup_qq_kick = {'mmk': {'mirai.*'}, 'msg':{'data': {'type': 'BotLeaveEventKick'}}};
 def _tabot_cb_fnc_leavegroup(mmk, msg):
     _gid = msg['data']['group']['id'];
     _gnm = msg['data']['group']['name'];
@@ -148,10 +127,7 @@ def _tabot_cb_fnc_leavegroup(mmk, msg):
     return;
 
 # 群加人
-_tabot_cb_flt_newmember_qq = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'type':'MemberJoinEvent'}}
-};
+_tabot_cb_flt_newmember_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'MemberJoinEvent'}}};
 def _tabot_cb_fnc_newmember(mmk, msg):
     _uid = msg['data']['member']['id'];
     _unm = msg['data']['member']['memberName'];
@@ -162,10 +138,7 @@ def _tabot_cb_fnc_newmember(mmk, msg):
     return;
 
 # 群踢人
-_tabot_cb_flt_kickmember_qq = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'type':'MemberLeaveEventKick'}}
-};
+_tabot_cb_flt_kickmember_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'MemberLeaveEventKick'}}};
 def _tabot_cb_fnc_kickmember(mmk, msg):
     _uid = msg['data']['member']['id'];
     _unm = msg['data']['member']['memberName'];
@@ -176,10 +149,7 @@ def _tabot_cb_fnc_kickmember(mmk, msg):
     return;
 
 # 群退人
-_tabot_cb_flt_quitmember_qq = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'type':'MemberLeaveEventQuit'}}
-};
+_tabot_cb_flt_quitmember_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'MemberLeaveEventQuit'}}};
 def _tabot_cb_fnc_quitmember(mmk, msg):
     _uid = msg['data']['member']['id'];
     _unm = msg['data']['member']['memberName'];
@@ -190,10 +160,7 @@ def _tabot_cb_fnc_quitmember(mmk, msg):
     return;
 
 # Bot被邀请加群
-_tabot_cb_flt_invited_qq = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'type':'BotInvitedJoinGroupRequestEvent'}}
-};
+_tabot_cb_flt_invited_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'BotInvitedJoinGroupRequestEvent'}}};
 def _tabot_cb_fnc_invited(mmk, msg):
     _eid = msg['data']['eventId'];
     _fid = msg['data']['fromId'];
@@ -209,42 +176,24 @@ def _tabot_cb_fnc_invited(mmk, msg):
     return;
 
 # Bot指令
-_tabot_cb_flt_help_qq = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_help}]}}
-};
-_tabot_cb_flt_help_tg = {
-    'mmk':{'telegram.*'},
-    'msg':{'message': {'text': _tabot_cmd_help}}
-};
+_tabot_cb_flt_help_qq = {'mmk': {'mirai.*'}, 'msg':{'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_help}]}}};
+_tabot_cb_flt_help_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'text': _tabot_cmd_help}}};
 def _tabot_cb_fnc_help(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
     _cmd = tmsgp.tomsgtxt(_src, _tabot_cmd_help_doc);
     _botcontrol.send(mmk, _cmd);
     return;
 
-_tabot_cb_flt_ping_qq = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_ping}]}}
-};
-_tabot_cb_flt_ping_tg = {
-    'mmk':{'telegram.*'},
-    'msg':{'message': {'text': _tabot_cmd_ping}}
-};
+_tabot_cb_flt_ping_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_ping}]}}};
+_tabot_cb_flt_ping_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'text': _tabot_cmd_ping}}};
 def _tabot_cb_fnc_ping(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
     _cmd = tmsgp.tomsgtxt(_src, 'Pong!');
     _botcontrol.send(mmk, _cmd);
     return;
 
-_tabot_cb_flt_reload_qq = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_reload}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
-};
-_tabot_cb_flt_reload_tg = {
-    'mmk':{'telegram.*'},
-    'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': _tabot_cmd_reload}}
-};
+_tabot_cb_flt_reload_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_reload}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
+_tabot_cb_flt_reload_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'from': {'id':CONSTS.BOT_OP_TG}, 'text': _tabot_cmd_reload}}};
 def _tabot_cb_fnc_reload(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
     _cmd = tmsgp.tomsgtxt(_src, '组件重载启动');
@@ -253,14 +202,20 @@ def _tabot_cb_fnc_reload(mmk, msg):
     _botcontrol.send('Loopback', _cmd);
     return;
 
-_tabot_cb_flt_stop_qq = {
-    'mmk':{'mirai.*'},
-    'msg':{'data': {'messageChain':[{'type':'Plain','text':_tabot_cmd_stop}], 'sender':{'id':CONSTS.BOT_OP_QQ}}}
-};
-_tabot_cb_flt_stop_tg = {
-    'mmk':{'telegram.*'},
-    'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': _tabot_cmd_stop}}
-};
+_tabot_cb_flt_save_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_save}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
+_tabot_cb_flt_save_tg = {'mmk': {'telegram.*'}, 'msg':{'message': {'from': {'id':CONSTS.BOT_OP_TG}, 'text': _tabot_cmd_save}}};
+def _tabot_cb_fnc_save(mmk, msg):
+    _src = tmsgp.msgsrc(mmk, msg);
+    _cmd = tmsgp.tomsgtxt(_src, '好这就保存');
+    _botcontrol.send(mmk, _cmd);
+    tmsgp.save();
+    ttalk.save();
+    _cmd = {'call': 'save', 'args': []};
+    _botcontrol.send('Loopback', _cmd);
+    return;
+
+_tabot_cb_flt_stop_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_stop}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
+_tabot_cb_flt_stop_tg = {'mmk': {'telegram.*'}, 'msg':{'message': {'from': {'id':CONSTS.BOT_OP_TG}, 'text': _tabot_cmd_stop}}};
 def _tabot_cb_fnc_stop(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
     _cmd = tmsgp.tomsgtxt(_src, '好我这就自闭');
@@ -291,6 +246,8 @@ _mod_cbs.append({'fnc': _tabot_cb_fnc_ping,         'flt': _tabot_cb_flt_ping_qq
 _mod_cbs.append({'fnc': _tabot_cb_fnc_ping,         'flt': _tabot_cb_flt_ping_tg,           'key': '_tabot_mn_cb_ping_tg'           });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_reload,       'flt': _tabot_cb_flt_reload_qq,         'key': '_tabot_mn_cb_reload_qq'         });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_reload,       'flt': _tabot_cb_flt_reload_tg,         'key': '_tabot_mn_cb_reload_tg'         });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_save,         'flt': _tabot_cb_flt_save_qq,           'key': '_tabot_mn_cb_save_qq'           });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_save,         'flt': _tabot_cb_flt_save_tg,           'key': '_tabot_mn_cb_save_tg'           });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_stop,         'flt': _tabot_cb_flt_stop_qq,           'key': '_tabot_mn_cb_stop_qq'           });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_stop,         'flt': _tabot_cb_flt_stop_tg,           'key': '_tabot_mn_cb_stop_tg'           });
 
@@ -302,6 +259,8 @@ def start():
     return [];
 
 def save():
+    tmsgp.save();
+    ttalk.save();
     return;
 
 def stop():
