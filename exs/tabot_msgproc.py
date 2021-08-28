@@ -45,73 +45,73 @@ logger.info('Tabot Message Process - ex Loaded');
 # 获得message的src
 def msgsrc(mmk, msg):
     if re.match('mirai.*', mmk):
-        if msg['type'] == 'FriendMessage':
+        if msg['data']['type'] == 'FriendMessage':
             _ctype = 'p';
-            _rcid = msg['sender']['id'];
-            _uid = msg['sender']['id'];
-            _mid = msg['messageChain'][0]['id'];
-            _time = msg['messageChain'][0]['time'];
-        elif msg['type'] == 'StrangerMessage':
+            _rcid = msg['data']['sender']['id'];
+            _uid = msg['data']['sender']['id'];
+            _mid = msg['data']['messageChain'][0]['id'];
+            _time = msg['data']['messageChain'][0]['time'];
+        elif msg['data']['type'] == 'StrangerMessage':
             _ctype = 'pt';
-            _rcid = msg['sender']['id'];
-            _uid = msg['sender']['id'];
-            _mid = msg['messageChain'][0]['id'];
-            _time = msg['messageChain'][0]['time'];
-        elif msg['type'] == 'OtherClientMessage':
+            _rcid = msg['data']['sender']['id'];
+            _uid = msg['data']['sender']['id'];
+            _mid = msg['data']['messageChain'][0]['id'];
+            _time = msg['data']['messageChain'][0]['time'];
+        elif msg['data']['type'] == 'OtherClientMessage':
             _ctype = 'po';
-            _rcid = msg['sender']['id'];
-            _uid = msg['sender']['platform'];
-            _mid = msg['messageChain'][0]['id'];
-            _time = msg['messageChain'][0]['time'];
-        elif msg['type'] == 'TempMessage':
+            _rcid = msg['data']['sender']['id'];
+            _uid = msg['data']['sender']['platform'];
+            _mid = msg['data']['messageChain'][0]['id'];
+            _time = msg['data']['messageChain'][0]['time'];
+        elif msg['data']['type'] == 'TempMessage':
             _ctype = 'gt';
-            _rcid = msg['sender']['group']['id'];
-            _uid = msg['sender']['id'];
-            _mid = msg['messageChain'][0]['id'];
-            _time = msg['messageChain'][0]['time'];
-        elif msg['type'] == 'GroupMessage':
+            _rcid = msg['data']['sender']['group']['id'];
+            _uid = msg['data']['sender']['id'];
+            _mid = msg['data']['messageChain'][0]['id'];
+            _time = msg['data']['messageChain'][0]['time'];
+        elif msg['data']['type'] == 'GroupMessage':
             _ctype = 'g';
-            _rcid = msg['sender']['group']['id'];
-            _uid = msg['sender']['id'];
-            _mid = msg['messageChain'][0]['id'];
-            _time = msg['messageChain'][0]['time'];
+            _rcid = msg['data']['sender']['group']['id'];
+            _uid = msg['data']['sender']['id'];
+            _mid = msg['data']['messageChain'][0]['id'];
+            _time = msg['data']['messageChain'][0]['time'];
         else:
             _ctype = 'u';
-            _rcid = msg['sender']['id'] if 'sender' in msg else 0;
-            _uid = msg['sender']['id'] if 'sender' in msg else 0;
-            _mid = msg['messageChain'][0]['id'] if 'messageChain' in msg else 0;
-            _time = msg['messageChain'][0]['time'] if 'messageChain' in msg else 0;
+            _rcid = msg['data']['sender']['id'] if 'sender' in msg['data'] else 0;
+            _uid = msg['data']['sender']['id'] if 'sender' in msg['data'] else 0;
+            _mid = msg['data']['messageChain'][0]['id'] if 'messageChain' in msg['data'] else 0;
+            _time = msg['data']['messageChain'][0]['time'] if 'messageChain' in msg['data'] else 0;
     elif re.match('telegram.*', mmk):
-        if msg['chat']['type'] == 'private':
+        if msg['message']['chat']['type'] == 'private':
             _ctype = 'p';
-            _rcid = msg['chat']['id'];
-            _uid = msg['from']['id'];
-            _mid = msg['message_id'];
-            _time = msg['date'];
-        elif msg['chat']['type'] == 'group':
+            _rcid = msg['message']['chat']['id'];
+            _uid = msg['message']['from']['id'];
+            _mid = msg['message']['message_id'];
+            _time = msg['message']['date'];
+        elif msg['message']['chat']['type'] == 'group':
             _ctype = 'g';
-            _rcid = msg['chat']['id'];
-            _uid = msg['from']['id'];
-            _mid = msg['message_id'];
-            _time = msg['date'];
-        elif msg['chat']['type'] == 'supergroup':
+            _rcid = msg['message']['chat']['id'];
+            _uid = msg['message']['from']['id'];
+            _mid = msg['message']['message_id'];
+            _time = msg['message']['date'];
+        elif msg['message']['chat']['type'] == 'supergroup':
             _ctype = 'gs'
-            _rcid = msg['chat']['id'];
-            _uid = msg['from']['id'];
-            _mid = msg['message_id'];
-            _time = msg['date'];
-        elif msg['chat']['type'] == 'channel':
+            _rcid = msg['message']['chat']['id'];
+            _uid = msg['message']['from']['id'];
+            _mid = msg['message']['message_id'];
+            _time = msg['message']['date'];
+        elif msg['message']['chat']['type'] == 'channel':
             _ctype = 'c'
-            _rcid = msg['chat']['id'];
-            _uid = msg['from']['id'];
-            _mid = msg['message_id'];
-            _time = msg['date'];
+            _rcid = msg['message']['chat']['id'];
+            _uid = msg['message']['from']['id'];
+            _mid = msg['message']['message_id'];
+            _time = msg['message']['date'];
         else:
             _ctype = 'u';
-            _rcid = msg['chat']['id'] if 'chat' in msg else 0;
-            _uid = msg['from']['id'] if 'from' in msg else 0;
-            _mid = msg['message_id'] if 'message_id' in msg else 0;
-            _time = msg['date'] if 'date' in msg else 0;
+            _rcid = msg['message']['chat']['id'] if 'chat' in msg['message'] else 0;
+            _uid = msg['message']['from']['id'] if 'from' in msg['message'] else 0;
+            _mid = msg['message']['message_id'] if 'message_id' in msg['message'] else 0;
+            _time = msg['message']['date'] if 'date' in msg['message'] else 0;
     else:
         _ctype = 'u';
         _rcid = 0;
@@ -133,10 +133,10 @@ def msgsrc(mmk, msg):
 # 获得message的txt，即message的文本内容，规则是只提取其中纯文本的消息
 def msgtxt(mmk, msg):
     if re.match('mirai.*', mmk):
-        _txtchain = [_t['text'] for _t in msg['messageChain'] if _t['type'] == 'Plain'];
+        _txtchain = [_t['text'] for _t in msg['data']['messageChain'] if _t['type'] == 'Plain'];
         _txt = '\n'.join(_txtchain);
     elif re.match('telegram.*', mmk):
-        _txt = msg['text'] if 'text' in msg else '';
+        _txt = msg['message']['text'] if 'text' in msg else '';
     else:
         _txt = '';
     return _txt;
@@ -145,10 +145,10 @@ def msgtxt(mmk, msg):
 #######################################          还没实现
 def msgmiltitxt(mmk, msg):
     if re.match('mirai.*', mmk):
-        _txtchain = [_t['text'] for _t in msg['messageChain'] if _t['type'] == 'Plain'];
+        _txtchain = [_t['text'] for _t in msg['data']['messageChain'] if _t['type'] == 'Plain'];
         _txt = '\n'.join(_txtchain);
     elif re.match('telegram.*', mmk):
-        _txt = msg['text'] if 'text' in msg else '';
+        _txt = msg['message']['text'] if 'text' in msg else '';
     else:
         _txt = '';
     return _txt;
