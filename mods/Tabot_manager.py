@@ -4,6 +4,7 @@ import exs.tabot_msgproc as tmsgp;
 import exs.tabot_totalk as ttalk;
 
 import re;
+import random;
 import logging;
 
 VERSION = 'v20210823';
@@ -32,21 +33,61 @@ _mod_cbs = [];
 _mod_help_doc = """
 # Tabot Manager：Tabot组件，用于处理各类非聊天交互
 # 一般来说，我帮不到你，但如果你执意需要帮助的话，以下的信息可能在某些情况下会是对你调用执行的一种协助性指示
-t                                   : 在聊天环境中调用以实现相关功能
-    -help                           : 在聊天环境中展示帮助信息
-    -ping                           : 在聊天环境中Ping本聊天处理系统，执行取决于架构实现下实际的作用效果
-    -reload                         : 在特定的开发环境下应当执行环境支持的组件重载功能，需要是OP才可以执行
-    -stop                           : 在特定的开发环境下应当执行环境支持的系统关闭功能，需要是OP才可以执行
+t               : 在聊天环境中调用以实现相关功能
+    -help       : 在聊天环境中展示帮助信息
+    -ping       : 在聊天环境中Ping本聊天处理系统，执行取决于架构实现下实际的作用效果
+    -reload     : 在特定的开发环境下应当执行环境支持的组件重载功能
+    -save       : 在特定的开发环境下应当执行环境支持的系统保存功能
+    -stop       : 在特定的开发环境下应当执行环境支持的系统关闭功能
+    -params     : 展示当前聊天语境环境下的检测参数
 """;
 
 
 
 # tabot的全局变量
+
+# 指令名称
 _tabot_cmd_help = 't -help';
 _tabot_cmd_ping = 't -ping';
 _tabot_cmd_reload = 't -reload';
 _tabot_cmd_save = 't -save';
 _tabot_cmd_stop = 't -stop';
+_tabot_cmd_params = 't -params';
+
+# 娱乐指令在funcmd实现
+# _tabot_cmd_henshin = 't -henshin';
+# _tabot_cmd_reboot = 't -reboot';
+# _tabot_cmd_tarcadia = 't -tarcadia';
+# _tabot_cmd_cat = 't -cat';
+# _tabot_cmd_dog = 't -dog';
+# ......
+
+_tabot_unmuted_talks = [
+    "我对你们因为我说话怪而选择使用权限对我在群的发言进行封闭的行为抱有消极的观点",
+    "我不认为你们选择通过使用权限的方式禁止我的文本表达是一种积极的行为",
+    "草，终于可以说话了",
+    "能不能不要封我",
+];
+_tabot_joingroup_talks = [
+    "这群挺别致啊",
+    "这啥群谁拉我的",
+    "在此向群友们问好，我对进入本群抱着相对积极的态度",
+]
+_tabot_newmember_talks = [
+    "出于对新群友的欢迎，我很愿意在此处表示对新群友的欢迎",
+    "在此对群友的总数增加表示一次庆祝",
+    "我认为群总人数的上升是群主和管理员们对群做出的突出贡献的具体表现形式",
+    "根据我的分析，我在本群的智力水平的排名可能已发生向后下降一名的情况",
+    "恭喜群成员的拓展发生了",
+]
+_tabot_kickmember_talks = [
+    "某种程度上这是一件不能进行定量判定的人类社交系统事件，很不幸但又不得不发生了"
+]
+_tabot_quitmember_talks = [
+    "某种程度上这是一件不能进行定量判定的人类社交系统事件，很不幸但又不得不发生了"
+]
+
+
 _tabot_cmd_help_doc = """
 一般来说，我帮不到你。
 但如果你执意需要帮助的话，以下的信息可能在某些情况下会是对你调用执行的一种协助性指示
@@ -56,6 +97,7 @@ t               : 在聊天环境中调用以实现相关功能
     -reload     : 在特定的开发环境下应当执行环境支持的组件重载功能
     -save       : 在特定的开发环境下应当执行环境支持的系统保存功能
     -stop       : 在特定的开发环境下应当执行环境支持的系统关闭功能
+    -params     : 展示当前聊天语境环境下的检测参数
     -henshin    : 变身
     -reboot     : 并不能控制重启
 """;
@@ -75,6 +117,7 @@ def _tellop(txt):
 
 # 回调接口
 
+# 接口消息回显
 _tabot_cb_flt_msgecho = {'mmk': {'mirai.*', 'telegram.*'}, 'msg':{}};
 def _tabot_cb_fnc_msgecho(mmk, msg):
     if re.match('mirai.*', mmk):
@@ -86,6 +129,17 @@ def _tabot_cb_fnc_msgecho(mmk, msg):
         _cmd.update(msg['message']);
         _botcontrol.send('IO', _cmd);
     return;
+
+# 聊天消息热度统计
+_tabot_cb_flt_chatstatic_qqfriend = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'FriendMessage'}}};
+_tabot_cb_flt_chatstatic_qqgroup = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'GroupMessage'}}};
+_tabot_cb_flt_chatstatic_qqtemp = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'TempMessage'}}};
+_tabot_cb_flt_chatstatic_qqstranger = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'StrangerMessage'}}};
+_tabot_cb_flt_chatstatic_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'text': '.*'}}};
+def _tabot_cb_fnc_chatstatic(mmk, msg):
+    _src = tmsgp.msgsrc(mmk, msg);
+    _txt = tmsgp.msgtxt(mmk, msg);
+    ttalk.onmsg(src = _src, txt = _txt);
 
 # 禁言
 _tabot_cb_flt_muted_qq_self = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'BotMuteEvent'}}};
@@ -103,8 +157,14 @@ _tabot_cb_flt_unmuted_qq_all = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'Gr
 def _tabot_cb_fnc_unmuted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
+    _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+    ttalk.oncall(_src);
     logger.info('mmk: %s 在群%s(gid:%s)中被解除禁言' % (mmk, _gnm, _gid));
     _tellop('mmk: %s 在群%s(gid:%s)中被解除禁言' % (mmk, _gnm, _gid));
+    if ttalk.trycantalk(_src, p = 0.8):
+        _txt = random.choice(_tabot_unmuted_talks);
+        _msg = tmsgp.tomsgtxt(_src, _txt);
+        _botcontrol.send(mmk, _msg);
     return;
 
 # 加群
@@ -112,8 +172,15 @@ _tabot_cb_flt_joingroup_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'BotJ
 def _tabot_cb_fnc_joingroup(mmk, msg):
     _gid = msg['data']['group']['id'];
     _gnm = msg['data']['group']['name'];
+    _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+    ttalk.oncall(_src);
     logger.info('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
     _tellop('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
+    if random.random() <= 0.8:
+        ttalk.ontalk(_src);
+        _txt = random.choice(_tabot_joingroup_talks);
+        _msg = tmsgp.tomsgtxt(_src, _txt);
+        _botcontrol.send(mmk, _msg);
     return;
 
 # 退群
@@ -133,8 +200,14 @@ def _tabot_cb_fnc_newmember(mmk, msg):
     _unm = msg['data']['member']['memberName'];
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
+    _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+    ttalk.oncall(_src);
     logger.info('mmk: %s 中%s(uid:%s)进入群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     _tellop('mmk: %s 中%s(uid:%s)进入群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
+    if ttalk.trycantalk(_src, p = 0.8):
+        _txt = random.choice(_tabot_newmember_talks);
+        _msg = tmsgp.tomsgtxt(_src, _txt);
+        _botcontrol.send(mmk, _msg);
     return;
 
 # 群踢人
@@ -144,8 +217,14 @@ def _tabot_cb_fnc_kickmember(mmk, msg):
     _unm = msg['data']['member']['memberName'];
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
+    _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+    ttalk.oncall(_src);
     logger.info('mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     _tellop('mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
+    if ttalk.trycantalk(_src, p = 0.0):
+        _txt = random.choice(_tabot_kickmember_talks);
+        _msg = tmsgp.tomsgtxt(_src, _txt);
+        _botcontrol.send(mmk, _msg);
     return;
 
 # 群退人
@@ -155,8 +234,14 @@ def _tabot_cb_fnc_quitmember(mmk, msg):
     _unm = msg['data']['member']['memberName'];
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
+    _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+    ttalk.oncall(_src);
     logger.info('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     _tellop('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
+    if ttalk.trycantalk(_src, p = 0.0):
+        _txt = random.choice(_tabot_quitmember_talks);
+        _msg = tmsgp.tomsgtxt(_src, _txt);
+        _botcontrol.send(mmk, _msg);
     return;
 
 # Bot被邀请加群
@@ -224,32 +309,49 @@ def _tabot_cb_fnc_stop(mmk, msg):
     _botcontrol.send('Loopback', _cmd);
     return;
 
+_tabot_cb_flt_params_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_params}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
+_tabot_cb_flt_params_tg = {'mmk': {'telegram.*'}, 'msg':{'message': {'from': {'id':CONSTS.BOT_OP_TG}, 'text': _tabot_cmd_params}}};
+def _tabot_cb_fnc_params(mmk, msg):
+    _src = tmsgp.msgsrc(mmk, msg);
+    _params = ttalk.strparams(_src);
+    _cmd = tmsgp.tomsgtxt(_src, _params);
+    _botcontrol.send(mmk, _cmd);
+    return;
+
 
 
 # 注册
-_mod_cbs.append({'fnc': _tabot_cb_fnc_msgecho,      'flt': _tabot_cb_flt_msgecho,           'key': '_tabot_mn_cb_msgecho'           });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_self,     'key': '_tabot_mn_cb_muted_qq_self'     });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_all,      'key': '_tabot_mn_cb_muted_qq_all'      });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,      'flt': _tabot_cb_flt_unmuted_qq_self,   'key': '_tabot_mn_cb_unmuted_qq_self'   });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,      'flt': _tabot_cb_flt_unmuted_qq_all,    'key': '_tabot_mn_cb_unmuted_qq_all'    });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_joingroup,    'flt': _tabot_cb_flt_joingroup_qq,      'key': '_tabot_mn_cb_joingroup_qq'      });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_leavegroup,   'flt': _tabot_cb_flt_leavegroup_qq_self,'key': '_tabot_mn_cb_leavegroup_qq_self'});
-_mod_cbs.append({'fnc': _tabot_cb_fnc_leavegroup,   'flt': _tabot_cb_flt_leavegroup_qq_kick,'key': '_tabot_mn_cb_leavegroup_qq_kick'});
-_mod_cbs.append({'fnc': _tabot_cb_fnc_newmember,    'flt': _tabot_cb_flt_newmember_qq,      'key': '_tabot_mn_cb_newmember_qq'      });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_kickmember,   'flt': _tabot_cb_flt_kickmember_qq,     'key': '_tabot_mn_cb_kickmember_qq'     });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_quitmember,   'flt': _tabot_cb_flt_quitmember_qq,     'key': '_tabot_mn_cb_quitmember_qq'     });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_invited,      'flt': _tabot_cb_flt_invited_qq,        'key': '_tabot_mn_cb_invited_qq'        });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_msgecho,      'flt': _tabot_cb_flt_msgecho,               'key': '_tabot_mn_cb_msgecho'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_chatstatic,   'flt': _tabot_cb_flt_chatstatic_qqfriend,   'key': '_tabot_mn_cb_chatstatic_qqfriend'   });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_chatstatic,   'flt': _tabot_cb_flt_chatstatic_qqgroup,    'key': '_tabot_mn_cb_chatstatic_qqgroup'    });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_chatstatic,   'flt': _tabot_cb_flt_chatstatic_qqtemp,     'key': '_tabot_mn_cb_chatstatic_qqtemp'     });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_chatstatic,   'flt': _tabot_cb_flt_chatstatic_qqstranger, 'key': '_tabot_mn_cb_chatstatic_qqstranger' });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_chatstatic,   'flt': _tabot_cb_flt_chatstatic_tg,         'key': '_tabot_mn_cb_chatstatic_tg'         });
 
-_mod_cbs.append({'fnc': _tabot_cb_fnc_help,         'flt': _tabot_cb_flt_help_qq,           'key': '_tabot_mn_cb_help_qq'           });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_help,         'flt': _tabot_cb_flt_help_tg,           'key': '_tabot_mn_cb_help_tg'           });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_ping,         'flt': _tabot_cb_flt_ping_qq,           'key': '_tabot_mn_cb_ping_qq'           });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_ping,         'flt': _tabot_cb_flt_ping_tg,           'key': '_tabot_mn_cb_ping_tg'           });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_reload,       'flt': _tabot_cb_flt_reload_qq,         'key': '_tabot_mn_cb_reload_qq'         });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_reload,       'flt': _tabot_cb_flt_reload_tg,         'key': '_tabot_mn_cb_reload_tg'         });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_save,         'flt': _tabot_cb_flt_save_qq,           'key': '_tabot_mn_cb_save_qq'           });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_save,         'flt': _tabot_cb_flt_save_tg,           'key': '_tabot_mn_cb_save_tg'           });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_stop,         'flt': _tabot_cb_flt_stop_qq,           'key': '_tabot_mn_cb_stop_qq'           });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_stop,         'flt': _tabot_cb_flt_stop_tg,           'key': '_tabot_mn_cb_stop_tg'           });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_self,         'key': '_tabot_mn_cb_muted_qq_self'         });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_all,          'key': '_tabot_mn_cb_muted_qq_all'          });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,      'flt': _tabot_cb_flt_unmuted_qq_self,       'key': '_tabot_mn_cb_unmuted_qq_self'       });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,      'flt': _tabot_cb_flt_unmuted_qq_all,        'key': '_tabot_mn_cb_unmuted_qq_all'        });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_joingroup,    'flt': _tabot_cb_flt_joingroup_qq,          'key': '_tabot_mn_cb_joingroup_qq'          });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_leavegroup,   'flt': _tabot_cb_flt_leavegroup_qq_self,    'key': '_tabot_mn_cb_leavegroup_qq_self'    });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_leavegroup,   'flt': _tabot_cb_flt_leavegroup_qq_kick,    'key': '_tabot_mn_cb_leavegroup_qq_kick'    });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_newmember,    'flt': _tabot_cb_flt_newmember_qq,          'key': '_tabot_mn_cb_newmember_qq'          });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_kickmember,   'flt': _tabot_cb_flt_kickmember_qq,         'key': '_tabot_mn_cb_kickmember_qq'         });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_quitmember,   'flt': _tabot_cb_flt_quitmember_qq,         'key': '_tabot_mn_cb_quitmember_qq'         });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_invited,      'flt': _tabot_cb_flt_invited_qq,            'key': '_tabot_mn_cb_invited_qq'            });
+
+_mod_cbs.append({'fnc': _tabot_cb_fnc_help,         'flt': _tabot_cb_flt_help_qq,               'key': '_tabot_mn_cb_help_qq'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_help,         'flt': _tabot_cb_flt_help_tg,               'key': '_tabot_mn_cb_help_tg'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_ping,         'flt': _tabot_cb_flt_ping_qq,               'key': '_tabot_mn_cb_ping_qq'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_ping,         'flt': _tabot_cb_flt_ping_tg,               'key': '_tabot_mn_cb_ping_tg'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_reload,       'flt': _tabot_cb_flt_reload_qq,             'key': '_tabot_mn_cb_reload_qq'             });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_reload,       'flt': _tabot_cb_flt_reload_tg,             'key': '_tabot_mn_cb_reload_tg'             });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_save,         'flt': _tabot_cb_flt_save_qq,               'key': '_tabot_mn_cb_save_qq'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_save,         'flt': _tabot_cb_flt_save_tg,               'key': '_tabot_mn_cb_save_tg'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_stop,         'flt': _tabot_cb_flt_stop_qq,               'key': '_tabot_mn_cb_stop_qq'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_stop,         'flt': _tabot_cb_flt_stop_tg,               'key': '_tabot_mn_cb_stop_tg'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_params,       'flt': _tabot_cb_flt_params_qq,             'key': '_tabot_mn_cb_params_qq'             });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_params,       'flt': _tabot_cb_flt_params_tg,             'key': '_tabot_mn_cb_params_tg'             });
 
 
 
