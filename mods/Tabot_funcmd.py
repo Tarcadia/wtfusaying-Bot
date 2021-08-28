@@ -134,6 +134,7 @@ def alwaystalk(p, talks):
         if random.random() <= p:
             _msg = tmsgp.tomsgtxt(_src, _txt);
             _botcontrol.send(mmk, _msg);
+            ttalk.ontalk(_src);
         return;
     return func;
 
