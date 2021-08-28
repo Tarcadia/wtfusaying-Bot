@@ -2,6 +2,7 @@
 import CONSTS;
 
 import re;
+import time;
 import logging;
 
 VERSION = 'v20210823';
@@ -41,6 +42,21 @@ logger.info('Tabot Message Process - ex Loaded');
 # }
 
 
+
+# 建立一个src
+def src(mmk, ctype, rcid, uid = 0, mid = 0, t = None):
+    if t == None:
+        t = time.time();
+    _src = {
+        'mmk'       : mmk,
+        'ctype'     : ctype,
+        'rcid'      : rcid,
+        'cid'       : mmk + '.' + ctype[0] + str(rcid),
+        'uid'       : uid,
+        'mid'       : mid,
+        'time'      : t
+    };
+    return _src;
 
 # 获得message的src
 def msgsrc(mmk, msg):
@@ -119,15 +135,13 @@ def msgsrc(mmk, msg):
         _mid = 0;
         _time = 0;
     
-    _src = {
-        'mmk'       : mmk,
-        'ctype'     : _ctype,
-        'rcid'      : _rcid,
-        'cid'       : _ctype[0] + '.' + _ctype + str(_rcid),
-        'uid'       : _uid,
-        'mid'       : _mid,
-        'time'      : _time
-    };
+    _src = src(mmk,
+        ctype = _ctype,
+        rcid = _rcid,
+        uid = _uid,
+        mid = _mid,
+        t = _time
+    );
     return _src;
 
 # 获得message的txt，即message的文本内容，规则是只提取其中纯文本的消息
