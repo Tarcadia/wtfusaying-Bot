@@ -60,11 +60,12 @@ t               : 在聊天环境中调用以实现相关功能
 
 # 实现
 
-def _tellop(mmk, txt):
-    if re.match('mirai.*', mmk):
-        _botcontrol.send(mmk, tmsgp.totxtmsg(mmk, CONSTS.BOT_OP_QQCID, txt));
-    elif re.match('telegram.*', mmk):
-        _botcontrol.send(mmk, tmsgp.totxtmsg(mmk, CONSTS.BOT_OP_TGCID, txt));
+# 向OP发送消息，由于是便捷实现的函数，所以mmk的使用不解耦于其他实现，需要根据情况改动；
+def _tellop(txt):
+    _tgttg = {'mmk': 'mirai', 'ctype': 'p', 'rcid': CONSTS.BOT_OP_QQ, 'cid': 'mirai.p' + str(CONSTS.BOT_OP_QQ)};
+    _tgtqq = {'mmk': 'telegram', 'ctype': 'p', 'rcid': CONSTS.BOT_OP_TG, 'cid': 'telegram.p' + str(CONSTS.BOT_OP_TG)};
+    _botcontrol.send('mirai', tmsgp.tomsgtxt(_tgtqq, txt));
+    _botcontrol.send('telegram', tmsgp.tomsgtxt(_tgttg, txt));
     return;
 
 
@@ -99,6 +100,7 @@ def _tabot_cb_fnc_muted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
     logger.info('mmk: %s 在群%s(gid:%s)中被禁言' % (mmk, _gnm, _gid));
+    _tellop('mmk: %s 在群%s(gid:%s)中被禁言' % (mmk, _gnm, _gid));
     return;
 
 # 解除禁言
@@ -114,6 +116,7 @@ def _tabot_cb_fnc_unmuted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
     logger.info('mmk: %s 在群%s(gid:%s)中被解除禁言' % (mmk, _gnm, _gid));
+    _tellop('mmk: %s 在群%s(gid:%s)中被解除禁言' % (mmk, _gnm, _gid));
     return;
 
 # 加群
@@ -125,9 +128,7 @@ def _tabot_cb_fnc_joingroup(mmk, msg):
     _gid = msg['data']['group']['id'];
     _gnm = msg['data']['group']['name'];
     logger.info('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
-    logger.info('mmk: %s 进入群%s(gid:%s)'%(mmk, _gnm, _gid));
-    _tellop('mirai', 'mmk: %s 进入群%s(gid:%s)'%(mmk, _gnm, _gid));
-    _tellop('telegram', 'mmk: %s 进入群%s(gid:%s)'%(mmk, _gnm, _gid));
+    _tellop('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
     return;
 
 # 退群
@@ -143,6 +144,7 @@ def _tabot_cb_fnc_leavegroup(mmk, msg):
     _gid = msg['data']['group']['id'];
     _gnm = msg['data']['group']['name'];
     logger.info('mmk: %s 退出群%s(gid:%s)' % (mmk, _gnm, _gid));
+    _tellop('mmk: %s 退出群%s(gid:%s)' % (mmk, _gnm, _gid));
     return;
 
 # 群加人
@@ -156,6 +158,7 @@ def _tabot_cb_fnc_newmember(mmk, msg):
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
     logger.info('mmk: %s 中%s(uid:%s)进入群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
+    _tellop('mmk: %s 中%s(uid:%s)进入群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     return;
 
 # 群踢人
@@ -169,6 +172,7 @@ def _tabot_cb_fnc_kickmember(mmk, msg):
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
     logger.info('mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
+    _tellop('mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     return;
 
 # 群退人
@@ -182,6 +186,7 @@ def _tabot_cb_fnc_quitmember(mmk, msg):
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
     logger.info('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
+    _tellop('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     return;
 
 # Bot被邀请加群
@@ -200,6 +205,7 @@ def _tabot_cb_fnc_invited(mmk, msg):
     };
     _botcontrol.send(mmk, _cmd);
     logger.info('mmk: %s 中被邀请进入群%s(gid:%s)' % (mmk, _gnm, _gid));
+    _tellop('mmk: %s 中被邀请进入群%s(gid:%s)' % (mmk, _gnm, _gid));
     return;
 
 # Bot指令
@@ -212,9 +218,9 @@ _tabot_cb_flt_help_tg = {
     'msg':{'message': {'text': _tabot_cmd_help}}
 };
 def _tabot_cb_fnc_help(mmk, msg):
-    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
-    _msg = tmsgp.totxtmsg(mmk, _src['cid'], _tabot_cmd_help_doc);
-    _botcontrol.send(mmk, _msg);
+    _src = tmsgp.msgsrc(mmk, msg);
+    _cmd = tmsgp.tomsgtxt(_src, _tabot_cmd_help_doc);
+    _botcontrol.send(mmk, _cmd);
     return;
 
 _tabot_cb_flt_ping_qq = {
@@ -226,9 +232,9 @@ _tabot_cb_flt_ping_tg = {
     'msg':{'message': {'text': _tabot_cmd_ping}}
 };
 def _tabot_cb_fnc_ping(mmk, msg):
-    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
-    _msg = tmsgp.totxtmsg(mmk, _src['cid'], 'Pong!');
-    _botcontrol.send(mmk, _msg);
+    _src = tmsgp.msgsrc(mmk, msg);
+    _cmd = tmsgp.tomsgtxt(_src, 'Pong!');
+    _botcontrol.send(mmk, _cmd);
     return;
 
 _tabot_cb_flt_reload_qq = {
@@ -240,6 +246,9 @@ _tabot_cb_flt_reload_tg = {
     'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': _tabot_cmd_reload}}
 };
 def _tabot_cb_fnc_reload(mmk, msg):
+    _src = tmsgp.msgsrc(mmk, msg);
+    _cmd = tmsgp.tomsgtxt(_src, '组件重载启动');
+    _botcontrol.send(mmk, _cmd);
     _cmd = {'call': 'reload', 'args': ['-a']};
     _botcontrol.send('Loopback', _cmd);
     return;
@@ -253,6 +262,9 @@ _tabot_cb_flt_stop_tg = {
     'msg':{'message': {'from':{'id':CONSTS.BOT_OP_TG},'text': _tabot_cmd_stop}}
 };
 def _tabot_cb_fnc_stop(mmk, msg):
+    _src = tmsgp.msgsrc(mmk, msg);
+    _cmd = tmsgp.tomsgtxt(_src, '好我这就自闭');
+    _botcontrol.send(mmk, _cmd);
     _cmd = {'call': 'stop', 'args': []};
     _botcontrol.send('Loopback', _cmd);
     return;

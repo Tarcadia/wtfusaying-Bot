@@ -37,24 +37,7 @@ _mod_help_doc = """
 # 在内部处理时应当用统一的逻辑处理统一的 Tabot Message 形式，将一条消息视作一个对话场景里的一个上下文元素；
 # 一条 Tabot 中的 message 应当是保护“来源”（src）或“去向”（tgt），和消息内容本体（msg）的；
 # Tabot_talker中的miraitxtmsg，tgtxtmsg，totxtmsg接口应当是有高优先级的，作为Tabot中通用的txtmsg处理接口；
-
-# src               : dict          // 一条Tabot里的message的来源的表示
-# {
-#   'mmk'           : mmk,          // 来源mmk，
-#   'cid'           : id,           // 来源chatid，形如'p<xxxxx>'或'g<xxxxx>'
-#                                   // p表示是私戳，g是群聊，c是channel，特别的，u表示未识别
-#                                   // <xxxxx>是qq号、qq群号、tg的chatid
-#   'uid'           : id,           // 来源userid，是qq号或者tg的user的id
-#   'mid'           : id,           // 消息的id，qq和tg的id
-#   'time'          : time          // 消息的时间
-# }
-
-# tgt               : dict          // 一条Tabot里的message的去向的表示
-# {
-#   'mmk'           : mmk,          // 去向mmk，
-#   'cid'           : id,           // 去向chatid，
-# }
-
+# 这些消息管理的消息在exs.tabot_msgproc中定义;
 
 
 # 本地实现
