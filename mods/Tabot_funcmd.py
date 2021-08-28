@@ -160,9 +160,9 @@ _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_cat), 'flt': cb_flt_txtmatch_
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_dog), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_dog), 'key': '_tabot_funcmd_cb_dog_qq'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_dog), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_dog), 'key': '_tabot_funcmd_cb_dog_tg'});
 _mod_cbs.append({'fnc': conditiontalk(0.8, _tabot_talks_jgb), 'flt': cb_flt_txtmatch_qq(_tabot_kw_jgb), 'key': '_tabot_funcmd_cb_jgb_qq'});
-_mod_cbs.append({'fnc': conditiontalk(0.8, _tabot_talks_jgb), 'flt': cb_flt_txtmatch_qq(_tabot_kw_jgb), 'key': '_tabot_funcmd_cb_jgb_tg'});
+_mod_cbs.append({'fnc': conditiontalk(0.8, _tabot_talks_jgb), 'flt': cb_flt_txtmatch_tg(_tabot_kw_jgb), 'key': '_tabot_funcmd_cb_jgb_tg'});
 _mod_cbs.append({'fnc': conditiontalk(0.8, _tabot_talks_hdzj), 'flt': cb_flt_txtmatch_qq(_tabot_kw_hdzj), 'key': '_tabot_funcmd_cb_hdzj_qq'});
-_mod_cbs.append({'fnc': conditiontalk(0.8, _tabot_talks_hdzj), 'flt': cb_flt_txtmatch_qq(_tabot_kw_hdzj), 'key': '_tabot_funcmd_cb_hdzj_tg'});
+_mod_cbs.append({'fnc': conditiontalk(0.8, _tabot_talks_hdzj), 'flt': cb_flt_txtmatch_tg(_tabot_kw_hdzj), 'key': '_tabot_funcmd_cb_hdzj_tg'});
 
 
 
