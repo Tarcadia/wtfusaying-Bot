@@ -229,7 +229,7 @@ def reloadex(exlist: list = []):
         # 重加载模块组件，开启模块组件，注册接口
         if os.path.isfile('./exs/' + _exname + '.py'):
             try:
-                _ex = importlib.import_module('mods.' + _exname);
+                _ex = importlib.import_module('exs.' + _exname);
                 _sys_exs[_exname] = _ex;
                 logger.info('Import exs.%s' % _exname);
             except Exception as _err:
