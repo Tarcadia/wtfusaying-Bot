@@ -5,7 +5,6 @@ import re;
 import logging;
 
 VERSION = 'v20210823';
-CONFIG = './config/autosave.json';
 
 logger = logging.getLogger(__name__);
 logger.setLevel(logging.DEBUG);
@@ -218,3 +217,11 @@ def tomsg(tgt, message, quote = None):
     return _msg;
 
 
+
+
+
+# 接口函数
+
+#保存
+def save():
+    return;

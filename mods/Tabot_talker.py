@@ -1,6 +1,7 @@
 
 import CONSTS;
 import exs.tabot_msgproc as tmsgp;
+import exs.tabot_totalk as ttalk;
 
 import logging;
 
@@ -55,8 +56,8 @@ _tabot_cb_flt_atme_tggroup = {
     'msg':{'message': {'text': '.*@%s.*' % CONSTS.BOT_TG, 'entities': [{'type': 'mention'}]}}
 };
 def _tabot_cb_fnc_atme(mmk, msg):
-    _src, _txt = tmsgp.fromtxtmsg(mmk, msg);
-    on_atme(_src, _txt);
+    _src = tmsgp.msgsrc(mmk, msg);
+    on_atme(_src, msg);
     return;
 
 _mod_cbs.append({'fnc': _tabot_cb_fnc_atme,         'flt': _tabot_cb_flt_atme_qqgroup,      'key': '_tabot_talker_cb_atme_qqgroup'  });
@@ -64,14 +65,21 @@ _mod_cbs.append({'fnc': _tabot_cb_fnc_atme,         'flt': _tabot_cb_flt_atme_tg
 
 
 
-# 主流程
 
+
+# 主流程接口函数
+
+# 启动
 def start():
     return [];
 
+# 保存
 def save():
+    tmsgp.save();
+    ttalk.save();
     return;
 
+# 停止
 def stop():
     logger.info('Tabot Talker Stopped');
     return;

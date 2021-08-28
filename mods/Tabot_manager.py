@@ -253,16 +253,21 @@ _mod_cbs.append({'fnc': _tabot_cb_fnc_stop,         'flt': _tabot_cb_flt_stop_tg
 
 
 
-# 主流程
 
+
+# 主流程接口函数
+
+# 启动
 def start():
     return [];
 
+# 保存
 def save():
     tmsgp.save();
     ttalk.save();
     return;
 
+# 停止
 def stop():
     logger.info('Tabot Manager Stopped');
     return;
