@@ -66,6 +66,19 @@ def oncall(src):
         else:
             thermals[src['cid']] = None;
 
+def oncalltalk(src):
+    if src['cid'] in thermals and thermals[src['cid']]:
+        thermals[src['cid']].oncalltalk(src['time']);
+    else:
+        if src['ctype'][0] == 'g':
+            thermals[src['cid']] = xtm.ThermalMeter(talkrate = 4);
+            thermals[src['cid']].oncalltalk(src['time']);
+        elif src['ctype'][0] == 'p':
+            thermals[src['cid']] = xtm.ThermalMeter(talkrate = 1);
+            thermals[src['cid']].oncalltalk(src['time']);
+        else:
+            thermals[src['cid']] = None;
+
 def ontalk(src):
     if src['cid'] in thermals and thermals[src['cid']]:
         thermals[src['cid']].ontalk(src['time']);

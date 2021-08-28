@@ -134,7 +134,7 @@ def alwaystalk(p, talks):
         if random.random() <= p:
             _msg = tmsgp.tomsgtxt(_src, _txt);
             _botcontrol.send(mmk, _msg);
-            ttalk.ontalk(_src);
+            ttalk.oncalltalk(_src);
         return;
     return func;
 
@@ -143,9 +143,10 @@ def conditiontalk(p, talks):
     def func(mmk, msg):
         _src = tmsgp.msgsrc(mmk, msg);
         _txt = random.choice(talks);
-        if ttalk.trycantalk(_src, p = p):
+        if ttalk.cantalk(_src, p = p):
             _msg = tmsgp.tomsgtxt(_src, _txt);
             _botcontrol.send(mmk, _msg);
+            ttalk.ontalk(_src);
         return;
     return func;
 

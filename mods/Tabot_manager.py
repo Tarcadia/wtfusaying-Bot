@@ -178,7 +178,6 @@ def _tabot_cb_fnc_joingroup(mmk, msg):
     logger.info('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
     _tellop('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
     if random.random() <= 0.8:
-        ttalk.ontalk(_src);
         _txt = random.choice(_tabot_joingroup_talks);
         _msg = tmsgp.tomsgtxt(_src, _txt);
         _botcontrol.send(mmk, _msg);
@@ -272,7 +271,7 @@ def _tabot_cb_fnc_help(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
     _cmd = tmsgp.tomsgtxt(_src, _tabot_cmd_help_doc);
     _botcontrol.send(mmk, _cmd);
-    ttalk.ontalk(_src);
+    ttalk.oncalltalk(_src);
     return;
 
 _tabot_cb_flt_ping_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_ping}]}}};
@@ -281,7 +280,7 @@ def _tabot_cb_fnc_ping(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
     _cmd = tmsgp.tomsgtxt(_src, 'Pong!');
     _botcontrol.send(mmk, _cmd);
-    ttalk.ontalk(_src);
+    ttalk.oncalltalk(_src);
     return;
 
 _tabot_cb_flt_reload_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_reload}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
@@ -292,7 +291,7 @@ def _tabot_cb_fnc_reload(mmk, msg):
     _botcontrol.send(mmk, _cmd);
     _cmd = {'call': 'reload', 'args': ['-a']};
     _botcontrol.send('Loopback', _cmd);
-    ttalk.ontalk(_src);
+    ttalk.oncalltalk(_src);
     return;
 
 _tabot_cb_flt_save_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_save}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
@@ -305,7 +304,7 @@ def _tabot_cb_fnc_save(mmk, msg):
     ttalk.save();
     _cmd = {'call': 'save', 'args': []};
     _botcontrol.send('Loopback', _cmd);
-    ttalk.ontalk(_src);
+    ttalk.oncalltalk(_src);
     return;
 
 _tabot_cb_flt_stop_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_stop}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
@@ -316,7 +315,7 @@ def _tabot_cb_fnc_stop(mmk, msg):
     _botcontrol.send(mmk, _cmd);
     _cmd = {'call': 'stop', 'args': []};
     _botcontrol.send('Loopback', _cmd);
-    ttalk.ontalk(_src);
+    ttalk.oncalltalk(_src);
     return;
 
 _tabot_cb_flt_params_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_params}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
@@ -326,7 +325,7 @@ def _tabot_cb_fnc_params(mmk, msg):
     _params = ttalk.strparams(_src);
     _cmd = tmsgp.tomsgtxt(_src, _params);
     _botcontrol.send(mmk, _cmd);
-    ttalk.ontalk(_src);
+    ttalk.oncalltalk(_src);
     return;
 
 

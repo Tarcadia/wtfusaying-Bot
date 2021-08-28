@@ -69,6 +69,16 @@ def oncall(tm: dict, t = None):
         tm['valuetime'] = t;
     return tm;
 
+# 加入一条受激发言的时间响应
+def oncalltalk(tm: dict, t = None):
+    if t == None:
+        t = time.time();
+    with tm['talklock']:
+        dt = t - tm['valuetime'];
+        tm['value'] = tm['value'] * pow(2, -dt / tm['tau']) - 1 / tm['callrate'];
+        tm['valuetime'] = t;
+    return tm;
+
 # 加入一条发言的时间响应
 def ontalk(tm: dict, t = None):
     if t == None:
@@ -119,6 +129,10 @@ class ThermalMeter():
     
     def oncall(self, t = None):
         self._tm = oncall(self._tm, t = t);
+        return;
+    
+    def oncalltalk(self, t = None):
+        self._tm = oncalltalk(self._tm, t = t);
         return;
     
     def ontalk(self, t = None):
