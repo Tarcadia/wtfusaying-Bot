@@ -46,10 +46,10 @@ logger.info('Context Sensor Loaded');
 def new(
     contextcount        : int   = 20,
     contextfilter       : tuple = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v', 'eng'),
-    contextmethod       : str   = 'tfidf',
+    contextmethod       : str   = 'all',
     contextwei          : bool  = False,
-    tau                 : float = 360,
-    alpha               : float = 1
+    tau                 : float = 60,
+    alpha               : float = 6
     ):
     _contextsensor = {
         'contextcount'  : contextcount,
@@ -164,10 +164,10 @@ class ContextSensor:
         self,
         contextcount    : int   = 20,
         contextfilter   : tuple = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v', 'eng'),
-        contextmethod   : str   = 'tfidf',
+        contextmethod   : str   = 'all',
         contextwei      : bool  = False,
-        tau             : float = 360,
-        alpha           : float = 1
+        tau             : float = 60,
+        alpha           : float = 6
     ) -> None:
         self._cs = new(
             contextcount = contextcount,
