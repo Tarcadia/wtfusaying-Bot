@@ -58,6 +58,49 @@ def src(mmk, ctype, rcid, uid = 0, mid = 0, t = None):
     };
     return _src;
 
+# 获得nudge的src
+def nugsrc(mmk, msg):
+    if re.match('mirai.*', mmk):
+        if msg['data']['type'] == 'NudgeEvent' and msg['data']['subject']['kind'] == 'Friend':
+            _ctype = 'p';
+            _rcid = msg['data']['subject']['id'];
+            _uid = msg['data']['fromId'];
+            _mid = 0;
+            _time = time.time();
+        if msg['data']['type'] == 'NudgeEvent' and msg['data']['subject']['kind'] == 'Stranger':
+            _ctype = 'pt';
+            _rcid = msg['data']['subject']['id'];
+            _uid = msg['data']['fromId'];
+            _mid = 0;
+            _time = time.time();
+        elif msg['data']['type'] == 'NudgeEvent' and msg['data']['subject']['kind'] == 'Group':
+            _ctype = 'g';
+            _rcid = msg['data']['subject']['id'];
+            _uid = msg['data']['fromId'];
+            _mid = 0;
+            _time = time.time();
+        else:
+            _ctype = 'u';
+            _rcid = 0;
+            _uid = 0;
+            _mid = 0;
+            _time = 0;
+    else:
+        _ctype = 'u';
+        _rcid = 0;
+        _uid = 0;
+        _mid = 0;
+        _time = 0;
+    
+    _src = src(mmk,
+        ctype = _ctype,
+        rcid = _rcid,
+        uid = _uid,
+        mid = _mid,
+        t = _time
+    );
+    return _src;
+
 # 获得message的src
 def msgsrc(mmk, msg):
     if re.match('mirai.*', mmk):
@@ -166,6 +209,28 @@ def msgmiltitxt(mmk, msg):
     else:
         _txt = '';
     return _txt;
+
+# 将一个nudge组织成发给tgt的msg
+def tomsgnug(tgt):
+    if tgt:
+        if re.match('mirai.*', tgt['mmk']):
+            if tgt['ctype'] == 'p':
+                _kind = 'Friend'
+            if tgt['ctype'] == 'pt':
+                _kind = 'Stranger'
+            elif tgt['ctype'] == 'g':
+                _kind = 'group';
+            else:
+                _cmd = '';
+            if _cmd:
+                _msg = {'command': 'sendNudge', 'content': {'target': tgt['rcid'], 'subject': tgt['uid'], 'kind': _kind}};
+            else:
+                _msg = None;
+        else:
+            _msg = None;
+    else:
+        _msg = None;
+    return _msg;
 
 # 将txt组织成发给tgt的msg，不包含除了引用的任何复杂元素
 def tomsgtxt(tgt, txt, quote = None):

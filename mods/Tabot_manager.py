@@ -1,5 +1,7 @@
 
 import CONSTS;
+
+import botcontrol as bc;
 import exs.tabot_msgproc as tmsgp;
 import exs.tabot_totalk as ttalk;
 
@@ -130,16 +132,52 @@ def _tabot_cb_fnc_msgecho(mmk, msg):
         _botcontrol.send('IO', _cmd);
     return;
 
-# 聊天消息热度统计
-_tabot_cb_flt_chatstatic_qqfriend = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'FriendMessage'}}};
-_tabot_cb_flt_chatstatic_qqgroup = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'GroupMessage'}}};
-_tabot_cb_flt_chatstatic_qqtemp = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'TempMessage'}}};
-_tabot_cb_flt_chatstatic_qqstranger = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'StrangerMessage'}}};
-_tabot_cb_flt_chatstatic_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'text': '.*'}}};
-def _tabot_cb_fnc_chatstatic(mmk, msg):
+# 消息响应
+
+# 文本消息
+_tabot_cb_flt_statistic_txt_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'Plain'}]}}};
+_tabot_cb_flt_statistic_txt_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'text': '.*'}}};
+def _tabot_cb_fnc_statistic_txt(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
     _txt = tmsgp.msgtxt(mmk, msg);
     ttalk.onmsg(src = _src, txt = _txt);
+    return;
+
+# 多媒体消息
+_tabot_cb_flt_statistic_mult_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'At', 'target': CONSTS.BOT_QQ}]}}};
+_tabot_cb_flt_statistic_mult_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'text': '.*@%s.*' % CONSTS.BOT_TG, 'entities': [{'type': 'mention'}]}}};
+def _tabot_cb_fnc_statistic_mult(mmk, msg):
+    _src = tmsgp.msgsrc(mmk, msg);
+    ttalk.onmsg(_src, '');
+    return;
+
+# At
+_tabot_cb_flt_statistic_at_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'At', 'target': CONSTS.BOT_QQ}]}}};
+_tabot_cb_flt_statistic_at_qqall = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'AtAll'}]}}};
+_tabot_cb_flt_statistic_at_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'text': '.*@%s.*' % CONSTS.BOT_TG, 'entities': [{'type': 'mention'}]}}};
+def _tabot_cb_fnc_statistic_at(mmk, msg):
+    _src = tmsgp.msgsrc(mmk, msg);
+    ttalk.oncall(_src);
+    return;
+
+#引用
+_tabot_cb_flt_statistic_qt_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'Quote', 'senderId': CONSTS.BOT_QQ}]}}};
+_tabot_cb_flt_statistic_qt_tgfwd = {'mmk': {'telegram.*'}, 'msg': {'message': {'forward_from': CONSTS.BOT_TG}}};
+_tabot_cb_flt_statistic_qt_tgrply = {'mmk': {'telegram.*'}, 'msg': {'message': {'reply_to_message': {'from': {'id': CONSTS.BOT_TG}}}}};
+def _tabot_cb_fnc_statistic_qt(mmk, msg):
+    _src = tmsgp.msgsrc(mmk, msg);
+    ttalk.oncall(_src);
+    return;
+
+# 戳一戳
+_tabot_cb_flt_statistic_nug_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'NudgeEvent', 'target': CONSTS.BOT_QQ}}};
+def _tabot_cb_fnc_statistic_nug(mmk, msg):
+    _src = tmsgp.nugsrc(mmk, msg);
+    ttalk.oncall(_src);
+    if random.random() <= 0.8:
+        _msg = tmsgp.tomsgnug(_src);
+        _botcontrol.send(mmk, _msg);
+    return;
 
 # 禁言
 _tabot_cb_flt_muted_qq_self = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'BotMuteEvent'}}};
@@ -329,39 +367,43 @@ def _tabot_cb_fnc_params(mmk, msg):
     return;
 
 
-
 # 注册
-_mod_cbs.append({'fnc': _tabot_cb_fnc_msgecho,      'flt': _tabot_cb_flt_msgecho,               'key': '_tabot_mn_cb_msgecho'               });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_chatstatic,   'flt': _tabot_cb_flt_chatstatic_qqfriend,   'key': '_tabot_mn_cb_chatstatic_qqfriend'   });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_chatstatic,   'flt': _tabot_cb_flt_chatstatic_qqgroup,    'key': '_tabot_mn_cb_chatstatic_qqgroup'    });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_chatstatic,   'flt': _tabot_cb_flt_chatstatic_qqtemp,     'key': '_tabot_mn_cb_chatstatic_qqtemp'     });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_chatstatic,   'flt': _tabot_cb_flt_chatstatic_qqstranger, 'key': '_tabot_mn_cb_chatstatic_qqstranger' });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_chatstatic,   'flt': _tabot_cb_flt_chatstatic_tg,         'key': '_tabot_mn_cb_chatstatic_tg'         });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_msgecho,          'flt': _tabot_cb_flt_msgecho,               'key': '_tabot_mn_cb_msgecho'               });
 
-_mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_self,         'key': '_tabot_mn_cb_muted_qq_self'         });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_muted,        'flt': _tabot_cb_flt_muted_qq_all,          'key': '_tabot_mn_cb_muted_qq_all'          });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,      'flt': _tabot_cb_flt_unmuted_qq_self,       'key': '_tabot_mn_cb_unmuted_qq_self'       });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,      'flt': _tabot_cb_flt_unmuted_qq_all,        'key': '_tabot_mn_cb_unmuted_qq_all'        });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_joingroup,    'flt': _tabot_cb_flt_joingroup_qq,          'key': '_tabot_mn_cb_joingroup_qq'          });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_leavegroup,   'flt': _tabot_cb_flt_leavegroup_qq_self,    'key': '_tabot_mn_cb_leavegroup_qq_self'    });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_leavegroup,   'flt': _tabot_cb_flt_leavegroup_qq_kick,    'key': '_tabot_mn_cb_leavegroup_qq_kick'    });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_newmember,    'flt': _tabot_cb_flt_newmember_qq,          'key': '_tabot_mn_cb_newmember_qq'          });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_kickmember,   'flt': _tabot_cb_flt_kickmember_qq,         'key': '_tabot_mn_cb_kickmember_qq'         });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_quitmember,   'flt': _tabot_cb_flt_quitmember_qq,         'key': '_tabot_mn_cb_quitmember_qq'         });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_invited,      'flt': _tabot_cb_flt_invited_qq,            'key': '_tabot_mn_cb_invited_qq'            });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_txt,    'flt': _tabot_cb_flt_statistic_txt_qq,      'key': '_tabot_mn_cb_statistic_txt_qq'      });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_txt,    'flt': _tabot_cb_flt_statistic_txt_tg,      'key': '_tabot_mn_cb_statistic_txt_tg'      });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_at,     'flt': _tabot_cb_flt_statistic_at_qq,       'key': '_tabot_mn_cb_statistic_at_qq'       });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_at,     'flt': _tabot_cb_flt_statistic_at_qqall,    'key': '_tabot_mn_cb_statistic_at_qqall'    });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_at,     'flt': _tabot_cb_flt_statistic_at_tg,       'key': '_tabot_mn_cb_statistic_at_tg'       });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_qt,     'flt': _tabot_cb_flt_statistic_qt_qq,       'key': '_tabot_mn_cb_statistic_at_qq'       });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_qt,     'flt': _tabot_cb_flt_statistic_qt_tgfwd,    'key': '_tabot_mn_cb_statistic_at_tgfwd'    });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_qt,     'flt': _tabot_cb_flt_statistic_qt_tgrply,   'key': '_tabot_mn_cb_statistic_at_tgrply'   });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_nug,    'flt': _tabot_cb_flt_statistic_nug_qq,      'key': '_tabot_mn_cb_statistic_nug_qq'      });
 
-_mod_cbs.append({'fnc': _tabot_cb_fnc_help,         'flt': _tabot_cb_flt_help_qq,               'key': '_tabot_mn_cb_help_qq'               });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_help,         'flt': _tabot_cb_flt_help_tg,               'key': '_tabot_mn_cb_help_tg'               });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_ping,         'flt': _tabot_cb_flt_ping_qq,               'key': '_tabot_mn_cb_ping_qq'               });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_ping,         'flt': _tabot_cb_flt_ping_tg,               'key': '_tabot_mn_cb_ping_tg'               });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_reload,       'flt': _tabot_cb_flt_reload_qq,             'key': '_tabot_mn_cb_reload_qq'             });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_reload,       'flt': _tabot_cb_flt_reload_tg,             'key': '_tabot_mn_cb_reload_tg'             });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_save,         'flt': _tabot_cb_flt_save_qq,               'key': '_tabot_mn_cb_save_qq'               });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_save,         'flt': _tabot_cb_flt_save_tg,               'key': '_tabot_mn_cb_save_tg'               });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_stop,         'flt': _tabot_cb_flt_stop_qq,               'key': '_tabot_mn_cb_stop_qq'               });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_stop,         'flt': _tabot_cb_flt_stop_tg,               'key': '_tabot_mn_cb_stop_tg'               });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_params,       'flt': _tabot_cb_flt_params_qq,             'key': '_tabot_mn_cb_params_qq'             });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_params,       'flt': _tabot_cb_flt_params_tg,             'key': '_tabot_mn_cb_params_tg'             });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_muted,            'flt': _tabot_cb_flt_muted_qq_self,         'key': '_tabot_mn_cb_muted_qq_self'         });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_muted,            'flt': _tabot_cb_flt_muted_qq_all,          'key': '_tabot_mn_cb_muted_qq_all'          });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,          'flt': _tabot_cb_flt_unmuted_qq_self,       'key': '_tabot_mn_cb_unmuted_qq_self'       });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,          'flt': _tabot_cb_flt_unmuted_qq_all,        'key': '_tabot_mn_cb_unmuted_qq_all'        });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_joingroup,        'flt': _tabot_cb_flt_joingroup_qq,          'key': '_tabot_mn_cb_joingroup_qq'          });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_leavegroup,       'flt': _tabot_cb_flt_leavegroup_qq_self,    'key': '_tabot_mn_cb_leavegroup_qq_self'    });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_leavegroup,       'flt': _tabot_cb_flt_leavegroup_qq_kick,    'key': '_tabot_mn_cb_leavegroup_qq_kick'    });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_newmember,        'flt': _tabot_cb_flt_newmember_qq,          'key': '_tabot_mn_cb_newmember_qq'          });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_kickmember,       'flt': _tabot_cb_flt_kickmember_qq,         'key': '_tabot_mn_cb_kickmember_qq'         });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_quitmember,       'flt': _tabot_cb_flt_quitmember_qq,         'key': '_tabot_mn_cb_quitmember_qq'         });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_invited,          'flt': _tabot_cb_flt_invited_qq,            'key': '_tabot_mn_cb_invited_qq'            });
+
+_mod_cbs.append({'fnc': _tabot_cb_fnc_help,             'flt': _tabot_cb_flt_help_qq,               'key': '_tabot_mn_cb_help_qq'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_help,             'flt': _tabot_cb_flt_help_tg,               'key': '_tabot_mn_cb_help_tg'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_ping,             'flt': _tabot_cb_flt_ping_qq,               'key': '_tabot_mn_cb_ping_qq'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_ping,             'flt': _tabot_cb_flt_ping_tg,               'key': '_tabot_mn_cb_ping_tg'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_reload,           'flt': _tabot_cb_flt_reload_qq,             'key': '_tabot_mn_cb_reload_qq'             });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_reload,           'flt': _tabot_cb_flt_reload_tg,             'key': '_tabot_mn_cb_reload_tg'             });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_save,             'flt': _tabot_cb_flt_save_qq,               'key': '_tabot_mn_cb_save_qq'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_save,             'flt': _tabot_cb_flt_save_tg,               'key': '_tabot_mn_cb_save_tg'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_stop,             'flt': _tabot_cb_flt_stop_qq,               'key': '_tabot_mn_cb_stop_qq'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_stop,             'flt': _tabot_cb_flt_stop_tg,               'key': '_tabot_mn_cb_stop_tg'               });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_params,           'flt': _tabot_cb_flt_params_qq,             'key': '_tabot_mn_cb_params_qq'             });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_params,           'flt': _tabot_cb_flt_params_tg,             'key': '_tabot_mn_cb_params_tg'             });
 
 
 
