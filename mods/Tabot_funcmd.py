@@ -57,6 +57,20 @@ _tabot_talks_tarcadia = [
     "tarcadia",
     "Tarc不在",
 ];
+_tabot_talks_digo = [
+    "diggggggggoooooooo",
+];
+_tabot_talks_peter = [
+    "皮皮",
+];
+_tabot_talks_mbkotori = [
+    "小鸟",
+    "mbkotori",
+];
+_tabot_talks_creeper = [
+    "creeeeeeeeppppper",
+    "awwwwwww man",
+];
 _tabot_talks_cat = [
     "喵",
     "喵呜",
@@ -115,19 +129,29 @@ _tabot_talks_toterms = [
     "一定意义上",
     "一定程度上",
 ];
+_tabot_talks_question = [
+    "？？？",
+    "？",
+    "¿",
+];
 
 
 _tabot_cmd_henshin = 't -henshin';
 _tabot_cmd_reboot = 't -reboot';
 _tabot_cmd_tarcadia = 't -tarcadia';
-_tabot_cmd_cat = 't -cat';
-_tabot_cmd_dog = 't -dog';
-_tabot_cmd_sheep = 't -(sheep|🐏)';
+_tabot_cmd_digo = 't -([dD][iI]+[gG]+[oO]+|地沟)';
+_tabot_cmd_peter = 't -([pP][eE][tT][eE][rR]|皮皮|皮特)';
+_tabot_cmd_mbkotori = 't -([mM][bB][kK][oO][tT][oO][rR][iI]|小*鸟)';
+_tabot_cmd_creeper = 't -([cC][rR]+[eE]+[pP]+[eE]+[rR]+)';
+_tabot_cmd_cat = 't -([cC][aA][tT]|猫|🐱)';
+_tabot_cmd_dog = 't -([dD][oO][gG]|狗|🐕)';
+_tabot_cmd_sheep = 't -([sS][hH][eE]+[pP]|[cC][hH][aA][rR][lL][eE][sS]|羊|🐏)';
 
 _tabot_kw_amdyes = '.*[Aa][Mm][Dd] [Yy][Ee][Ss].*';
 _tabot_kw_jgb = '.*((鸡.*公.*煲)|([Jj][Gg][Bb]))+.*';
 _tabot_kw_hdzj = '.*花.*雕.*醉{0,1}.*鸡.*';
 _tabot_kw_toterms = '.*(某种|一定)(意义|程度)上.*';
+_tabot_kw_question = '.*¿|?|？.*'
 
 
 
@@ -172,6 +196,14 @@ _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_reboot), 'flt': cb_flt_txtmat
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_reboot), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_reboot), 'key': '_tabot_funcmd_cb_reboot_tg'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_tarcadia), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_tarcadia), 'key': '_tabot_funcmd_cb_tarcadia_qq'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_tarcadia), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_tarcadia), 'key': '_tabot_funcmd_cb_tarcadia_tg'});
+_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_digo), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_digo), 'key': '_tabot_funcmd_cb_digo_qq'});
+_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_digo), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_digo), 'key': '_tabot_funcmd_cb_digo_tg'});
+_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_peter), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_peter), 'key': '_tabot_funcmd_cb_peter_qq'});
+_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_peter), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_peter), 'key': '_tabot_funcmd_cb_peter_tg'});
+_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_mbkotori), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_mbkotori), 'key': '_tabot_funcmd_cb_mbkotori_qq'});
+_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_mbkotori), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_mbkotori), 'key': '_tabot_funcmd_cb_mbkotori_tg'});
+_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_creeper), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_creeper), 'key': '_tabot_funcmd_cb_creeper_qq'});
+_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_creeper), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_creeper), 'key': '_tabot_funcmd_cb_creeper_tg'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_cat), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_cat), 'key': '_tabot_funcmd_cb_cat_qq'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_cat), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_cat), 'key': '_tabot_funcmd_cb_cat_tg'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_dog), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_dog), 'key': '_tabot_funcmd_cb_dog_qq'});
@@ -186,6 +218,8 @@ _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_hdzj), 'flt': cb_flt_txtma
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_hdzj), 'flt': cb_flt_txtmatch_tg(_tabot_kw_hdzj), 'key': '_tabot_funcmd_cb_hdzj_tg'});
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_toterms), 'flt': cb_flt_txtmatch_qq(_tabot_kw_toterms), 'key': '_tabot_funcmd_cb_toterms_qq'});
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_toterms), 'flt': cb_flt_txtmatch_tg(_tabot_kw_toterms), 'key': '_tabot_funcmd_cb_toterms_tg'});
+_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_question), 'flt': cb_flt_txtmatch_qq(_tabot_kw_question), 'key': '_tabot_funcmd_cb_question_qq'});
+_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_question), 'flt': cb_flt_txtmatch_tg(_tabot_kw_question), 'key': '_tabot_funcmd_cb_question_tg'});
 
 
 
