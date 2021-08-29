@@ -144,8 +144,8 @@ def _tabot_cb_fnc_statistic_txt(mmk, msg):
     return;
 
 # 多媒体消息
-_tabot_cb_flt_statistic_mult_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'At', 'target': CONSTS.BOT_QQ}]}}};
-_tabot_cb_flt_statistic_mult_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'text': '.*@%s.*' % CONSTS.BOT_TG, 'entities': [{'type': 'mention'}]}}};
+_tabot_cb_flt_statistic_mult_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'XXXXXXXX'}]}}};
+_tabot_cb_flt_statistic_mult_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'XXXXXXXXXXX': 'XXXXXXXXXXXXXX'}}};
 def _tabot_cb_fnc_statistic_mult(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
     ttalk.onmsg(_src, '');
