@@ -73,6 +73,12 @@ _tabot_talks_dog = [
     "你才是狗呢",
     "将非物质化的电子对象视若动物的行为是不受到鼓励的"
 ];
+_tabot_talks_amdyes = [
+    "AMD YES!",
+    "RGB YES!",
+    "BOT YES!",
+    "实际上本bot就某种程度上架设在AMD的硬件基础上",
+];
 _tabot_talks_jgb = [
     "饿了",
     "鸡公煲好吃",
@@ -161,6 +167,8 @@ _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_cat), 'flt': cb_flt_txtmatch_
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_cat), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_cat), 'key': '_tabot_funcmd_cb_cat_tg'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_dog), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_dog), 'key': '_tabot_funcmd_cb_dog_qq'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_dog), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_dog), 'key': '_tabot_funcmd_cb_dog_tg'});
+_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_amdyes), 'flt': cb_flt_txtmatch_qq(_tabot_kw_amdyes), 'key': '_tabot_funcmd_cb_amdyes_qq'});
+_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_amdyes), 'flt': cb_flt_txtmatch_tg(_tabot_kw_amdyes), 'key': '_tabot_funcmd_cb_amdyes_tg'});
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_jgb), 'flt': cb_flt_txtmatch_qq(_tabot_kw_jgb), 'key': '_tabot_funcmd_cb_jgb_qq'});
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_jgb), 'flt': cb_flt_txtmatch_tg(_tabot_kw_jgb), 'key': '_tabot_funcmd_cb_jgb_tg'});
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_hdzj), 'flt': cb_flt_txtmatch_qq(_tabot_kw_hdzj), 'key': '_tabot_funcmd_cb_hdzj_qq'});
