@@ -16,9 +16,11 @@ VERSION = 'v20210823';
 CONFIG_PATH = './config/';
 WORDLINK_CFG = 'tabot_totalk_wls.json'
 
-GROUP_TALKRATE = 10;
-PRIV_TALKRATE = 1;
 KEYWORDS_COUNT = 5;
+
+THERMAL_GROUP_TALKRATE = 10;
+THERMAL_PRIV_TALKRATE = 1;
+THERMAL_TAU = 60 * 60;
 
 CONTEXT_FLT = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v', 'eng');
 CONTEXT_METH = 'all';
@@ -79,10 +81,10 @@ def onmsg(src, txt = '', t = None):
             thermals[src['cid']].onmsg(t = t);
         else:
             if src['ctype'][0] == 'g':
-                thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
+                thermals[src['cid']] = xtm.ThermalMeter(tau = THERMAL_TAU, talkrate = THERMAL_GROUP_TALKRATE);
                 thermals[src['cid']].onmsg(t = t);
             elif src['ctype'][0] == 'p':
-                thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+                thermals[src['cid']] = xtm.ThermalMeter(tau = THERMAL_TAU, talkrate = THERMAL_PRIV_TALKRATE);
                 thermals[src['cid']].onmsg(t = t);
 
 def oncall(src, txt = '', k = 1, t = None):
@@ -117,10 +119,10 @@ def oncall(src, txt = '', k = 1, t = None):
             thermals[src['cid']].oncall(k = k, t = t);
         else:
             if src['ctype'][0] == 'g':
-                thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
+                thermals[src['cid']] = xtm.ThermalMeter(tau = THERMAL_TAU, talkrate = THERMAL_GROUP_TALKRATE);
                 thermals[src['cid']].oncall(k = k, t = t);
             elif src['ctype'][0] == 'p':
-                thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+                thermals[src['cid']] = xtm.ThermalMeter(tau = THERMAL_TAU, talkrate = THERMAL_PRIV_TALKRATE);
                 thermals[src['cid']].oncall(k = k, t = t);
 
 def oncalltalk(src, txt = '', t = None):
@@ -155,10 +157,10 @@ def oncalltalk(src, txt = '', t = None):
             thermals[src['cid']].oncalltalk(t = t);
         else:
             if src['ctype'][0] == 'g':
-                thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
+                thermals[src['cid']] = xtm.ThermalMeter(tau = THERMAL_TAU, talkrate = THERMAL_GROUP_TALKRATE);
                 thermals[src['cid']].oncalltalk(t = t);
             elif src['ctype'][0] == 'p':
-                thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+                thermals[src['cid']] = xtm.ThermalMeter(tau = THERMAL_TAU, talkrate = THERMAL_PRIV_TALKRATE);
                 thermals[src['cid']].oncalltalk(t = t);
 
 def ontalk(src, t = None):
@@ -173,10 +175,10 @@ def ontalk(src, t = None):
             thermals[src['cid']].ontalk(t = t);
         else:
             if src['ctype'][0] == 'g':
-                thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
+                thermals[src['cid']] = xtm.ThermalMeter(tau = THERMAL_TAU, talkrate = THERMAL_GROUP_TALKRATE);
                 thermals[src['cid']].ontalk(t = t);
             elif src['ctype'][0] == 'p':
-                thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+                thermals[src['cid']] = xtm.ThermalMeter(tau = THERMAL_TAU, talkrate = THERMAL_PRIV_TALKRATE);
                 thermals[src['cid']].ontalk(t = t);
 
 def cantalk(src, p: float = 1, t = None):
