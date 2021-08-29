@@ -55,7 +55,7 @@ _tabot_cmd_ping = 't -ping';
 _tabot_cmd_reload = 't -reload';
 _tabot_cmd_save = 't -save';
 _tabot_cmd_stop = 't -stop';
-_tabot_cmd_params = 't -params';
+_tabot_cmd_params = 't -params(( {1,}.*)*)';
 
 # 娱乐指令在funcmd实现
 # _tabot_cmd_henshin = 't -henshin';
@@ -102,6 +102,9 @@ t               : 在聊天环境中调用以实现相关功能
     -stop       : 在特定的开发环境下应当执行环境支持的系统关闭功能
     -params     : 展示当前聊天语境环境下的检测参数
     -henshin    : 变身
+    -tarcadia   : 向本bot提及我的开发者
+    -cat        : 视本bot若猫
+    -dog        : 视本bot若狗
     -reboot     : 并不能控制重启
 """;
 
@@ -430,7 +433,17 @@ _tabot_cb_flt_params_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': 
 _tabot_cb_flt_params_tg = {'mmk': {'telegram.*'}, 'msg':{'message': {'from': {'id':CONSTS.BOT_OP_TG}, 'text': _tabot_cmd_params}}};
 def _tabot_cb_fnc_params(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
-    _paramstr = ttalk.strparams(_src);
+    _txt = tmsgp.msgtxt(mmk, msg);
+    args = _txt.split();
+    if len(args) == 2:
+        _srcfind = _src;
+    elif len(args) == 4:
+        _srcfind = tmsgp.src(mmk, args[2], args[3], t = _src['time']);
+    elif len(args) == 5:
+        _srcfind = tmsgp.src(args[2], args[3], args[4], t = _src['time']);
+    else:
+        _srcfind = _src;
+    _paramstr = ttalk.strparams(_srcfind);
     _cmd = tmsgp.tomsgtxt(_src, _paramstr);
     _botcontrol.send(mmk, _cmd);
     ttalk.oncalltalk(src = _src);
