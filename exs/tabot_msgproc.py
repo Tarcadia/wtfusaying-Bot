@@ -207,7 +207,7 @@ def msgmiltitxt(mmk, msg):
         _txtchain = [_t['text'] for _t in msg['data']['messageChain'] if _t['type'] == 'Plain'];
         _txt = '\n'.join(_txtchain);
     elif re.match('telegram.*', mmk):
-        _txt = msg['message']['text'] if 'text' in msg else '';
+        _txt = msg['message']['text'] if 'message' in msg and 'text' in msg['message'] else '';
     else:
         _txt = '';
     return _txt;
