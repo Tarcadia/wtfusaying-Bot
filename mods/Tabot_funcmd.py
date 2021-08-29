@@ -132,8 +132,6 @@ _tabot_kw_toterms = '.*某种意义上.*';
 
 # 回调接口
 
-
-
 # 模板条件
 def cb_flt_txtmatch_qq(txt):
     return {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': txt}]}}};
