@@ -26,6 +26,8 @@ logger.info('Thermal Meter Loaded');
 #   talklock            : RLock,        // 访问锁
 #   value               : float,        // 自己的发言欲望，群消息后自己的发言欲望上升，受刺激后自己的发言欲望上升，发言后自己发言欲望下降
 #                                       // 做指数响应的衰变，即v = sum(xi * u(t-ti) * 2^(-(t-ti)/tau))
+#                                       // 更新：考虑到长期累积的大量发言会带来很大的发言欲望，这里需要引入非线性响应
+#                                       // 可以考虑非线性声学之类的模型
 #   valuetime           : time          // 自己的发言欲望值计算的时间维护
 # }
 
@@ -49,14 +51,25 @@ def new(
     };
     return _tm;
 
+# 根据时间更新计算
+def update(tm: dict, t = None):
+    if t == None:
+        t = time.time();
+    dt = t - tm['valuetime'];
+    b = 1;
+    vinvb = 1 / tm['value'] + b;
+    vinvbx = vinvb * pow(2, dt / tm['tau']);
+    tm['value'] = 1/(vinvbx - b);
+    tm['valuetime'] = t;
+    return tm;
+
 # 加入一条对话消息的时间响应
-def onmsg(tm:dict, t = None):
+def onmsg(tm: dict, t = None):
     if t == None:
         t = time.time();
     with tm['talklock']:
-        dt = t - tm['valuetime'];
-        tm['value'] = tm['value'] * pow(2, -dt / tm['tau']) + 1 / tm['talkrate'];
-        tm['valuetime'] = t;
+        tm = update(tm, t = t);
+        tm['value'] += 1 / tm['talkrate'];
     return tm;
 
 # 加入一条刺激的时间响应
@@ -64,9 +77,8 @@ def oncall(tm: dict, k = 1, t = None):
     if t == None:
         t = time.time();
     with tm['talklock']:
-        dt = t - tm['valuetime'];
-        tm['value'] = tm['value'] * pow(2, -dt / tm['tau']) + k / tm['callrate'];
-        tm['valuetime'] = t;
+        tm = update(tm, t = t);
+        tm['value'] += k / tm['callrate'];
     return tm;
 
 # 加入一条受激发言的时间响应
@@ -74,9 +86,8 @@ def oncalltalk(tm: dict, t = None):
     if t == None:
         t = time.time();
     with tm['talklock']:
-        dt = t - tm['valuetime'];
-        tm['value'] = tm['value'] * pow(2, -dt / tm['tau']) - 1 / tm['talkrate'];
-        tm['valuetime'] = t;
+        tm = update(tm, t = t);
+        tm['value'] -= 1 / tm['talkrate'];
     return tm;
 
 # 加入一条发言的时间响应
@@ -84,9 +95,8 @@ def ontalk(tm: dict, t = None):
     if t == None:
         t = time.time();
     with tm['talklock']:
-        dt = t - tm['valuetime'];
-        tm['value'] = tm['value'] * pow(2, -dt / tm['tau']) - 1;
-        tm['valuetime'] = t;
+        tm = update(tm, t = t);
+        tm['value'] -= 1;
     return tm;
 
 # 计算当前欲望
@@ -94,9 +104,9 @@ def valuetalk(tm: dict, t = None):
     if t == None:
         t = time.time();
     with tm['talklock']:
-        dt = t - tm['valuetime'];
-        v = tm['value'] * pow(2, -dt / tm['tau']);
-        return v;
+        tm = update(tm, t = t);
+        v = tm['value'];
+        return tm, v;
 
 # 计算当前是否可以发言，p为引入条件概率
 def cantalk(tm: dict, p: float = 1, t = None):
@@ -140,4 +150,5 @@ class ThermalMeter():
         return;
     
     def cantalk(self, p: float = 1, t = None):
-        return cantalk(self._tm, p = p, t = t);
+        self._tm, _v = cantalk(self._tm, p = p, t = t);
+        return _v;
