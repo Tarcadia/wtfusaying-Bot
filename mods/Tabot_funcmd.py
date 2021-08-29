@@ -152,7 +152,7 @@ _tabot_cmd_mbkotori = 't -([mM][bB][kK][oO][tT][oO][rR][iI]|小*鸟)';
 _tabot_cmd_creeper = 't -([cC][rR]+[eE]+[pP]+[eE]+[rR]+)';
 _tabot_cmd_cat = 't -([cC][aA][tT]|猫|🐱)';
 _tabot_cmd_dog = 't -([dD][oO][gG]|狗|🐕)';
-_tabot_cmd_fox = 't -([fF][oO][xX]|狐*狸*|糊梨|🦊)';
+_tabot_cmd_fox = 't -([fF][oO][xX]|[狐狸]+|糊梨|🦊)';
 _tabot_cmd_sheep = 't -([sS][hH][eE]+[pP]|[cC][hH][aA][rR][lL][eE][sS]|羊|🐏)';
 
 _tabot_kw_amdyes = '.*[Aa][Mm][Dd] [Yy][Ee][Ss].*';
