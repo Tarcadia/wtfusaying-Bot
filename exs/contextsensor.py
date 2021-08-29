@@ -137,7 +137,7 @@ def update(cs: dict, msg: str = '', t: float = None):
         t = time.time();
     
     if cs['contextmethod'] == 'all':
-        _vec = jieba.cut(msg);
+        _vec = list(jieba.cut(msg));
     elif cs['contextmethod'] == 'tr':
         if cs['contextwei']:
             _kw = jieba.analyse.textrank(msg, topK = cs['contextcount'], withWeight = True, allowPOS = cs['contextfilter']);
