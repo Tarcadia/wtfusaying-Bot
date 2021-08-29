@@ -217,15 +217,19 @@ def tomsgnug(tgt):
     if tgt:
         if re.match('mirai.*', tgt['mmk']):
             if tgt['ctype'] == 'p':
+                _cmd = 'sendNudge';
                 _kind = 'Friend'
             if tgt['ctype'] == 'pt':
+                _cmd = 'sendNudge';
                 _kind = 'Stranger'
             elif tgt['ctype'] == 'g':
+                _cmd = 'sendNudge';
                 _kind = 'group';
             else:
                 _cmd = '';
+                _kind = '';
             if _cmd:
-                _msg = {'command': 'sendNudge', 'content': {'target': tgt['rcid'], 'subject': tgt['uid'], 'kind': _kind}};
+                _msg = {'command': _cmd, 'content': {'target': tgt['rcid'], 'subject': tgt['uid'], 'kind': _kind}};
             else:
                 _msg = None;
         else:
