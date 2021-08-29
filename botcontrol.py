@@ -209,28 +209,23 @@ def do_callback(bc: dict, mmk: str, msg: dict):
         for _key in bc['cbs']:
             _cb = bc['cbs'][_key];
             _flt = False;
+            
             try:
                 if callable(_cb['flt']):
                     _flt = _cb['flt'](mmk, msg);
+                if (
+                    (_cb['flt'] == None) or
+                    (callable(_cb['flt']) and _flt) or
+                    (type(_cb['flt']) == dict and
+                        'mmk' in _cb['flt'] and 'msg' in _cb['flt'] and
+                        cbmmkmatch(mmk, _cb['flt']['mmk']) and cbfltmatch(msg, _cb['flt']['msg']))
+                ):
+                    with bc['cbl']:
+                        _cb['fnc'](mmk, msg);
             except Exception as _err:
-                logger.error('Call filter failed at %s with %s' % (_key, type(_err)));
+                logger.error('CallBack failed at %s with %s' % (_key, type(_err)));
                 logger.debug(_err);
                 logger.exception(_err);
-            
-            if (
-                (_cb['flt'] == None) or
-                (callable(_cb['flt']) and _flt) or
-                (type(_cb['flt']) == dict and
-                    'mmk' in _cb['flt'] and 'msg' in _cb['flt'] and
-                    cbmmkmatch(mmk, _cb['flt']['mmk']) and cbfltmatch(msg, _cb['flt']['msg']))
-            ):
-                with bc['cbl']:
-                    try:
-                        _cb['fnc'](mmk, msg);
-                    except Exception as _err:
-                        logger.error('CallBack failed at %s with %s' % (_key, type(_err)));
-                        logger.debug(_err);
-                        logger.exception(_err);
 
             else:
                 pass;
