@@ -1,5 +1,4 @@
 
-import threading
 import CONSTS;
 
 import exs.wordlinksensor as xwls;
@@ -8,6 +7,7 @@ import exs.topicsensor as xts;
 import exs.thermalmeter as xtm;
 
 import re;
+import threading as thr;
 import logging;
 
 VERSION = 'v20210823';
@@ -33,95 +33,113 @@ logger.info('Tabot To Talk - ex Loaded');
 # thermals = dict[chatkey]{thermalmeter};       // 记录聊天热度和发言控制的thermalmeter模块
 # wordlinks = wordlinksensor;                   // 学习的结果，将会文件存储
 
+datalock = thr.RLock();
 contexts = dict();
 thermals = dict();
 wordlink = xwls.WordLinkSensor(memorypath = CONFIG_PATH + WORDLINK_CFG);
 
 def onmsg(src, txt = ''):
     if txt:
-        if src['cid'] in contexts and contexts[src['cid']]:
-            contexts[src['cid']].update(txt);
-        else:
-            contexts[src['cid']] = xcs.ContextSensor();
-            contexts[src['cid']].update(txt);
+        with datalock:
+            if src['cid'] in contexts and contexts[src['cid']]:
+                contexts[src['cid']].update(txt);
+            else:
+                contexts[src['cid']] = xcs.ContextSensor();
+                contexts[src['cid']].update(txt);
     
-    if src['cid'] in thermals and thermals[src['cid']]:
-        thermals[src['cid']].onmsg(src['time']);
-    else:
-        if src['ctype'][0] == 'g':
-            thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
-            thermals[src['cid']].onmsg(src['time']);
-        elif src['ctype'][0] == 'p':
-            thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+    with datalock:
+        if src['cid'] in thermals and thermals[src['cid']]:
             thermals[src['cid']].onmsg(src['time']);
         else:
-            thermals[src['cid']] = None;
+            if src['ctype'][0] == 'g':
+                thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
+                thermals[src['cid']].onmsg(src['time']);
+            elif src['ctype'][0] == 'p':
+                thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+                thermals[src['cid']].onmsg(src['time']);
+            else:
+                thermals[src['cid']] = None;
 
 def oncall(src, txt = '', k = 1):
     if txt:
-        if src['cid'] in contexts and contexts[src['cid']]:
-            contexts[src['cid']].update(txt);
-        else:
-            contexts[src['cid']] = xcs.ContextSensor();
-            contexts[src['cid']].update(txt);
+        with datalock:
+            if src['cid'] in contexts and contexts[src['cid']]:
+                contexts[src['cid']].update(txt);
+            else:
+                contexts[src['cid']] = xcs.ContextSensor();
+                contexts[src['cid']].update(txt);
     
-    if src['cid'] in thermals and thermals[src['cid']]:
-        thermals[src['cid']].oncall(src['time'], k = k);
-    else:
-        if src['ctype'][0] == 'g':
-            thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
-            thermals[src['cid']].oncall(src['time'], k = k);
-        elif src['ctype'][0] == 'p':
-            thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+    with datalock:
+        if src['cid'] in thermals and thermals[src['cid']]:
             thermals[src['cid']].oncall(src['time'], k = k);
         else:
-            thermals[src['cid']] = None;
+            if src['ctype'][0] == 'g':
+                thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
+                thermals[src['cid']].oncall(src['time'], k = k);
+            elif src['ctype'][0] == 'p':
+                thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+                thermals[src['cid']].oncall(src['time'], k = k);
+            else:
+                thermals[src['cid']] = None;
 
 def oncalltalk(src, txt = ''):
     if txt:
-        if src['cid'] in contexts and contexts[src['cid']]:
-            contexts[src['cid']].update(txt);
-        else:
-            contexts[src['cid']] = xcs.ContextSensor();
-            contexts[src['cid']].update(txt);
+        with datalock:
+            if src['cid'] in contexts and contexts[src['cid']]:
+                contexts[src['cid']].update(txt);
+            else:
+                contexts[src['cid']] = xcs.ContextSensor();
+                contexts[src['cid']].update(txt);
     
-    if src['cid'] in thermals and thermals[src['cid']]:
-        thermals[src['cid']].oncalltalk(src['time']);
-    else:
-        if src['ctype'][0] == 'g':
-            thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
-            thermals[src['cid']].oncalltalk(src['time']);
-        elif src['ctype'][0] == 'p':
-            thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+    with datalock:
+        if src['cid'] in thermals and thermals[src['cid']]:
             thermals[src['cid']].oncalltalk(src['time']);
         else:
-            thermals[src['cid']] = None;
+            if src['ctype'][0] == 'g':
+                thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
+                thermals[src['cid']].oncalltalk(src['time']);
+            elif src['ctype'][0] == 'p':
+                thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+                thermals[src['cid']].oncalltalk(src['time']);
+            else:
+                thermals[src['cid']] = None;
 
 def ontalk(src):
-    if src['cid'] in thermals and thermals[src['cid']]:
-        thermals[src['cid']].ontalk(src['time']);
-    else:
-        if src['ctype'][0] == 'g':
-            thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
-            thermals[src['cid']].ontalk(src['time']);
-        elif src['ctype'][0] == 'p':
-            thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+    with datalock:
+        if src['cid'] in thermals and thermals[src['cid']]:
             thermals[src['cid']].ontalk(src['time']);
         else:
-            thermals[src['cid']] = None;
+            if src['ctype'][0] == 'g':
+                thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
+                thermals[src['cid']].ontalk(src['time']);
+            elif src['ctype'][0] == 'p':
+                thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
+                thermals[src['cid']].ontalk(src['time']);
+            else:
+                thermals[src['cid']] = None;
 
 def cantalk(src, p: float = 1):
-    if src['cid'] in thermals and thermals[src['cid']]:
-        return thermals[src['cid']].cantalk(p = p);
-    else:
-        return False;
+    with datalock:
+        if src['cid'] in thermals and thermals[src['cid']]:
+            return thermals[src['cid']].cantalk(p = p);
+        else:
+            return False;
     
 def trycantalk(src, p: float = 1):
-    if cantalk(src, p = p):
-        thermals[src['cid']].ontalk();
-        return True;
-    else:
-        return False;
+    with datalock:
+        if cantalk(src, p = p):
+            thermals[src['cid']].ontalk();
+            return True;
+        else:
+            return False;
+
+def migratechat(srcfrom, srcto):
+    if srcfrom['cid'] in thermals and not srcto['cid'] in thermals:
+        with datalock:
+            thermals[srcto['cid']] = thermals.pop(srcfrom['cid']);
+    if srcfrom['cid'] in contexts and not srcto['cid'] in contexts:
+        with datalock:
+            contexts[srcto['cid']] = contexts.pop(srcfrom['cid']);
 
 def strparams(src):
     lines = [];
