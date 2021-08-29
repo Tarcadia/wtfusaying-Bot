@@ -360,8 +360,8 @@ _tabot_cb_flt_params_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': 
 _tabot_cb_flt_params_tg = {'mmk': {'telegram.*'}, 'msg':{'message': {'from': {'id':CONSTS.BOT_OP_TG}, 'text': _tabot_cmd_params}}};
 def _tabot_cb_fnc_params(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
-    _params = ttalk.strparams(_src);
-    _cmd = tmsgp.tomsgtxt(_src, _params);
+    _paramstr = ttalk.strparams(_src);
+    _cmd = tmsgp.tomsgtxt(_src, _paramstr);
     _botcontrol.send(mmk, _cmd);
     ttalk.oncalltalk(_src);
     return;
