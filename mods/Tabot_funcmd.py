@@ -122,7 +122,7 @@ _tabot_cmd_reboot = 't -reboot';
 _tabot_cmd_tarcadia = 't -tarcadia';
 _tabot_cmd_cat = 't -cat';
 _tabot_cmd_dog = 't -dog';
-_tabot_cmd_sheep = 't -sheep';
+_tabot_cmd_sheep = 't -(sheep|🐏)';
 
 _tabot_kw_amdyes = '.*[Aa][Mm][Dd] [Yy][Ee][Ss].*';
 _tabot_kw_jgb = '.*((鸡.*公.*煲)|([Jj][Gg][Bb]))+.*';
