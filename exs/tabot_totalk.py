@@ -1,5 +1,5 @@
 
-import time
+
 import CONSTS;
 
 import exs.wordlinksensor as xwls;
@@ -8,6 +8,7 @@ import exs.topicsensor as xts;
 import exs.thermalmeter as xtm;
 
 import re;
+import time;
 import threading as thr;
 import logging;
 
@@ -17,6 +18,13 @@ WORDLINK_CFG = 'tabot_totalk_wls.json'
 
 GROUP_TALKRATE = 10;
 PRIV_TALKRATE = 1;
+KEYWORDS_COUNT = 5;
+
+CONTEXT_FLT = ('n', 'nr', 'ns', 'nt', 'nw', 'vn', 'v', 'eng');
+CONTEXT_METH = 'all';
+CONTEXT_WEI = False;
+CONTEXT_TAU = 180;
+CONTEXT_ALPHA = 6;
 
 logger = logging.getLogger(__name__);
 logger.setLevel(logging.DEBUG);
@@ -49,10 +57,22 @@ def onmsg(src, txt = '', t = None):
     if txt:
         with datalock:
             if src['cid'] in contexts and contexts[src['cid']]:
-                contexts[src['cid']].update(txt, t = t);
+                _vec = contexts[src['cid']].update(txt, t = t);
+                _cvec = contexts[src['cid']].get(t = t);
+                for _w in _vec:
+                    wordlink.add(w = _w, k = 1, vec = _cvec);
             else:
-                contexts[src['cid']] = xcs.ContextSensor();
-                contexts[src['cid']].update(txt, t = t);
+                contexts[src['cid']] = xcs.ContextSensor(
+                    contextfilter = CONTEXT_FLT,
+                    contextmethod = CONTEXT_METH,
+                    contextwei = CONTEXT_WEI,
+                    tau = CONTEXT_TAU,
+                    alpha = CONTEXT_ALPHA
+                );
+                _vec = contexts[src['cid']].update(txt, t = t);
+                _cvec = contexts[src['cid']].get(t = t);
+                for _w in _vec:
+                    wordlink.add(w = _w, k = 1, vec = _cvec);
     
     with datalock:
         if src['cid'] in thermals and thermals[src['cid']]:
@@ -75,10 +95,22 @@ def oncall(src, txt = '', k = 1, t = None):
     if txt:
         with datalock:
             if src['cid'] in contexts and contexts[src['cid']]:
-                contexts[src['cid']].update(txt, t = t);
+                _vec = contexts[src['cid']].update(txt, t = t);
+                _cvec = contexts[src['cid']].get(t = t);
+                for _w in _vec:
+                    wordlink.add(w = _w, k = 1, vec = _cvec);
             else:
-                contexts[src['cid']] = xcs.ContextSensor();
-                contexts[src['cid']].update(txt, t = t);
+                contexts[src['cid']] = xcs.ContextSensor(
+                    contextfilter = CONTEXT_FLT,
+                    contextmethod = CONTEXT_METH,
+                    contextwei = CONTEXT_WEI,
+                    tau = CONTEXT_TAU,
+                    alpha = CONTEXT_ALPHA
+                );
+                _vec = contexts[src['cid']].update(txt, t = t);
+                _cvec = contexts[src['cid']].get(t = t);
+                for _w in _vec:
+                    wordlink.add(w = _w, k = 1, vec = _cvec);
     
     with datalock:
         if src['cid'] in thermals and thermals[src['cid']]:
@@ -101,10 +133,22 @@ def oncalltalk(src, txt = '', t = None):
     if txt:
         with datalock:
             if src['cid'] in contexts and contexts[src['cid']]:
-                contexts[src['cid']].update(txt, t = t);
+                _vec = contexts[src['cid']].update(txt, t = t);
+                _cvec = contexts[src['cid']].get(t = t);
+                for _w in _vec:
+                    wordlink.add(w = _w, k = 1, vec = _cvec);
             else:
-                contexts[src['cid']] = xcs.ContextSensor();
-                contexts[src['cid']].update(txt, t = t);
+                contexts[src['cid']] = xcs.ContextSensor(
+                    contextfilter = CONTEXT_FLT,
+                    contextmethod = CONTEXT_METH,
+                    contextwei = CONTEXT_WEI,
+                    tau = CONTEXT_TAU,
+                    alpha = CONTEXT_ALPHA
+                );
+                _vec = contexts[src['cid']].update(txt, t = t);
+                _cvec = contexts[src['cid']].get(t = t);
+                for _w in _vec:
+                    wordlink.add(w = _w, k = 1, vec = _cvec);
     
     with datalock:
         if src['cid'] in thermals and thermals[src['cid']]:
@@ -179,7 +223,8 @@ def strparams(src):
         lines.append("————前向度缺失");
     if src['cid'] in contexts and contexts[src['cid']]:
         cvec = contexts[src['cid']].get(t = src['time']);
-        lines.append("————上下文关键词：" + ','.join(['%s: %.1f' % (_k, cvec[_k]) for _k in cvec]));
+        cvec = {_k : _w for _k, _w in sorted(cvec.items(), key = lambda v : v[1], reverse = True)[0 : min(len(cvec), KEYWORDS_COUNT)]};
+        lines.append("————上下文关键词：" + ', '.join(['%s: %.1f' % (_k, cvec[_k]) for _k in cvec]));
     else:
         lines.append("————上下文信息缺失");
     return '\n'.join(lines);
