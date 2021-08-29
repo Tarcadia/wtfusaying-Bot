@@ -59,26 +59,28 @@ def src(mmk, ctype, rcid, uid = 0, mid = 0, t = None):
     return _src;
 
 # 获得nudge的src
-def nugsrc(mmk, msg):
+def nugsrc(mmk, msg, t = None):
+    if t == None:
+        t = time.time();
     if re.match('mirai.*', mmk):
         if msg['data']['type'] == 'NudgeEvent' and msg['data']['subject']['kind'] == 'Friend':
             _ctype = 'p';
             _rcid = msg['data']['subject']['id'];
             _uid = msg['data']['fromId'];
             _mid = 0;
-            _time = time.time();
+            _time = t;
         if msg['data']['type'] == 'NudgeEvent' and msg['data']['subject']['kind'] == 'Stranger':
             _ctype = 'pt';
             _rcid = msg['data']['subject']['id'];
             _uid = msg['data']['fromId'];
             _mid = 0;
-            _time = time.time();
+            _time = t;
         elif msg['data']['type'] == 'NudgeEvent' and msg['data']['subject']['kind'] == 'Group':
             _ctype = 'g';
             _rcid = msg['data']['subject']['id'];
             _uid = msg['data']['fromId'];
             _mid = 0;
-            _time = time.time();
+            _time = t;
         else:
             _ctype = 'u';
             _rcid = 0;

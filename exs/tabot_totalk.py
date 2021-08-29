@@ -1,4 +1,5 @@
 
+import time
 import CONSTS;
 
 import exs.wordlinksensor as xwls;
@@ -38,97 +39,133 @@ contexts = dict();
 thermals = dict();
 wordlink = xwls.WordLinkSensor(memorypath = CONFIG_PATH + WORDLINK_CFG);
 
-def onmsg(src, txt = ''):
+def onmsg(src, txt = '', t = None):
+    if t == None:
+        if src['time']:
+            t = src['time'];
+        else:
+            t = time.time();
+    
     if txt:
         with datalock:
             if src['cid'] in contexts and contexts[src['cid']]:
-                contexts[src['cid']].update(txt);
+                contexts[src['cid']].update(txt, t = t);
             else:
                 contexts[src['cid']] = xcs.ContextSensor();
-                contexts[src['cid']].update(txt);
+                contexts[src['cid']].update(txt, t = t);
     
     with datalock:
         if src['cid'] in thermals and thermals[src['cid']]:
-            thermals[src['cid']].onmsg(src['time']);
+            thermals[src['cid']].onmsg(src['time'], t = t);
         else:
             if src['ctype'][0] == 'g':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
-                thermals[src['cid']].onmsg(src['time']);
+                thermals[src['cid']].onmsg(src['time'], t = t);
             elif src['ctype'][0] == 'p':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
-                thermals[src['cid']].onmsg(src['time']);
+                thermals[src['cid']].onmsg(src['time'], t = t);
             else:
                 thermals[src['cid']] = None;
 
-def oncall(src, txt = '', k = 1):
+def oncall(src, txt = '', k = 1, t = None):
+    if t == None:
+        if src['time']:
+            t = src['time'];
+        else:
+            t = time.time();
+    
     if txt:
         with datalock:
             if src['cid'] in contexts and contexts[src['cid']]:
-                contexts[src['cid']].update(txt);
+                contexts[src['cid']].update(txt, t = t);
             else:
                 contexts[src['cid']] = xcs.ContextSensor();
-                contexts[src['cid']].update(txt);
+                contexts[src['cid']].update(txt, t = t);
     
     with datalock:
         if src['cid'] in thermals and thermals[src['cid']]:
-            thermals[src['cid']].oncall(src['time'], k = k);
+            thermals[src['cid']].oncall(src['time'], k = k, t = t);
         else:
             if src['ctype'][0] == 'g':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
-                thermals[src['cid']].oncall(src['time'], k = k);
+                thermals[src['cid']].oncall(src['time'], k = k, t = t);
             elif src['ctype'][0] == 'p':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
-                thermals[src['cid']].oncall(src['time'], k = k);
+                thermals[src['cid']].oncall(src['time'], k = k, t = t);
             else:
                 thermals[src['cid']] = None;
 
-def oncalltalk(src, txt = ''):
+def oncalltalk(src, txt = '', t = None):
+    if t == None:
+        if src['time']:
+            t = src['time'];
+        else:
+            t = time.time();
+    
     if txt:
         with datalock:
             if src['cid'] in contexts and contexts[src['cid']]:
-                contexts[src['cid']].update(txt);
+                contexts[src['cid']].update(txt, t = t);
             else:
                 contexts[src['cid']] = xcs.ContextSensor();
-                contexts[src['cid']].update(txt);
+                contexts[src['cid']].update(txt, t = t);
     
     with datalock:
         if src['cid'] in thermals and thermals[src['cid']]:
-            thermals[src['cid']].oncalltalk(src['time']);
+            thermals[src['cid']].oncalltalk(src['time'], t = t);
         else:
             if src['ctype'][0] == 'g':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
-                thermals[src['cid']].oncalltalk(src['time']);
+                thermals[src['cid']].oncalltalk(src['time'], t = t);
             elif src['ctype'][0] == 'p':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
-                thermals[src['cid']].oncalltalk(src['time']);
+                thermals[src['cid']].oncalltalk(src['time'], t = t);
             else:
                 thermals[src['cid']] = None;
 
-def ontalk(src):
+def ontalk(src, t = None):
+    if t == None:
+        if src['time']:
+            t = src['time'];
+        else:
+            t = time.time();
+    
     with datalock:
         if src['cid'] in thermals and thermals[src['cid']]:
-            thermals[src['cid']].ontalk(src['time']);
+            thermals[src['cid']].ontalk(t = t);
         else:
             if src['ctype'][0] == 'g':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
-                thermals[src['cid']].ontalk(src['time']);
+                thermals[src['cid']].ontalk(t = t);
             elif src['ctype'][0] == 'p':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
-                thermals[src['cid']].ontalk(src['time']);
+                thermals[src['cid']].ontalk(t = t);
             else:
                 thermals[src['cid']] = None;
 
-def cantalk(src, p: float = 1):
+def cantalk(src, p: float = 1, t = None):
+    if t == None:
+        if src['time']:
+            t = src['time'];
+        else:
+            t = time.time();
+    
     with datalock:
         if src['cid'] in thermals and thermals[src['cid']]:
-            return thermals[src['cid']].cantalk(p = p);
+            return thermals[src['cid']].cantalk(p = p, t = t);
         else:
             return False;
     
-def trycantalk(src, p: float = 1):
+def trycantalk(src, p: float = 1, t = None):
+    if t == None:
+        if src['time']:
+            t = src['time'];
+        else:
+            t = time.time();
+    
     with datalock:
         if cantalk(src, p = p):
-            thermals[src['cid']].ontalk();
+            thermals[src['cid']].ontalk(t = t);
             return True;
         else:
             return False;
