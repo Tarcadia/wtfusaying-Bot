@@ -109,7 +109,9 @@ _tabot_talks_hdzj = [
     "今天没有花雕鸡，因为辣辣带牙索和我约会去了",
     "我不认为你们应当在非实体的对象面前讨论实体化的进食内容",
 ];
-
+_tabot_talks_toterms = [
+    "某种意义上",
+];
 
 
 _tabot_cmd_henshin = 't -henshin';
@@ -122,6 +124,7 @@ _tabot_cmd_sheep = 't -sheep';
 _tabot_kw_amdyes = '.*[Aa][Mm][Dd] [Yy][Ee][Ss].*';
 _tabot_kw_jgb = '.*((鸡.*公.*煲)|([Jj][Gg][Bb]))+.*';
 _tabot_kw_hdzj = '.*花.*雕.*醉{0,1}.*鸡.*';
+_tabot_kw_toterms = '.*某种意义上.*';
 
 
 
@@ -180,6 +183,8 @@ _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_jgb), 'flt': cb_flt_txtmat
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_jgb), 'flt': cb_flt_txtmatch_tg(_tabot_kw_jgb), 'key': '_tabot_funcmd_cb_jgb_tg'});
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_hdzj), 'flt': cb_flt_txtmatch_qq(_tabot_kw_hdzj), 'key': '_tabot_funcmd_cb_hdzj_qq'});
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_hdzj), 'flt': cb_flt_txtmatch_tg(_tabot_kw_hdzj), 'key': '_tabot_funcmd_cb_hdzj_tg'});
+_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_toterms), 'flt': cb_flt_txtmatch_qq(_tabot_kw_toterms), 'key': '_tabot_funcmd_cb_toterms_qq'});
+_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_toterms), 'flt': cb_flt_txtmatch_tg(_tabot_kw_toterms), 'key': '_tabot_funcmd_cb_toterms_tg'});
 
 
 
