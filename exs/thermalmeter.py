@@ -120,7 +120,8 @@ class ThermalMeter():
 
     @property
     def value(self):
-        return valuetalk(self._tm);
+        self._tm, _v = valuetalk(self._tm);
+        return _v;
 
     def __init__(
         self,
@@ -154,5 +155,4 @@ class ThermalMeter():
         return;
     
     def cantalk(self, p: float = 1, t = None):
-        self._tm, _v = cantalk(self._tm, p = p, t = t);
-        return _v;
+        return cantalk(self._tm, p = p, t = t);
