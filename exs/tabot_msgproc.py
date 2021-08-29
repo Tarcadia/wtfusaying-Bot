@@ -224,7 +224,7 @@ def tomsgnug(tgt):
                 _kind = 'Stranger'
             elif tgt['ctype'] == 'g':
                 _cmd = 'sendNudge';
-                _kind = 'group';
+                _kind = 'Group';
             else:
                 _cmd = '';
                 _kind = '';
