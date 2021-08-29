@@ -35,11 +35,12 @@ thermals = dict();
 wordlink = xwls.WordLinkSensor(memorypath = CONFIG_PATH + WORDLINK_CFG);
 
 def onmsg(src, txt):
-    if src['cid'] in contexts and contexts[src['cid']]:
-        contexts[src['cid']].update(txt);
-    else:
-        contexts[src['cid']] = xcs.ContextSensor();
-        contexts[src['cid']].update(txt);
+    if txt:
+        if src['cid'] in contexts and contexts[src['cid']]:
+            contexts[src['cid']].update(txt);
+        else:
+            contexts[src['cid']] = xcs.ContextSensor();
+            contexts[src['cid']].update(txt);
     
     if src['cid'] in thermals and thermals[src['cid']]:
         thermals[src['cid']].onmsg(src['time']);
