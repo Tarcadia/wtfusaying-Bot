@@ -140,7 +140,7 @@ def _tabot_cb_fnc_statistic_msg(mmk, msg):
     _flt_qq_at = {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'At', 'target': CONSTS.BOT_QQ}]}};
     _flt_qq_atall = {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'AtAll'}]}};
     _flt_qq_quote = {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'Quote', 'senderId': CONSTS.BOT_QQ}]}};
-    _flt_tg_at = {'message': {'text': '.*@.*', 'entities': [{'type': 'mention', 'user': {'id': CONSTS.BOT_TG}}]}};
+    _flt_tg_at = {'message': {'text': '.*@%s.*' % CONSTS.BOT_TG_NAME, 'entities': [{'type': 'mention'}]}};
     _flt_tg_fwd = {'message': {'forward_from': {'id': CONSTS.BOT_TG}}};
     _flt_tg_rply = {'message': {'reply_to_message': {'from': {'id': CONSTS.BOT_TG}}}};
 
