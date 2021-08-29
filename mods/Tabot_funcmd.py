@@ -151,7 +151,7 @@ _tabot_kw_amdyes = '.*[Aa][Mm][Dd] [Yy][Ee][Ss].*';
 _tabot_kw_jgb = '.*((鸡.*公.*煲)|([Jj][Gg][Bb]))+.*';
 _tabot_kw_hdzj = '.*花.*雕.*醉{0,1}.*鸡.*';
 _tabot_kw_toterms = '.*(某种|一定)(意义|程度)上.*';
-_tabot_kw_question = '.*¿|?|？.*'
+_tabot_kw_question = '.*(¿|\?|？).*'
 
 
 
