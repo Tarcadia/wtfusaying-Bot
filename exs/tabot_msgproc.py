@@ -219,7 +219,7 @@ def tomsgnug(tgt):
             if tgt['ctype'] == 'p':
                 _cmd = 'sendNudge';
                 _kind = 'Friend'
-            if tgt['ctype'] == 'pt':
+            elif tgt['ctype'] == 'pt':
                 _cmd = 'sendNudge';
                 _kind = 'Stranger'
             elif tgt['ctype'] == 'g':
