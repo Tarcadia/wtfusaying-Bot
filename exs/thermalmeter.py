@@ -100,7 +100,7 @@ def valuetalk(tm: dict, t = None):
 
 # 计算当前是否可以发言，p为引入条件概率
 def cantalk(tm: dict, p: float = 1, t = None):
-    return random.random() <= p * valuetalk(tm = tm, t = t);
+    return random.random() <= valuetalk(tm = tm, t = t) and random.random() <= p;
 
 class ThermalMeter():
 
