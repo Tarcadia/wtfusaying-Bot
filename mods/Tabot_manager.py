@@ -159,14 +159,11 @@ def _tabot_cb_fnc_statistic_msg(mmk, msg):
         _src = tmsgp.msgsrc(mmk, msg);
         _txt = tmsgp.msgmiltitxt(mmk, msg);
         if bc.cbfltmatch(msg, _flt_tg_at):
-            ttalk.onmsg(src = _src, txt = _txt);
-            ttalk.oncall(src = _src);
+            ttalk.oncall(src = _src, txt = _txt);
         elif bc.cbfltmatch(msg, _flt_tg_fwd):
-            ttalk.onmsg(src = _src, txt = _txt);
-            ttalk.oncall(src = _src);
+            ttalk.oncall(src = _src, txt = _txt);
         elif bc.cbfltmatch(msg, _flt_tg_rply):
-            ttalk.onmsg(src = _src, txt = _txt);
-            ttalk.oncall(src = _src);
+            ttalk.oncall(src = _src, txt = _txt);
         else:
             ttalk.onmsg(src = _src, txt = _txt);
     return;
