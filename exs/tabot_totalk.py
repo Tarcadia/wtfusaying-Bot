@@ -233,4 +233,5 @@ def strparams(src):
 
 #保存
 def save():
+    wordlink.save();
     return;
