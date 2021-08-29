@@ -111,6 +111,9 @@ _tabot_talks_hdzj = [
 ];
 _tabot_talks_toterms = [
     "某种意义上",
+    "某种程度上",
+    "一定意义上",
+    "一定程度上",
 ];
 
 
@@ -124,7 +127,7 @@ _tabot_cmd_sheep = 't -sheep';
 _tabot_kw_amdyes = '.*[Aa][Mm][Dd] [Yy][Ee][Ss].*';
 _tabot_kw_jgb = '.*((鸡.*公.*煲)|([Jj][Gg][Bb]))+.*';
 _tabot_kw_hdzj = '.*花.*雕.*醉{0,1}.*鸡.*';
-_tabot_kw_toterms = '.*某种意义上.*';
+_tabot_kw_toterms = '.*(某种|一定)(意义|程度)上.*';
 
 
 

@@ -18,7 +18,7 @@ WORDLINK_CFG = 'tabot_totalk_wls.json'
 
 KEYWORDS_COUNT = 5;
 
-THERMAL_GROUP_TALKRATE = 10;
+THERMAL_GROUP_TALKRATE = 4;
 THERMAL_PRIV_TALKRATE = 1;
 THERMAL_TAU = 60 * 60;
 
@@ -220,15 +220,15 @@ def strparams(src):
     lines = [];
     lines.append("当前对话key：%s" % src['cid']);
     if src['cid'] in thermals and thermals[src['cid']]:
-        lines.append("————前向度：%.1f%%" % (thermals[src['cid']].value * 100));
+        lines.append("——前向度：%.1f%%" % (thermals[src['cid']].value * 100));
     else:
-        lines.append("————前向度缺失");
+        lines.append("——前向度缺失");
     if src['cid'] in contexts and contexts[src['cid']]:
         cvec = contexts[src['cid']].get(t = src['time']);
         cvec = {_k : _w for _k, _w in sorted(cvec.items(), key = lambda v : v[1], reverse = True)[0 : min(len(cvec), KEYWORDS_COUNT)]};
-        lines.append("————上下文关键词：" + ', '.join(['%s: %.1f' % (_k, cvec[_k]) for _k in cvec]));
+        lines.append("——上下文关键词：" + ', '.join(['%s: %.1f' % (_k, cvec[_k]) for _k in cvec]));
     else:
-        lines.append("————上下文信息缺失");
+        lines.append("——上下文信息缺失");
     return '\n'.join(lines);
 
 # 接口函数
