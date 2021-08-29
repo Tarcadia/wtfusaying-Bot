@@ -133,47 +133,49 @@ def _tabot_cb_fnc_msgecho(mmk, msg):
     return;
 
 # 消息响应
+_tabot_cb_flt_statistic_msg_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': []}}};
+_tabot_cb_flt_statistic_msg_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {}}};
+def _tabot_cb_fnc_statistic_msg(mmk, msg):
+    
+    _flt_qq_at = {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'At', 'target': CONSTS.BOT_QQ}]}};
+    _flt_qq_atall = {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'AtAll'}]}};
+    _flt_qq_quote = {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'Quote', 'senderId': CONSTS.BOT_QQ}]}};
+    _flt_tg_at = {'message': {'text': '.*@%s.*' % CONSTS.BOT_TG, 'entities': [{'type': 'mention'}]}};
+    _flt_tg_fwd = {'message': {'forward_from': CONSTS.BOT_TG}};
+    _flt_tg_rply = {'message': {'reply_to_message': {'from': {'id': CONSTS.BOT_TG}}}};
 
-# 文本消息
-_tabot_cb_flt_statistic_txt_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'Plain'}]}}};
-_tabot_cb_flt_statistic_txt_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'text': '.*'}}};
-def _tabot_cb_fnc_statistic_txt(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
-    _txt = tmsgp.msgtxt(mmk, msg);
-    ttalk.onmsg(src = _src, txt = _txt);
-    return;
-
-# 多媒体消息
-_tabot_cb_flt_statistic_mult_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'XXXXXXXX'}]}}};
-_tabot_cb_flt_statistic_mult_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'XXXXXXXXXXX': 'XXXXXXXXXXXXXX'}}};
-def _tabot_cb_fnc_statistic_mult(mmk, msg):
-    _src = tmsgp.msgsrc(mmk, msg);
-    ttalk.onmsg(_src, '');
-    return;
-
-# At
-_tabot_cb_flt_statistic_at_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'At', 'target': CONSTS.BOT_QQ}]}}};
-_tabot_cb_flt_statistic_at_qqall = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'AtAll'}]}}};
-_tabot_cb_flt_statistic_at_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'text': '.*@%s.*' % CONSTS.BOT_TG, 'entities': [{'type': 'mention'}]}}};
-def _tabot_cb_fnc_statistic_at(mmk, msg):
-    _src = tmsgp.msgsrc(mmk, msg);
-    ttalk.oncall(_src);
-    return;
-
-#引用
-_tabot_cb_flt_statistic_qt_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': '(Friend|Group|Temp|Stranger)Message', 'messageChain': [{'type': 'Quote', 'senderId': CONSTS.BOT_QQ}]}}};
-_tabot_cb_flt_statistic_qt_tgfwd = {'mmk': {'telegram.*'}, 'msg': {'message': {'forward_from': CONSTS.BOT_TG}}};
-_tabot_cb_flt_statistic_qt_tgrply = {'mmk': {'telegram.*'}, 'msg': {'message': {'reply_to_message': {'from': {'id': CONSTS.BOT_TG}}}}};
-def _tabot_cb_fnc_statistic_qt(mmk, msg):
-    _src = tmsgp.msgsrc(mmk, msg);
-    ttalk.oncall(_src);
+    _txt = tmsgp.msgmiltitxt(mmk, msg);
+    if re.match('mirai.*', mmk):
+        if bc.cbfltmatch(msg, _flt_qq_at):
+            ttalk.oncall(src = _src, txt = _txt);
+        elif bc.cbfltmatch(msg, _flt_qq_atall):
+            ttalk.oncall(src = _src, txt = _txt);
+        elif bc.cbfltmatch(msg, _flt_qq_quote):
+            ttalk.oncall(src = _src, txt = _txt);
+        else:
+            ttalk.onmsg(src = _src, txt = _txt);
+    elif re.match('telegram.*', mmk):
+        _src = tmsgp.msgsrc(mmk, msg);
+        _txt = tmsgp.msgmiltitxt(mmk, msg);
+        if bc.cbfltmatch(msg, _flt_tg_at):
+            ttalk.onmsg(src = _src, txt = _txt);
+            ttalk.oncall(src = _src);
+        elif bc.cbfltmatch(msg, _flt_tg_fwd):
+            ttalk.onmsg(src = _src, txt = _txt);
+            ttalk.oncall(src = _src);
+        elif bc.cbfltmatch(msg, _flt_tg_rply):
+            ttalk.onmsg(src = _src, txt = _txt);
+            ttalk.oncall(src = _src);
+        else:
+            ttalk.onmsg(src = _src, txt = _txt);
     return;
 
 # 戳一戳
 _tabot_cb_flt_statistic_nug_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'NudgeEvent', 'target': CONSTS.BOT_QQ}}};
 def _tabot_cb_fnc_statistic_nug(mmk, msg):
     _src = tmsgp.nugsrc(mmk, msg);
-    ttalk.oncall(_src);
+    ttalk.oncall(src = _src);
     if random.random() <= 0.8:
         _msg = tmsgp.tomsgnug(_src);
         _botcontrol.send(mmk, _msg);
@@ -196,14 +198,14 @@ def _tabot_cb_fnc_unmuted(mmk, msg):
     _gid = msg['data']['operator']['group']['id'];
     _gnm = msg['data']['operator']['group']['name'];
     _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
-    ttalk.oncall(_src);
+    ttalk.oncall(src = _src);
     logger.info('mmk: %s 在群%s(gid:%s)中被解除禁言' % (mmk, _gnm, _gid));
     _tellop('mmk: %s 在群%s(gid:%s)中被解除禁言' % (mmk, _gnm, _gid));
-    if ttalk.cantalk(_src, p = 0.8):
+    if ttalk.cantalk(src = _src, p = 0.8):
         _txt = random.choice(_tabot_unmuted_talks);
         _msg = tmsgp.tomsgtxt(_src, _txt);
         _botcontrol.send(mmk, _msg);
-        ttalk.ontalk(_src);
+        ttalk.ontalk(src = _src);
     return;
 
 # 加群
@@ -212,14 +214,14 @@ def _tabot_cb_fnc_joingroup(mmk, msg):
     _gid = msg['data']['group']['id'];
     _gnm = msg['data']['group']['name'];
     _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
-    ttalk.oncall(_src);
+    ttalk.oncall(src = _src);
     logger.info('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
     _tellop('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
     if random.random() <= 0.8:
         _txt = random.choice(_tabot_joingroup_talks);
         _msg = tmsgp.tomsgtxt(_src, _txt);
         _botcontrol.send(mmk, _msg);
-        ttalk.ontalk(_src);
+        ttalk.ontalk(src = _src);
     return;
 
 # 退群
@@ -240,14 +242,14 @@ def _tabot_cb_fnc_newmember(mmk, msg):
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
     _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
-    ttalk.oncall(_src);
+    ttalk.oncall(src = _src);
     logger.info('mmk: %s 中%s(uid:%s)进入群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     _tellop('mmk: %s 中%s(uid:%s)进入群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
-    if ttalk.cantalk(_src, p = 0.8):
+    if ttalk.cantalk(src = _src, p = 0.8):
         _txt = random.choice(_tabot_newmember_talks);
         _msg = tmsgp.tomsgtxt(_src, _txt);
         _botcontrol.send(mmk, _msg);
-        ttalk.ontalk(_src);
+        ttalk.ontalk(src = _src);
     return;
 
 # 群踢人
@@ -258,14 +260,14 @@ def _tabot_cb_fnc_kickmember(mmk, msg):
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
     _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
-    ttalk.oncall(_src);
+    ttalk.oncall(src = _src);
     logger.info('mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     _tellop('mmk: %s 中%s(uid:%s)被踢出群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
-    if ttalk.cantalk(_src, p = 0.0):
+    if ttalk.cantalk(src = _src, p = 0.0):
         _txt = random.choice(_tabot_kickmember_talks);
         _msg = tmsgp.tomsgtxt(_src, _txt);
         _botcontrol.send(mmk, _msg);
-        ttalk.ontalk(_src);
+        ttalk.ontalk(src = _src);
     return;
 
 # 群退人
@@ -276,14 +278,14 @@ def _tabot_cb_fnc_quitmember(mmk, msg):
     _gid = msg['data']['member']['group']['id'];
     _gnm = msg['data']['member']['group']['name'];
     _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
-    ttalk.oncall(_src);
+    ttalk.oncall(src = _src);
     logger.info('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     _tellop('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
-    if ttalk.cantalk(_src, p = 0.0):
+    if ttalk.cantalk(src = _src, p = 0.0):
         _txt = random.choice(_tabot_quitmember_talks);
         _msg = tmsgp.tomsgtxt(_src, _txt);
         _botcontrol.send(mmk, _msg);
-        ttalk.ontalk(_src);
+        ttalk.ontalk(src = _src);
     return;
 
 # Bot被邀请加群
@@ -309,7 +311,7 @@ def _tabot_cb_fnc_help(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
     _cmd = tmsgp.tomsgtxt(_src, _tabot_cmd_help_doc);
     _botcontrol.send(mmk, _cmd);
-    ttalk.oncalltalk(_src);
+    ttalk.oncalltalk(src = _src);
     return;
 
 _tabot_cb_flt_ping_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_ping}]}}};
@@ -318,7 +320,7 @@ def _tabot_cb_fnc_ping(mmk, msg):
     _src = tmsgp.msgsrc(mmk, msg);
     _cmd = tmsgp.tomsgtxt(_src, 'Pong!');
     _botcontrol.send(mmk, _cmd);
-    ttalk.oncalltalk(_src);
+    ttalk.oncalltalk(src = _src);
     return;
 
 _tabot_cb_flt_reload_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_reload}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
@@ -329,7 +331,7 @@ def _tabot_cb_fnc_reload(mmk, msg):
     _botcontrol.send(mmk, _cmd);
     _cmd = {'call': 'reload', 'args': ['-a']};
     _botcontrol.send('Loopback', _cmd);
-    ttalk.oncalltalk(_src);
+    ttalk.oncalltalk(src = _src);
     return;
 
 _tabot_cb_flt_save_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_save}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
@@ -342,7 +344,7 @@ def _tabot_cb_fnc_save(mmk, msg):
     ttalk.save();
     _cmd = {'call': 'save', 'args': []};
     _botcontrol.send('Loopback', _cmd);
-    ttalk.oncalltalk(_src);
+    ttalk.oncalltalk(src = _src);
     return;
 
 _tabot_cb_flt_stop_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_stop}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
@@ -353,7 +355,7 @@ def _tabot_cb_fnc_stop(mmk, msg):
     _botcontrol.send(mmk, _cmd);
     _cmd = {'call': 'stop', 'args': []};
     _botcontrol.send('Loopback', _cmd);
-    ttalk.oncalltalk(_src);
+    ttalk.oncalltalk(src = _src);
     return;
 
 _tabot_cb_flt_params_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_params}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
@@ -363,21 +365,15 @@ def _tabot_cb_fnc_params(mmk, msg):
     _paramstr = ttalk.strparams(_src);
     _cmd = tmsgp.tomsgtxt(_src, _paramstr);
     _botcontrol.send(mmk, _cmd);
-    ttalk.oncalltalk(_src);
+    ttalk.oncalltalk(src = _src);
     return;
 
 
 # 注册
 _mod_cbs.append({'fnc': _tabot_cb_fnc_msgecho,          'flt': _tabot_cb_flt_msgecho,               'key': '_tabot_mn_cb_msgecho'               });
 
-_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_txt,    'flt': _tabot_cb_flt_statistic_txt_qq,      'key': '_tabot_mn_cb_statistic_txt_qq'      });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_txt,    'flt': _tabot_cb_flt_statistic_txt_tg,      'key': '_tabot_mn_cb_statistic_txt_tg'      });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_at,     'flt': _tabot_cb_flt_statistic_at_qq,       'key': '_tabot_mn_cb_statistic_at_qq'       });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_at,     'flt': _tabot_cb_flt_statistic_at_qqall,    'key': '_tabot_mn_cb_statistic_at_qqall'    });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_at,     'flt': _tabot_cb_flt_statistic_at_tg,       'key': '_tabot_mn_cb_statistic_at_tg'       });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_qt,     'flt': _tabot_cb_flt_statistic_qt_qq,       'key': '_tabot_mn_cb_statistic_at_qq'       });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_qt,     'flt': _tabot_cb_flt_statistic_qt_tgfwd,    'key': '_tabot_mn_cb_statistic_at_tgfwd'    });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_qt,     'flt': _tabot_cb_flt_statistic_qt_tgrply,   'key': '_tabot_mn_cb_statistic_at_tgrply'   });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_msg,    'flt': _tabot_cb_flt_statistic_msg_qq,      'key': '_tabot_mn_cb_statistic_msg_qq'      });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_msg,    'flt': _tabot_cb_flt_statistic_msg_tg,      'key': '_tabot_mn_cb_statistic_msg_tg'      });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_nug,    'flt': _tabot_cb_flt_statistic_nug_qq,      'key': '_tabot_mn_cb_statistic_nug_qq'      });
 
 _mod_cbs.append({'fnc': _tabot_cb_fnc_muted,            'flt': _tabot_cb_flt_muted_qq_self,         'key': '_tabot_mn_cb_muted_qq_self'         });
