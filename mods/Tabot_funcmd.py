@@ -87,6 +87,13 @@ _tabot_talks_dog = [
     "你才是狗呢",
     "将非物质化的电子对象视若动物的行为是不受到鼓励的"
 ];
+_tabot_talks_fox = [
+    "叮叮叮叮叮叮叮叮叮",
+    "夸夸夸夸夸夸夸夸夸夸",
+    "吱吱吱吱吱吱吱",
+    "我不会狐狸叫",
+    "糊梨爆爆",
+];
 _tabot_talks_sheep = [
     "🐏这么可爱",
     "不要调戏🐏了",
@@ -145,6 +152,7 @@ _tabot_cmd_mbkotori = 't -([mM][bB][kK][oO][tT][oO][rR][iI]|小*鸟)';
 _tabot_cmd_creeper = 't -([cC][rR]+[eE]+[pP]+[eE]+[rR]+)';
 _tabot_cmd_cat = 't -([cC][aA][tT]|猫|🐱)';
 _tabot_cmd_dog = 't -([dD][oO][gG]|狗|🐕)';
+_tabot_cmd_fox = 't -([fF][oO][xX]|狐*狸*|糊梨|🦊)';
 _tabot_cmd_sheep = 't -([sS][hH][eE]+[pP]|[cC][hH][aA][rR][lL][eE][sS]|羊|🐏)';
 
 _tabot_kw_amdyes = '.*[Aa][Mm][Dd] [Yy][Ee][Ss].*';
@@ -208,6 +216,8 @@ _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_cat), 'flt': cb_flt_txtmatch_
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_cat), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_cat), 'key': '_tabot_funcmd_cb_cat_tg'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_dog), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_dog), 'key': '_tabot_funcmd_cb_dog_qq'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_dog), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_dog), 'key': '_tabot_funcmd_cb_dog_tg'});
+_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_fox), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_fox), 'key': '_tabot_funcmd_cb_fox_qq'});
+_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_fox), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_fox), 'key': '_tabot_funcmd_cb_fox_tg'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_sheep), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_sheep), 'key': '_tabot_funcmd_cb_sheep_qq'});
 _mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_sheep), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_sheep), 'key': '_tabot_funcmd_cb_sheep_tg'});
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_amdyes), 'flt': cb_flt_txtmatch_qq(_tabot_kw_amdyes), 'key': '_tabot_funcmd_cb_amdyes_qq'});
