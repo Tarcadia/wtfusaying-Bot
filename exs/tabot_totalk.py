@@ -56,14 +56,14 @@ def onmsg(src, txt = '', t = None):
     
     with datalock:
         if src['cid'] in thermals and thermals[src['cid']]:
-            thermals[src['cid']].onmsg(src['time'], t = t);
+            thermals[src['cid']].onmsg(t = t);
         else:
             if src['ctype'][0] == 'g':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
-                thermals[src['cid']].onmsg(src['time'], t = t);
+                thermals[src['cid']].onmsg(t = t);
             elif src['ctype'][0] == 'p':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
-                thermals[src['cid']].onmsg(src['time'], t = t);
+                thermals[src['cid']].onmsg(t = t);
 
 def oncall(src, txt = '', k = 1, t = None):
     if t == None:
@@ -82,14 +82,14 @@ def oncall(src, txt = '', k = 1, t = None):
     
     with datalock:
         if src['cid'] in thermals and thermals[src['cid']]:
-            thermals[src['cid']].oncall(src['time'], k = k, t = t);
+            thermals[src['cid']].oncall(k = k, t = t);
         else:
             if src['ctype'][0] == 'g':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
-                thermals[src['cid']].oncall(src['time'], k = k, t = t);
+                thermals[src['cid']].oncall(k = k, t = t);
             elif src['ctype'][0] == 'p':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
-                thermals[src['cid']].oncall(src['time'], k = k, t = t);
+                thermals[src['cid']].oncall(k = k, t = t);
 
 def oncalltalk(src, txt = '', t = None):
     if t == None:
@@ -108,14 +108,14 @@ def oncalltalk(src, txt = '', t = None):
     
     with datalock:
         if src['cid'] in thermals and thermals[src['cid']]:
-            thermals[src['cid']].oncalltalk(src['time'], t = t);
+            thermals[src['cid']].oncalltalk(t = t);
         else:
             if src['ctype'][0] == 'g':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = GROUP_TALKRATE);
-                thermals[src['cid']].oncalltalk(src['time'], t = t);
+                thermals[src['cid']].oncalltalk(t = t);
             elif src['ctype'][0] == 'p':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
-                thermals[src['cid']].oncalltalk(src['time'], t = t);
+                thermals[src['cid']].oncalltalk(t = t);
 
 def ontalk(src, t = None):
     if t == None:
