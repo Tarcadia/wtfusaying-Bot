@@ -53,16 +53,16 @@ def onmsg(src, txt):
         else:
             thermals[src['cid']] = None;
 
-def oncall(src):
+def oncall(src, k = 1):
     if src['cid'] in thermals and thermals[src['cid']]:
-        thermals[src['cid']].oncall(src['time']);
+        thermals[src['cid']].oncall(src['time'], k = k);
     else:
         if src['ctype'][0] == 'g':
             thermals[src['cid']] = xtm.ThermalMeter(talkrate = 4);
-            thermals[src['cid']].oncall(src['time']);
+            thermals[src['cid']].oncall(src['time'], k = k);
         elif src['ctype'][0] == 'p':
             thermals[src['cid']] = xtm.ThermalMeter(talkrate = 1);
-            thermals[src['cid']].oncall(src['time']);
+            thermals[src['cid']].oncall(src['time'], k = k);
         else:
             thermals[src['cid']] = None;
 

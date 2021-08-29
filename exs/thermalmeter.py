@@ -60,12 +60,12 @@ def onmsg(tm:dict, t = None):
     return tm;
 
 # 加入一条刺激的时间响应
-def oncall(tm: dict, t = None):
+def oncall(tm: dict, k = 1, t = None):
     if t == None:
         t = time.time();
     with tm['talklock']:
         dt = t - tm['valuetime'];
-        tm['value'] = tm['value'] * pow(2, -dt / tm['tau']) + 1 / tm['callrate'];
+        tm['value'] = tm['value'] * pow(2, -dt / tm['tau']) + k / tm['callrate'];
         tm['valuetime'] = t;
     return tm;
 
@@ -127,8 +127,8 @@ class ThermalMeter():
         self._tm = onmsg(self._tm, t = t);
         return;
     
-    def oncall(self, t = None):
-        self._tm = oncall(self._tm, t = t);
+    def oncall(self, k = 1, t = None):
+        self._tm = oncall(self._tm, k = k, t = t);
         return;
     
     def oncalltalk(self, t = None):
