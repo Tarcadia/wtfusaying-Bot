@@ -178,7 +178,7 @@ def strparams(src):
     else:
         lines.append("————前向度缺失");
     if src['cid'] in contexts and contexts[src['cid']]:
-        cvec = contexts[src['cid']].get();
+        cvec = contexts[src['cid']].get(t = src['time']);
         lines.append("————上下文关键词：" + ','.join(['%s: %.1f' % (_k, cvec[_k]) for _k in cvec]));
     else:
         lines.append("————上下文信息缺失");
