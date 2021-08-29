@@ -74,7 +74,9 @@ def cbfltmatch(msg: dict, flt: dict):
     
     def cbfltelemmetch(e1, e2):
         _f = True;
-        if type(e1) == str and type(e2) == str:
+        if e2 == None:
+            _f = True;
+        elif type(e1) == str and type(e2) == str:
             if re.match(e2, e1):
                 _f = True;
             else:
