@@ -64,8 +64,6 @@ def onmsg(src, txt = '', t = None):
             elif src['ctype'][0] == 'p':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
                 thermals[src['cid']].onmsg(src['time'], t = t);
-            else:
-                thermals[src['cid']] = None;
 
 def oncall(src, txt = '', k = 1, t = None):
     if t == None:
@@ -92,8 +90,6 @@ def oncall(src, txt = '', k = 1, t = None):
             elif src['ctype'][0] == 'p':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
                 thermals[src['cid']].oncall(src['time'], k = k, t = t);
-            else:
-                thermals[src['cid']] = None;
 
 def oncalltalk(src, txt = '', t = None):
     if t == None:
@@ -120,8 +116,6 @@ def oncalltalk(src, txt = '', t = None):
             elif src['ctype'][0] == 'p':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
                 thermals[src['cid']].oncalltalk(src['time'], t = t);
-            else:
-                thermals[src['cid']] = None;
 
 def ontalk(src, t = None):
     if t == None:
@@ -140,8 +134,6 @@ def ontalk(src, t = None):
             elif src['ctype'][0] == 'p':
                 thermals[src['cid']] = xtm.ThermalMeter(talkrate = PRIV_TALKRATE);
                 thermals[src['cid']].ontalk(t = t);
-            else:
-                thermals[src['cid']] = None;
 
 def cantalk(src, p: float = 1, t = None):
     if t == None:
