@@ -229,7 +229,7 @@ def tomsgnug(tgt):
                 _cmd = '';
                 _kind = '';
             if _cmd:
-                _msg = {'command': _cmd, 'content': {'target': tgt['rcid'], 'subject': tgt['uid'], 'kind': _kind}};
+                _msg = {'command': _cmd, 'content': {'target': tgt['uid'], 'subject': tgt['rcid'], 'kind': _kind}};
             else:
                 _msg = None;
         else:
