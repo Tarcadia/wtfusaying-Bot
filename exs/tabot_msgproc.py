@@ -69,7 +69,7 @@ def nugsrc(mmk, msg, t = None):
             _uid = msg['data']['fromId'];
             _mid = 0;
             _time = t;
-        if msg['data']['type'] == 'NudgeEvent' and msg['data']['subject']['kind'] == 'Stranger':
+        elif msg['data']['type'] == 'NudgeEvent' and msg['data']['subject']['kind'] == 'Stranger':
             _ctype = 'pt';
             _rcid = msg['data']['subject']['id'];
             _uid = msg['data']['fromId'];
