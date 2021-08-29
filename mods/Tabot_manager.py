@@ -6,6 +6,7 @@ import exs.tabot_msgproc as tmsgp;
 import exs.tabot_totalk as ttalk;
 
 import re;
+import time;
 import random;
 import logging;
 
@@ -109,8 +110,9 @@ t               : 在聊天环境中调用以实现相关功能
 
 # 向OP发送消息，由于是便捷实现的函数，所以mmk的使用不解耦于其他实现，需要根据情况改动；
 def _tellop(txt):
-    _tgtqq = tmsgp.src(mmk = 'mirai', ctype = 'p', rcid = CONSTS.BOT_OP_QQ);
-    _tgttg = tmsgp.src(mmk = 'telegram', ctype = 'p', rcid = CONSTS.BOT_OP_TG);
+    t = time.time();
+    _tgtqq = tmsgp.src(mmk = 'mirai', ctype = 'p', rcid = CONSTS.BOT_OP_QQ, t = t);
+    _tgttg = tmsgp.src(mmk = 'telegram', ctype = 'p', rcid = CONSTS.BOT_OP_TG, t = t);
     _botcontrol.send('mirai', tmsgp.tomsgtxt(_tgtqq, txt));
     _botcontrol.send('telegram', tmsgp.tomsgtxt(_tgttg, txt));
     return;
@@ -156,8 +158,6 @@ def _tabot_cb_fnc_statistic_msg(mmk, msg):
         else:
             ttalk.onmsg(src = _src, txt = _txt);
     elif re.match('telegram.*', mmk):
-        _src = tmsgp.msgsrc(mmk, msg);
-        _txt = tmsgp.msgmiltitxt(mmk, msg);
         if bc.cbfltmatch(msg, _flt_tg_at):
             ttalk.oncall(src = _src, txt = _txt);
         elif bc.cbfltmatch(msg, _flt_tg_fwd):
@@ -171,8 +171,10 @@ def _tabot_cb_fnc_statistic_msg(mmk, msg):
 # 戳一戳
 _tabot_cb_flt_statistic_nug_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'NudgeEvent', 'target': CONSTS.BOT_QQ}}};
 def _tabot_cb_fnc_statistic_nug(mmk, msg):
+    t = time.time();
     if re.match('mirai.*', mmk):
-        _src = tmsgp.nugsrc(mmk, msg);
+        _src = tmsgp.nugsrc(mmk, msg = msg, t = t);
+        # ttalk.oncall(src = _src, txt = '[戳一戳]');
         ttalk.oncall(src = _src);
     else:
         _src = None;
@@ -197,10 +199,12 @@ def _tabot_cb_fnc_muted(mmk, msg):
 _tabot_cb_flt_unmuted_qq_self = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'BotUnmuteEvent'}}};
 _tabot_cb_flt_unmuted_qq_all = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'GroupMuteAllEvent', 'current': False}}};
 def _tabot_cb_fnc_unmuted(mmk, msg):
+    t = time.time()
     if re.match('mirai.*', mmk):
         _gid = msg['data']['operator']['group']['id'];
         _gnm = msg['data']['operator']['group']['name'];
-        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid, t = t);
+        # ttalk.oncall(src = _src, txt = '[解除禁言]');
         ttalk.oncall(src = _src);
         logger.info('mmk: %s 在群%s(gid:%s)中被解除禁言' % (mmk, _gnm, _gid));
         _tellop('mmk: %s 在群%s(gid:%s)中被解除禁言' % (mmk, _gnm, _gid));
@@ -218,17 +222,20 @@ def _tabot_cb_fnc_unmuted(mmk, msg):
 _tabot_cb_flt_joingroup_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'BotJoinGroupEvent'}}};
 _tabot_cb_flt_joingroup_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'group_chat_created': True}}};
 def _tabot_cb_fnc_joingroup(mmk, msg):
+    t = time.time()
     if re.match('mirai.*', mmk):
         _gid = msg['data']['group']['id'];
         _gnm = msg['data']['group']['name'];
-        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid, t = t);
+        # ttalk.oncall(src = _src, txt = '[加群]');
         ttalk.oncall(src = _src);
         logger.info('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
         _tellop('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
     elif re.match('telegram.*', mmk):
         _gid = msg['message']['chat']['id'];
         _gnm = msg['message']['chat']['title'] if 'title' in msg['message']['chat'] else '...';
-        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid, t = t);
+        # ttalk.oncall(src = _src, txt = '[加群]');
         ttalk.oncall(src = _src);
         logger.info('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
         _tellop('mmk: %s 进入群%s(gid:%s)' % (mmk, _gnm, _gid));
@@ -263,18 +270,19 @@ def _tabot_cb_fnc_leavegroup(mmk, msg):
 _tabot_cb_flt_newmember_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'MemberJoinEvent'}}};
 _tabot_cb_flt_newmember_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'new_chat_members': []}}};
 def _tabot_cb_fnc_newmember(mmk, msg):
+    t = time.time();
     if re.match('mirai.*', mmk):
         _uid = msg['data']['member']['id'];
         _unm = msg['data']['member']['memberName'];
         _gid = msg['data']['member']['group']['id'];
         _gnm = msg['data']['member']['group']['name'];
-        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid, t = t);
         logger.info('mmk: %s 中%s(uid:%s)进入群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
         _tellop('mmk: %s 中%s(uid:%s)进入群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     elif re.match('telegram.*', mmk):
         _gid = msg['message']['chat']['id'];
         _gnm = msg['message']['chat']['title'] if 'title' in msg['message']['chat'] else '...';
-        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid, t = t);
         for _user in msg['message']['new_chat_members']:
             _uid = _user['id'];
             _unm = (_user['username'] if 'username' in _user else '...'
@@ -286,6 +294,7 @@ def _tabot_cb_fnc_newmember(mmk, msg):
     else:
         _src = None;
     
+    # ttalk.oncall(src = _src, txt = '[成员加群]');
     ttalk.oncall(src = _src);
     if _src and ttalk.cantalk(src = _src, p = 0.8):
         _txt = random.choice(_tabot_newmember_talks);
@@ -299,12 +308,13 @@ _tabot_cb_flt_quitmember_qqkick = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 
 _tabot_cb_flt_quitmember_qqquit = {'mmk': {'mirai.*'}, 'msg': {'data': {'type': 'MemberLeaveEventQuit'}}};
 _tabot_cb_flt_quitmember_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'left_chat_member': {}}}};
 def _tabot_cb_fnc_quitmember(mmk, msg):
+    t = time.time();
     if re.match('mirai.*', mmk):
         _uid = msg['data']['member']['id'];
         _unm = msg['data']['member']['memberName'];
         _gid = msg['data']['member']['group']['id'];
         _gnm = msg['data']['member']['group']['name'];
-        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid, t = t);
         logger.info('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
         _tellop('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     elif re.match('telegram.*', mmk):
@@ -315,12 +325,13 @@ def _tabot_cb_fnc_quitmember(mmk, msg):
         + ' ' + msg['message']['left_chat_member']['first_name'] if 'first_name' in msg['message']['left_chat_member'] else '...'
         + ' ' + msg['message']['left_chat_member']['last_name'] if 'last_name' in msg['message']['left_chat_member'] else '...'
         );
-        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid);
+        _src = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gid, t = t);
         logger.info('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
         _tellop('mmk: %s 中%s(uid:%s)离开群%s(gid:%s)' % (mmk, _unm, _uid, _gnm, _gid));
     else:
         _src = None;
     
+    # ttalk.oncall(src = _src, txt = '[成员退群]');
     ttalk.oncall(src = _src);
     if _src and ttalk.cantalk(src = _src, p = 0.0):
         _txt = random.choice(_tabot_quitmember_talks);
@@ -332,11 +343,12 @@ def _tabot_cb_fnc_quitmember(mmk, msg):
 # 群转移
 _tabot_cb_flt_migrate_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'migrate_to_chat_id': None}}};
 def _tabot_cb_fnc_migrate(mmk, msg):
+    t = time.time();
     if re.match('telegram.*', mmk):
         _gidfrom = msg['message']['chat']['id'];
         _gidto = msg['message']['migrate_to_chat_id'];
-        _srcfrom = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gidfrom);
-        _srcto = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gidto);
+        _srcfrom = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gidfrom, t = t);
+        _srcto = tmsgp.src(mmk = mmk, ctype = 'g', rcid = _gidto, t = t);
         ttalk.migratechat(srcfrom = _srcfrom, srcto = _srcto);
     return;
 
