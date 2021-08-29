@@ -215,6 +215,7 @@ def do_callback(bc: dict, mmk: str, msg: dict):
             except Exception as _err:
                 logger.error('Call filter failed at %s with %s' % (_key, type(_err)));
                 logger.debug(_err);
+                logger.exception(_err);
             
             if (
                 (_cb['flt'] == None) or
@@ -229,6 +230,7 @@ def do_callback(bc: dict, mmk: str, msg: dict):
                     except Exception as _err:
                         logger.error('CallBack failed at %s with %s' % (_key, type(_err)));
                         logger.debug(_err);
+                        logger.exception(_err);
 
             else:
                 pass;
