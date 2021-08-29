@@ -128,8 +128,8 @@ def push(cs: dict, vec: dict or set or list = dict(), t: float = None):
                 cs['context'][_key] = _q;
     return cs;
 
-# contextsensor = update(contextsensor, message, time)
-# 在time时刻向contextsensor中加入一条message
+# contextsensor, vec = update(contextsensor, message, time)
+# 在time时刻向contextsensor中加入一条message，并返回该message的context向量
 # 将会将message提取出tag加入context队列，并更新context队列，pop超时元素
 # time时刻默认为调用时刻
 def update(cs: dict, msg: str = '', t: float = None):
@@ -155,7 +155,7 @@ def update(cs: dict, msg: str = '', t: float = None):
     
     cs = push(cs, _vec, t);
     cs = pop(cs, t);
-    return cs;
+    return cs, _vec;
 
 
 class ContextSensor:
@@ -186,4 +186,5 @@ class ContextSensor:
         return get(self._cs, t = t);
     
     def update(self, msg: str = '', t: float = None):
-        self._cs = update(self._cs, msg = msg, t = t);
+        self._cs, _vec = update(self._cs, msg = msg, t = t);
+        return _vec;
