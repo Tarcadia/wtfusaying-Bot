@@ -105,6 +105,7 @@ t               : 在聊天环境中调用以实现相关功能
     -tarcadia   : 向本bot提及我的开发者
     -cat        : 视本bot若猫
     -dog        : 视本bot若狗
+    -sheep      : 调戏🐏，某种程度上指涉成蓝CharlesYang
     -reboot     : 并不能控制重启
 """;
 
