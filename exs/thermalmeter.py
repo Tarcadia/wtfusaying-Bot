@@ -57,10 +57,14 @@ def update(tm: dict, t = None):
         t = time.time();
     dt = t - tm['valuetime'];
     b = 1;
-    vinvb = 1 / tm['value'] + b;
-    vinvbx = vinvb * pow(2, dt / tm['tau']);
-    tm['value'] = 1/(vinvbx - b);
-    tm['valuetime'] = t;
+    if tm['value'] > 1E-3:
+        vinvb = 1 / tm['value'] + b;
+        vinvbx = vinvb * pow(2, dt / tm['tau']);
+        tm['value'] = 1/(vinvbx - b);
+        tm['valuetime'] = t;
+    else:
+        tm['value'] = tm['value'] * pow(2, -dt / tm['tau']);
+        tm['valuetime'] = t;
     return tm;
 
 # 加入一条对话消息的时间响应
