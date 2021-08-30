@@ -64,8 +64,8 @@ def loadtalks():
     global talklist;
     global cmdlist;
     
-    if os.path.isfile(CONFIG_PATH + TALKLIST_CFG, mode = 'w', encoding = 'utf-8'):
-        _fp = open(CONFIG_PATH + TALKLIST_CFG);
+    if os.path.isfile(CONFIG_PATH + TALKLIST_CFG):
+        _fp = open(CONFIG_PATH + TALKLIST_CFG, mode = 'r', encoding = 'utf-8');
         _lst = json.load(_fp);
         _fp.close();
     else:
@@ -74,8 +74,8 @@ def loadtalks():
         talklist.clear();
         talklist.extend(_lst);
     
-    if os.path.isfile(CONFIG_PATH + CMDLIST_CFG, mode = 'w', encoding = 'utf-8'):
-        _fp = open(CONFIG_PATH + CMDLIST_CFG);
+    if os.path.isfile(CONFIG_PATH + CMDLIST_CFG):
+        _fp = open(CONFIG_PATH + CMDLIST_CFG, mode = 'r', encoding = 'utf-8');
         _lst = json.load(_fp);
         _fp.close();
     else:
