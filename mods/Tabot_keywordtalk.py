@@ -50,13 +50,11 @@ def _tabot_cb_fnc_kwt_talk(mmk, msg):
         _botcontrol.send(mmk, _msg);
         ttalk.oncalltalk(_src);
     if not _talkcmds:
-        _talks = ttalk.talk(_txt);
-        if len(_talks) >= 1:
-            _t = random.choice(_talks);
-            if ttalk.cantalk(_src):
-                _msg = tmsgp.tomsgtxt(_src, _t);
-                _botcontrol.send(mmk, _msg);
-                ttalk.ontalk(_src);
+        _t = ttalk.talk(_txt);
+        if ttalk.cantalk(_src) and _t:
+            _msg = tmsgp.tomsgtxt(_src, _t);
+            _botcontrol.send(mmk, _msg);
+            ttalk.ontalk(_src);
     return;
 
 # 注册
