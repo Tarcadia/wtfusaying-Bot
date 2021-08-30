@@ -131,8 +131,12 @@ def _tabot_cb_fnc_msgecho(mmk, msg):
         _cmd.update(msg['data']);
         _botcontrol.send('IO', _cmd);
     elif re.match('telegram.*', mmk):
-        _cmd = {'mmk': mmk, 'syncid': msg['update_id']};
-        _cmd.update(msg['message']);
+        if 'message' in msg:
+            _cmd = {'mmk': mmk, 'syncid': msg['update_id']};
+            _cmd.update(msg['message']);
+        else:
+            _cmd = {'mmk': mmk};
+            _cmd.update(msg);
         _botcontrol.send('IO', _cmd);
     return;
 
