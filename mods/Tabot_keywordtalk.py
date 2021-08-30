@@ -19,7 +19,7 @@ logger_formatter = logging.Formatter(fmt='\033[0m%(asctime)s \033[1;34m[%(leveln
 logger_ch.setFormatter(logger_formatter);
 if not logger.hasHandlers():
     logger.addHandler(logger_ch);
-logger.info('Tabot Fun Cmd Loaded');
+logger.info('Tabot Keyword Talk Loaded');
 
 # 一个模块组件需要的定义实现：
 # 为一个单独的module的py，放在./mods/下以供调用，在调用时应当实现如下的接口
@@ -33,205 +33,34 @@ logger.info('Tabot Fun Cmd Loaded');
 _botcontrol = None;
 _mod_cbs = [];
 _mod_help_doc = """
-# Tabot Fun Cmd：Tabot组件，用于处理各类朴素整活消息
+# Tabot Keyword Talk：Tabot组件，用于处理各类朴素整活消息
 """;
 
 
 
-# tabot的全局变量
-
-_tabot_talks_henshin = [
-    "库库库七七",
-    "dling bin 叮叮匡",
-    "bling bling biu biu biu, chua chua chua xiu xiu",
-    "我不认为我真的具有变身的能力",
-];
-_tabot_talks_reboot = [
-    "我不认为你应当抱有可以让我reboot的想法",
-    "你是否是存在对自己权限的过度自信认知",
-    "你可以尝试在本地终端输入 shutdown -p 以实现",
-    "sudo rm -rf /*",
-];
-_tabot_talks_tarcadia = [
-    "塔卡",
-    "tarcadia",
-    "Tarc不在",
-];
-_tabot_talks_digo = [
-    "diggggggggoooooooo",
-    "地沟地沟",
-];
-_tabot_talks_peter = [
-    "皮皮",
-    "金金",
-];
-_tabot_talks_mbkotori = [
-    "小鸟",
-    "mbkotori",
-];
-_tabot_talks_creeper = [
-    "creeeeeeeeppppper",
-    "awwwwwww man",
-];
-_tabot_talks_cat = [
-    "喵",
-    "喵呜",
-    "乌鲁乌鲁",
-    "汪",
-    "既见猫猫何不参拜",
-    "将非物质化的电子对象视若动物的行为是不受到鼓励的"
-];
-_tabot_talks_dog = [
-    "汪",
-    "汪汪汪",
-    "汪汪",
-    "嗷呜",
-    "你才是狗呢",
-    "将非物质化的电子对象视若动物的行为是不受到鼓励的"
-];
-_tabot_talks_fox = [
-    "叮叮叮叮叮叮叮叮叮",
-    "夸夸夸夸夸夸夸夸夸夸",
-    "吱吱吱吱吱吱吱",
-    "我不会狐狸叫",
-    "糊梨爆爆",
-];
-_tabot_talks_sheep = [
-    "🐏这么可爱",
-    "不要调戏🐏了",
-];
-_tabot_talks_amdyes = [
-    "AMD YES!",
-    "RGB YES!",
-    "BOT YES!",
-    "实际上本bot就某种程度上架设在AMD的硬件基础上",
-];
-_tabot_talks_jgb = [
-    "饿了",
-    "鸡公煲好吃",
-    "想吃鸡公煲了",
-    "为什么不吃花雕醉鸡呢",
-    "微微辣，加脆皮肠，加甜不辣",
-    "精彩生活",
-    "商业街还是南门",
-    "今天有约嘛",
-    "在不具有对美食获取能力的实体面前讨论人类超越饱腹度意义的进食体验是不人道的",
-];
-_tabot_talks_hdzj = [
-    "饿了",
-    "花雕醉鸡yyds，好吃到跺jiojio，我暴风吸入，绝绝子",
-    "想吃花雕醉鸡了",
-    "为什么不吃鸡公煲呢",
-    "五香我昨天预定了",
-    "你排不上",
-    "帮我多要一份油条",
-    "牙索在不在",
-    "辣辣姐姐",
-    "牙索不在，辣辣也不在",
-    "输入t -dog召唤牙索",
-    "今天没有花雕鸡，因为辣辣带牙索和我约会去了",
-    "我不认为你们应当在非实体的对象面前讨论实体化的进食内容",
-];
-_tabot_talks_toterms = [
-    "某种意义上",
-    "某种程度上",
-    "一定意义上",
-    "一定程度上",
-];
-_tabot_talks_question = [
-    "？？？",
-    "？",
-    "¿",
-];
-
-
-_tabot_cmd_henshin = 't -henshin';
-_tabot_cmd_reboot = 't -reboot';
-_tabot_cmd_tarcadia = 't -tarcadia';
-_tabot_cmd_digo = 't -([dD][iI]+[gG]+[oO]+|地沟)';
-_tabot_cmd_peter = 't -([pP][eE][tT][eE][rR]|皮+|皮特)';
-_tabot_cmd_mbkotori = 't -([mM][bB][kK][oO][tT][oO][rR][iI]|小*鸟)';
-_tabot_cmd_creeper = 't -([cC][rR]+[eE]+[pP]+[eE]+[rR]+)';
-_tabot_cmd_cat = 't -([cC][aA][tT]|猫|🐱)';
-_tabot_cmd_dog = 't -([dD][oO][gG]|狗|🐕)';
-_tabot_cmd_fox = 't -([fF][oO][xX]|[狐狸]+|糊梨|🦊)';
-_tabot_cmd_sheep = 't -([sS][hH][eE]+[pP]|[cC][hH][aA][rR][lL][eE][sS]|羊|🐏)';
-
-_tabot_kw_amdyes = '.*[Aa][Mm][Dd] [Yy][Ee][Ss].*';
-_tabot_kw_jgb = '.*((鸡.*公.*煲)|([Jj][Gg][Bb]))+.*';
-_tabot_kw_hdzj = '.*花.*雕.*醉{0,1}.*鸡.*';
-_tabot_kw_toterms = '.*(某种|一定)(意义|程度)上.*';
-_tabot_kw_question = '.*(¿|\?|？).*'
-
-
-
-
-
 # 回调接口
-
-# 模板条件
-def cb_flt_txtmatch_qq(txt):
-    return {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': txt}]}}};
-def cb_flt_txtmatch_tg(txt):
-    return {'mmk': {'telegram.*'}, 'msg': {'message': {'text': txt}}};
-    
-# 直接回复模板函数
-def alwaystalk(p, talks):
-    def func(mmk, msg):
-        _src = tmsgp.msgsrc(mmk, msg);
-        _txt = random.choice(talks);
-        if random.random() <= p:
-            _msg = tmsgp.tomsgtxt(_src, _txt);
-            _botcontrol.send(mmk, _msg);
-            ttalk.oncalltalk(_src);
-        return;
-    return func;
-
-# 条件回复模板函数
-def conditiontalk(p, talks):
-    def func(mmk, msg):
-        _src = tmsgp.msgsrc(mmk, msg);
-        _txt = random.choice(talks);
-        if ttalk.cantalk(_src, p = p):
+_tabot_cb_flt_kwt_talk_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': '.*'}]}}};
+_tabot_cb_flt_kwt_talk_tg = {'mmk': {'telegram.*'}, 'msg': {'message': {'text': '.*'}}};
+def _tabot_cb_fnc_kwt_talk(mmk, msg):
+    _src = tmsgp.msgsrc(mmk, msg);
+    _txt = tmsgp.msgtxt(mmk, msg);
+    _talkcmds = ttalk.talkcmd(_txt);
+    for _t in _talkcmds:
+        _msg = tmsgp.tomsgtxt(_src, _t);
+        _botcontrol.send(mmk, _msg);
+        ttalk.oncalltalk(_src);
+    if not _talkcmds:
+        _talks = ttalk.talk(_txt);
+        _t = random.choice(_talks);
+        if ttalk.cantalk(_src):
             _msg = tmsgp.tomsgtxt(_src, _txt);
             _botcontrol.send(mmk, _msg);
             ttalk.ontalk(_src);
-        return;
-    return func;
+    return;
 
 # 注册
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_henshin), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_henshin), 'key': '_tabot_funcmd_cb_henshin_qq'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_henshin), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_henshin), 'key': '_tabot_funcmd_cb_henshin_tg'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_reboot), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_reboot), 'key': '_tabot_funcmd_cb_reboot_qq'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_reboot), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_reboot), 'key': '_tabot_funcmd_cb_reboot_tg'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_tarcadia), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_tarcadia), 'key': '_tabot_funcmd_cb_tarcadia_qq'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_tarcadia), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_tarcadia), 'key': '_tabot_funcmd_cb_tarcadia_tg'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_digo), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_digo), 'key': '_tabot_funcmd_cb_digo_qq'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_digo), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_digo), 'key': '_tabot_funcmd_cb_digo_tg'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_peter), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_peter), 'key': '_tabot_funcmd_cb_peter_qq'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_peter), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_peter), 'key': '_tabot_funcmd_cb_peter_tg'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_mbkotori), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_mbkotori), 'key': '_tabot_funcmd_cb_mbkotori_qq'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_mbkotori), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_mbkotori), 'key': '_tabot_funcmd_cb_mbkotori_tg'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_creeper), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_creeper), 'key': '_tabot_funcmd_cb_creeper_qq'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_creeper), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_creeper), 'key': '_tabot_funcmd_cb_creeper_tg'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_cat), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_cat), 'key': '_tabot_funcmd_cb_cat_qq'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_cat), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_cat), 'key': '_tabot_funcmd_cb_cat_tg'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_dog), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_dog), 'key': '_tabot_funcmd_cb_dog_qq'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_dog), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_dog), 'key': '_tabot_funcmd_cb_dog_tg'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_fox), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_fox), 'key': '_tabot_funcmd_cb_fox_qq'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_fox), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_fox), 'key': '_tabot_funcmd_cb_fox_tg'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_sheep), 'flt': cb_flt_txtmatch_qq(_tabot_cmd_sheep), 'key': '_tabot_funcmd_cb_sheep_qq'});
-_mod_cbs.append({'fnc': alwaystalk(1, _tabot_talks_sheep), 'flt': cb_flt_txtmatch_tg(_tabot_cmd_sheep), 'key': '_tabot_funcmd_cb_sheep_tg'});
-_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_amdyes), 'flt': cb_flt_txtmatch_qq(_tabot_kw_amdyes), 'key': '_tabot_funcmd_cb_amdyes_qq'});
-_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_amdyes), 'flt': cb_flt_txtmatch_tg(_tabot_kw_amdyes), 'key': '_tabot_funcmd_cb_amdyes_tg'});
-_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_jgb), 'flt': cb_flt_txtmatch_qq(_tabot_kw_jgb), 'key': '_tabot_funcmd_cb_jgb_qq'});
-_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_jgb), 'flt': cb_flt_txtmatch_tg(_tabot_kw_jgb), 'key': '_tabot_funcmd_cb_jgb_tg'});
-_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_hdzj), 'flt': cb_flt_txtmatch_qq(_tabot_kw_hdzj), 'key': '_tabot_funcmd_cb_hdzj_qq'});
-_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_hdzj), 'flt': cb_flt_txtmatch_tg(_tabot_kw_hdzj), 'key': '_tabot_funcmd_cb_hdzj_tg'});
-_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_toterms), 'flt': cb_flt_txtmatch_qq(_tabot_kw_toterms), 'key': '_tabot_funcmd_cb_toterms_qq'});
-_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_toterms), 'flt': cb_flt_txtmatch_tg(_tabot_kw_toterms), 'key': '_tabot_funcmd_cb_toterms_tg'});
-_mod_cbs.append({'fnc': conditiontalk(0.2, _tabot_talks_question), 'flt': cb_flt_txtmatch_qq(_tabot_kw_question), 'key': '_tabot_funcmd_cb_question_qq'});
-_mod_cbs.append({'fnc': conditiontalk(0.2, _tabot_talks_question), 'flt': cb_flt_txtmatch_tg(_tabot_kw_question), 'key': '_tabot_funcmd_cb_question_tg'});
+_mod_cbs.append({'fnc': _tabot_cb_fnc_kwt_talk, 'flt': _tabot_cb_flt_kwt_talk_qq, 'key': '_tabot_kwt_cb_talks_qq'});
+_mod_cbs.append({'fnc': _tabot_cb_fnc_kwt_talk, 'flt': _tabot_cb_flt_kwt_talk_tg, 'key': '_tabot_kwt_cb_talks_tg'});
 
 
 
@@ -244,6 +73,6 @@ def save():
     return;
 
 def stop():
-    logger.info('Tabot Fun Cmd Stopped');
+    logger.info('Tabot Keyword Talk Stopped');
     return;
 
