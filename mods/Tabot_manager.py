@@ -40,9 +40,10 @@ t               : 在聊天环境中调用以实现相关功能
     -help       : 在聊天环境中展示帮助信息
     -ping       : 在聊天环境中Ping本聊天处理系统，执行取决于架构实现下实际的作用效果
     -reload     : 在特定的开发环境下应当执行环境支持的组件重载功能
+    -params     : 展示当前聊天语境环境下的检测参数
+    -talkreload : 重载关键词talk的内容列表
     -save       : 在特定的开发环境下应当执行环境支持的系统保存功能
     -stop       : 在特定的开发环境下应当执行环境支持的系统关闭功能
-    -params     : 展示当前聊天语境环境下的检测参数
 """;
 
 
@@ -53,17 +54,10 @@ t               : 在聊天环境中调用以实现相关功能
 _tabot_cmd_help = 't -help';
 _tabot_cmd_ping = 't -ping';
 _tabot_cmd_reload = 't -reload';
+_tabot_cmd_params = 't -params(( {1,}.*)*)';
+_tabot_cmd_talkreload = 't -talkreload';
 _tabot_cmd_save = 't -save';
 _tabot_cmd_stop = 't -stop';
-_tabot_cmd_params = 't -params(( {1,}.*)*)';
-
-# 娱乐指令在funcmd实现
-# _tabot_cmd_henshin = 't -henshin';
-# _tabot_cmd_reboot = 't -reboot';
-# _tabot_cmd_tarcadia = 't -tarcadia';
-# _tabot_cmd_cat = 't -cat';
-# _tabot_cmd_dog = 't -dog';
-# ......
 
 _tabot_unmuted_talks = [
     "我对你们因为我说话怪而选择使用权限对我在群的发言进行封闭的行为抱有消极的观点",
@@ -95,15 +89,14 @@ t               : 在聊天环境中调用以实现相关功能
     -help       : 在聊天环境中展示帮助信息
     -ping       : 在聊天环境中Ping本聊天处理系统，执行取决于架构实现下实际的作用效果
     -reload     : 在特定的开发环境下应当执行环境支持的组件重载功能
+    -params     : 展示当前聊天语境环境下的检测参数
+    -talkreload : 重载关键词talk的内容列表
     -save       : 在特定的开发环境下应当执行环境支持的系统保存功能
     -stop       : 在特定的开发环境下应当执行环境支持的系统关闭功能
-    -params     : 展示当前聊天语境环境下的检测参数
     -henshin    : 变身
     -tarcadia   : 向本bot提及我的开发者
     -cat        : 视本bot若猫
     -dog        : 视本bot若狗
-    -sheep      : 调戏🐏，某种程度上指涉成蓝CharlesYang
-    -🐏         : 同-sheep
     -reboot     : 并不能控制重启
 """;
 
@@ -460,6 +453,36 @@ def _tabot_cb_fnc_reload(mmk, msg):
     ttalk.oncalltalk(src = _src);
     return;
 
+_tabot_cb_flt_params_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_params}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
+_tabot_cb_flt_params_tg = {'mmk': {'telegram.*'}, 'msg':{'message': {'from': {'id':CONSTS.BOT_OP_TG}, 'text': _tabot_cmd_params}}};
+def _tabot_cb_fnc_params(mmk, msg):
+    _src = tmsgp.msgsrc(mmk, msg);
+    _txt = tmsgp.msgtxt(mmk, msg);
+    args = _txt.split();
+    if len(args) == 2:
+        _srcfind = _src;
+    elif len(args) == 4:
+        _srcfind = tmsgp.src(mmk, args[2], args[3], t = _src['time']);
+    elif len(args) == 5:
+        _srcfind = tmsgp.src(args[2], args[3], args[4], t = _src['time']);
+    else:
+        _srcfind = _src;
+    _paramstr = ttalk.strparams(_srcfind);
+    _cmd = tmsgp.tomsgtxt(_src, _paramstr);
+    _botcontrol.send(mmk, _cmd);
+    ttalk.oncalltalk(src = _src);
+    return;
+
+_tabot_cb_flt_talkreload_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_talkreload}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
+_tabot_cb_flt_talkreload_tg = {'mmk': {'telegram.*'}, 'msg':{'message': {'from': {'id':CONSTS.BOT_OP_TG}, 'text': _tabot_cmd_talkreload}}};
+def _tabot_cb_fnc_talkreload(mmk, msg):
+    _src = tmsgp.msgsrc(mmk, msg);
+    _cmd = tmsgp.tomsgtxt(_src, '正在重载资源');
+    _botcontrol.send(mmk, _cmd);
+    ttalk.loadtalks();
+    ttalk.oncalltalk(src = _src);
+    return;
+
 _tabot_cb_flt_save_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_save}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
 _tabot_cb_flt_save_tg = {'mmk': {'telegram.*'}, 'msg':{'message': {'from': {'id':CONSTS.BOT_OP_TG}, 'text': _tabot_cmd_save}}};
 def _tabot_cb_fnc_save(mmk, msg):
@@ -484,27 +507,6 @@ def _tabot_cb_fnc_stop(mmk, msg):
     ttalk.oncalltalk(src = _src);
     return;
 
-_tabot_cb_flt_params_qq = {'mmk': {'mirai.*'}, 'msg': {'data': {'messageChain': [{'type': 'Plain', 'text': _tabot_cmd_params}], 'sender': {'id':CONSTS.BOT_OP_QQ}}}};
-_tabot_cb_flt_params_tg = {'mmk': {'telegram.*'}, 'msg':{'message': {'from': {'id':CONSTS.BOT_OP_TG}, 'text': _tabot_cmd_params}}};
-def _tabot_cb_fnc_params(mmk, msg):
-    _src = tmsgp.msgsrc(mmk, msg);
-    _txt = tmsgp.msgtxt(mmk, msg);
-    args = _txt.split();
-    if len(args) == 2:
-        _srcfind = _src;
-    elif len(args) == 4:
-        _srcfind = tmsgp.src(mmk, args[2], args[3], t = _src['time']);
-    elif len(args) == 5:
-        _srcfind = tmsgp.src(args[2], args[3], args[4], t = _src['time']);
-    else:
-        _srcfind = _src;
-    _paramstr = ttalk.strparams(_srcfind);
-    _cmd = tmsgp.tomsgtxt(_src, _paramstr);
-    _botcontrol.send(mmk, _cmd);
-    ttalk.oncalltalk(src = _src);
-    return;
-
-
 # 注册
 _mod_cbs.append({'fnc': _tabot_cb_fnc_msgecho,          'flt': _tabot_cb_flt_msgecho,               'key': '_tabot_mn_cb_msgecho'               });
 
@@ -514,8 +516,10 @@ _mod_cbs.append({'fnc': _tabot_cb_fnc_statistic_nug,    'flt': _tabot_cb_flt_sta
 
 _mod_cbs.append({'fnc': _tabot_cb_fnc_muted,            'flt': _tabot_cb_flt_muted_qq_self,         'key': '_tabot_mn_cb_muted_qq_self'         });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_muted,            'flt': _tabot_cb_flt_muted_qq_all,          'key': '_tabot_mn_cb_muted_qq_all'          });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_muted,            'flt': _tabot_cb_flt_muted_tg,              'key': '_tabot_mn_cb_muted_tg'              });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,          'flt': _tabot_cb_flt_unmuted_qq_self,       'key': '_tabot_mn_cb_unmuted_qq_self'       });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,          'flt': _tabot_cb_flt_unmuted_qq_all,        'key': '_tabot_mn_cb_unmuted_qq_all'        });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_unmuted,          'flt': _tabot_cb_flt_unmuted_tg,            'key': '_tabot_mn_cb_unmuted_tg'            });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_joingroup,        'flt': _tabot_cb_flt_joingroup_qq,          'key': '_tabot_mn_cb_joingroup_qq'          });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_joingroup,        'flt': _tabot_cb_flt_joingroup_tg,          'key': '_tabot_mn_cb_joingroup_tg'          });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_leavegroup,       'flt': _tabot_cb_flt_leavegroup_qq_self,    'key': '_tabot_mn_cb_leavegroup_qq_self'    });
@@ -537,12 +541,14 @@ _mod_cbs.append({'fnc': _tabot_cb_fnc_ping,             'flt': _tabot_cb_flt_pin
 _mod_cbs.append({'fnc': _tabot_cb_fnc_ping,             'flt': _tabot_cb_flt_ping_tg,               'key': '_tabot_mn_cb_ping_tg'               });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_reload,           'flt': _tabot_cb_flt_reload_qq,             'key': '_tabot_mn_cb_reload_qq'             });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_reload,           'flt': _tabot_cb_flt_reload_tg,             'key': '_tabot_mn_cb_reload_tg'             });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_params,           'flt': _tabot_cb_flt_params_qq,             'key': '_tabot_mn_cb_params_qq'             });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_params,           'flt': _tabot_cb_flt_params_tg,             'key': '_tabot_mn_cb_params_tg'             });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_talkreload,       'flt': _tabot_cb_flt_talkreload_qq,         'key': '_tabot_mn_cb_talkreload_qq'         });
+_mod_cbs.append({'fnc': _tabot_cb_fnc_talkreload,       'flt': _tabot_cb_flt_talkreload_tg,         'key': '_tabot_mn_cb_talkreload_tg'         });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_save,             'flt': _tabot_cb_flt_save_qq,               'key': '_tabot_mn_cb_save_qq'               });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_save,             'flt': _tabot_cb_flt_save_tg,               'key': '_tabot_mn_cb_save_tg'               });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_stop,             'flt': _tabot_cb_flt_stop_qq,               'key': '_tabot_mn_cb_stop_qq'               });
 _mod_cbs.append({'fnc': _tabot_cb_fnc_stop,             'flt': _tabot_cb_flt_stop_tg,               'key': '_tabot_mn_cb_stop_tg'               });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_params,           'flt': _tabot_cb_flt_params_qq,             'key': '_tabot_mn_cb_params_qq'             });
-_mod_cbs.append({'fnc': _tabot_cb_fnc_params,           'flt': _tabot_cb_flt_params_tg,             'key': '_tabot_mn_cb_params_tg'             });
 
 
 
