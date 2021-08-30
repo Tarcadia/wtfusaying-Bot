@@ -7,13 +7,18 @@ import exs.contextsensor as xcs;
 import exs.topicsensor as xts;
 import exs.thermalmeter as xtm;
 
+import os;
 import re;
+import json
 import time;
+import random;
 import threading as thr;
 import logging;
 
 VERSION = 'v20210823';
 CONFIG_PATH = './config/';
+TALKLIST_CFG = 'tabot_totalk_talklst.json'
+CMDLIST_CFG = 'tabot_totalk_cmdlst.json'
 WORDLINK_CFG = 'tabot_totalk_wls.json'
 
 KEYWORDS_COUNT = 5;
@@ -38,16 +43,72 @@ if not logger.hasHandlers():
     logger.addHandler(logger_ch);
 logger.info('Tabot To Talk - ex Loaded');
 
-# 数据记录：
+# 数据类型：
 # chatkey = '<mmk>.<ctype><rcid>';              // 用于跨接口的标识语境
+
+# 数据记录：
+# talklist = list;                              // 简单查找表式的关键词对话内容
+# cmdlist = list;                               // 简单查找表式的指令内容（其实就是强制发言的对话）
 # contexts = dict[chatkey]{contextsensor};      // 记录聊天上下文的contextsensor模块
 # thermals = dict[chatkey]{thermalmeter};       // 记录聊天热度和发言控制的thermalmeter模块
 # wordlinks = wordlinksensor;                   // 学习的结果，将会文件存储
 
+talklist = [];
+cmdlist = [];
 datalock = thr.RLock();
 contexts = dict();
 thermals = dict();
 wordlink = xwls.WordLinkSensor(memorypath = CONFIG_PATH + WORDLINK_CFG);
+
+def loadtalks():
+    global talklist;
+    global cmdlist;
+    
+    if os.path.isfile(CONFIG_PATH + TALKLIST_CFG, mode = 'w', encoding = 'utf-8'):
+        _fp = open(CONFIG_PATH + TALKLIST_CFG);
+        _lst = json.load(_fp);
+        _fp.close();
+    else:
+        _lst = [];
+    with datalock:
+        talklist.clear();
+        talklist.extend(_lst);
+    
+    if os.path.isfile(CONFIG_PATH + CMDLIST_CFG, mode = 'w', encoding = 'utf-8'):
+        _fp = open(CONFIG_PATH + CMDLIST_CFG);
+        _lst = json.load(_fp);
+        _fp.close();
+    else:
+        _lst = [];
+    with datalock:
+        cmdlist.clear();
+        cmdlist.extend(_lst);
+
+def savetalks():
+    with datalock:
+        _fp = open(CONFIG_PATH + TALKLIST_CFG, mode = 'w', encoding = 'utf-8');
+        json.dump(talklist, _fp, ensure_ascii = False, indent = 4);
+        _fp.close();
+        _fp = open(CONFIG_PATH + CMDLIST_CFG, mode = 'w', encoding = 'utf-8');
+        json.dump(cmdlist, _fp, ensure_ascii = False, indent = 4);
+        _fp.close();
+
+def talk(txt: str):
+    _lst = [];
+    with datalock:
+        for _talk in talklist:
+            if re.match(_talk['pat'], txt):
+                if random.random() <= _talk['p']:
+                    _lst.extend(_talk['rep']);
+    return random.choice(_lst);
+
+def talkcmd(txt: str):
+    _lst = [];
+    with datalock:
+        for _cmd in cmdlist:
+            if re.match(_cmd['pat'], txt):
+                _lst.append(random.choice(_cmd['rep']));
+    return _lst;
 
 def onmsg(src, txt = '', t = None):
     if t == None:
@@ -231,9 +292,14 @@ def strparams(src):
         lines.append("——上下文信息缺失");
     return '\n'.join(lines);
 
-# 接口函数
-
-#保存
 def save():
     wordlink.save();
+    savetalks();
     return;
+
+
+
+
+
+# 初始化数据加载
+loadtalks();
