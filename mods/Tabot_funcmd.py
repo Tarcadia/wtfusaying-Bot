@@ -59,9 +59,11 @@ _tabot_talks_tarcadia = [
 ];
 _tabot_talks_digo = [
     "diggggggggoooooooo",
+    "地沟地沟",
 ];
 _tabot_talks_peter = [
     "皮皮",
+    "金金",
 ];
 _tabot_talks_mbkotori = [
     "小鸟",
@@ -147,7 +149,7 @@ _tabot_cmd_henshin = 't -henshin';
 _tabot_cmd_reboot = 't -reboot';
 _tabot_cmd_tarcadia = 't -tarcadia';
 _tabot_cmd_digo = 't -([dD][iI]+[gG]+[oO]+|地沟)';
-_tabot_cmd_peter = 't -([pP][eE][tT][eE][rR]|皮皮|皮特)';
+_tabot_cmd_peter = 't -([pP][eE][tT][eE][rR]|皮+|皮特)';
 _tabot_cmd_mbkotori = 't -([mM][bB][kK][oO][tT][oO][rR][iI]|小*鸟)';
 _tabot_cmd_creeper = 't -([cC][rR]+[eE]+[pP]+[eE]+[rR]+)';
 _tabot_cmd_cat = 't -([cC][aA][tT]|猫|🐱)';
@@ -228,8 +230,8 @@ _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_hdzj), 'flt': cb_flt_txtma
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_hdzj), 'flt': cb_flt_txtmatch_tg(_tabot_kw_hdzj), 'key': '_tabot_funcmd_cb_hdzj_tg'});
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_toterms), 'flt': cb_flt_txtmatch_qq(_tabot_kw_toterms), 'key': '_tabot_funcmd_cb_toterms_qq'});
 _mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_toterms), 'flt': cb_flt_txtmatch_tg(_tabot_kw_toterms), 'key': '_tabot_funcmd_cb_toterms_tg'});
-_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_question), 'flt': cb_flt_txtmatch_qq(_tabot_kw_question), 'key': '_tabot_funcmd_cb_question_qq'});
-_mod_cbs.append({'fnc': conditiontalk(1, _tabot_talks_question), 'flt': cb_flt_txtmatch_tg(_tabot_kw_question), 'key': '_tabot_funcmd_cb_question_tg'});
+_mod_cbs.append({'fnc': conditiontalk(0.2, _tabot_talks_question), 'flt': cb_flt_txtmatch_qq(_tabot_kw_question), 'key': '_tabot_funcmd_cb_question_qq'});
+_mod_cbs.append({'fnc': conditiontalk(0.2, _tabot_talks_question), 'flt': cb_flt_txtmatch_tg(_tabot_kw_question), 'key': '_tabot_funcmd_cb_question_tg'});
 
 
 
