@@ -57,5 +57,5 @@ def save():
     return;
 
 def stop():
-    logger.info('Tabot Talker Stopped');
+    logger.info('Empty Mod Stopped');
     return;
