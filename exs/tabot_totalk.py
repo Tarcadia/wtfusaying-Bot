@@ -100,7 +100,10 @@ def talk(txt: str):
             if re.match(_talk['pat'], txt):
                 if random.random() <= _talk['p']:
                     _lst.extend(_talk['rep']);
-    return random.choice(_lst);
+    if len(_lst) >= 1:
+        return random.choice(_lst);
+    else:
+        return '';
 
 def talkcmd(txt: str):
     _lst = [];
