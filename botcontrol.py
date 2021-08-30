@@ -224,7 +224,6 @@ def do_callback(bc: dict, mmk: str, msg: dict):
                         _cb['fnc'](mmk, msg);
             except Exception as _err:
                 logger.error('CallBack failed at %s with %s' % (_key, type(_err)));
-                logger.debug(_err);
                 logger.exception(_err);
 
             else:

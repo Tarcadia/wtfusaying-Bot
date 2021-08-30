@@ -108,17 +108,17 @@ def reloadall():
             logger.error('Failed dereg callback or Key Error');
         except Exception as _err:
             logger.error('Failed dereg callback %s with %s' % (_cb['key'], type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
         try:
             _mod.save();
         except Exception as _err:
             logger.error('Failed save mod %s with %s' % (_modname, type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
         try:
             _mod.stop();
         except Exception as _err:
             logger.error('Failed stop mod %s with %s' % (_modname, type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
         del sys.modules['mods.%s' % _modname];
         logger.info('Deport mods.%s' % _modname);
     # 卸载当前所有exs
@@ -135,7 +135,7 @@ def reloadall():
             logger.info('Import exs.%s' % _exname);
         except Exception as _err:
             logger.error('Failed import ex %s with %s' % (_exname, type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
     # 重加载新查找的模块组件，开启模块组件，注册接口
     for _modname in _modname_list:
         try:
@@ -145,13 +145,13 @@ def reloadall():
             logger.info('Import mods.%s' % _modname);
         except Exception as _err:
             logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
         try:
             _mod_thrs = _mod.start();
             _sys_threads.extend(_mod_thrs);
         except Exception as _err:
             logger.error('Failed start mod %s with %s' % (_modname, type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
         try:
             for _cb in _mod._mod_cbs:
                 _sys_botcontrol.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
@@ -159,7 +159,7 @@ def reloadall():
             logger.error('Failed reg callback or Key Error');
         except Exception as _err:
             logger.error('Failed reg callback %s with %s' % (_cb['key'], type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
     return;
 
 
@@ -176,17 +176,17 @@ def reloadmod(modlist: list = []):
                 logger.error('Failed dereg callback or Key Error');
             except Exception as _err:
                 logger.error('Failed dereg callback %s with %s' % (_cb['key'], type(_err)));
-                logger.debug(_err);
+                logger.exception(_err);
             try:
                 _mod.save();
             except Exception as _err:
                 logger.error('Failed save mod %s with %s' % (_modname, type(_err)));
-                logger.debug(_err);
+                logger.exception(_err);
             try:
                 _mod.stop();
             except Exception as _err:
                 logger.error('Failed stop mod %s with %s' % (_modname, type(_err)));
-                logger.debug(_err);
+                logger.exception(_err);
             del sys.modules['mods.%s' % _modname];
             logger.info('Deport mods.%s' % _modname);
         # 重加载模块组件，开启模块组件，注册接口
@@ -198,13 +198,13 @@ def reloadmod(modlist: list = []):
                 logger.info('Import mods.%s' % _modname);
             except Exception as _err:
                 logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
-                logger.debug(_err);
+                logger.exception(_err);
             try:
                 _mod_thrs = _mod.start();
                 _sys_threads.extend(_mod_thrs);
             except Exception as _err:
                 logger.error('Failed start mod %s with %s' % (_modname, type(_err)));
-                logger.debug(_err);
+                logger.exception(_err);
             try:
                 for _cb in _mod._mod_cbs:
                     _sys_botcontrol.regcallback(func = _cb['fnc'], filter = _cb['flt'], key = _cb['key']);
@@ -212,7 +212,7 @@ def reloadmod(modlist: list = []):
                 logger.error('Failed reg callback or Key Error');
             except Exception as _err:
                 logger.error('Failed reg callback %s with %s' % (_cb['key'], type(_err)));
-                logger.debug(_err);
+                logger.exception(_err);
         else:
             logger.debug('Failed import mod %s for non-exists' % _modname);
     return;
@@ -234,7 +234,7 @@ def reloadex(exlist: list = []):
                 logger.info('Import exs.%s' % _exname);
             except Exception as _err:
                 logger.error('Failed import mod %s with %s' % (_exname, type(_err)));
-                logger.debug(_err);
+                logger.exception(_err);
         else:
             logger.debug('Failed import mod %s for non-exists' % _exname);
     return;
@@ -268,7 +268,7 @@ def load():
             _sys_exs[_exname] = _ex;
         except Exception as _err:
             logger.error('Failed import ex %s with %s' % (_exname, type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
 
     # 查找所有模块组件
     _modname_list = [];
@@ -287,7 +287,7 @@ def load():
             _sys_mods[_modname] = _mod;
         except Exception as _err:
             logger.error('Failed import mod %s with %s' % (_modname, type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
     
     return;
 
@@ -300,7 +300,7 @@ def save():
             _mod.save();
         except Exception as _err:
             logger.error('Failed save mod %s with %s' % (_modname, type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
     return;
 
 
@@ -327,17 +327,17 @@ def stop():
             logger.error('Failed dereg callback or Key Error');
         except Exception as _err:
             logger.error('Failed dereg callback %s with %s' % (_cb['key'], type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
         try:
             _mod.save();
         except Exception as _err:
             logger.error('Failed save mod %s with %s' % (_modname, type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
         try:
             _mod.stop();
         except Exception as _err:
             logger.error('Failed stop mod %s with %s' % (_modname, type(_err)));
-            logger.debug(_err);
+            logger.exception(_err);
     print('\033[1;30;47m已关闭\033[0m');
     return;
 
